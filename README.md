@@ -10,7 +10,7 @@
 6. Import project into Eclipse using Import>General>Existing Project
 7. Make changes.
 8. Send changes to server.
-9. Make pull request.
+9. Make pull request. [Pull request guide](https://help.github.com/articles/using-pull-requests/)
 
 
 # Syncing
