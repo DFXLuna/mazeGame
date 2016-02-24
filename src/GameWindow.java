@@ -14,92 +14,97 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class GameWindow extends JFrame implements ActionListener
+public class GameWindow extends JFrame
   {
     /**
      * because it is a serializable object, need this or javac
      * complains a lot
      */
     public static final long serialVersionUID=1;
-
-    /*
-     * Here I declare some buttons and declare an array to hold the grid elements. 
-     * But, you can do what you want.
-     */
-    private int startAt=1;
+    
+    private GameBoard board;
     
     /**
-     * Constructor sets the window name using super(), changes the layout,
-     * which you really need to read up on, and maybe you can see why I chose
-     * this one.
-     *
-     * @param s
+     * The constructor sets up the UI.
+     * We pass it a reference to the backend GameBoard.
      */
 
-    public GameWindow(String s)
+    public GameWindow(GameBoard board)
     {
-      super(s);
-      GridBagLayout gbl=new GridBagLayout();
-      setLayout(gbl);
+      super("Group L aMaze");
+      
+      this.board = board;
+      
+      setupUI();
     }
 
     /**
-     * For the buttons
-     * @param e is the ActionEvent
-     * 
-     * BTW can ask the event for the name of the object generating event.
-     * The odd syntax for non-java people is that "exit" for instance is
-     * converted to a String object, then that object's equals() method is
-     * called.
+     *  Sets up the UI.
+     *  Also sets the initial position of the board and tiles.
      */
 
-    public void actionPerformed(ActionEvent e) {
-      if("exit".equals(e.getActionCommand()))
-        System.exit(0);
-      if("reset".equals(e.getActionCommand()))
-        System.out.println("reset pressed\n");
-      if("new".equals(e.getActionCommand()))
-        System.out.println("new pressed\n");
+    public void setupUI()
+    {
+      setSize(new Dimension(900, 1000));
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      getContentPane().setBackground(Color.cyan);
+      
+      // Set the location of the board.
+      board.setScreenLoc(250, 300);
+      
+      // Set the initial position of all the tiles.
+      for (int i=0; i<16; i++) {
+        GameTile t = board.getTileByIndex(i);
+        if (i<8)
+          t.setScreenLoc(20, 60+i*110);
+        else
+          t.setScreenLoc(780, 60+(i-8)*110);
       }
-
-    /**
-     *  Establishes the inital board
-     */
-
-    public void setUp()
-    {
-      //actually create the array for elements, make sure it is big enough
       
-      // Need to play around with the dimensionts and the gridx/y values
-      // These constraints are going to be added to the pieces/parts I 
-      // stuff into the "GridBag".
-      GridBagConstraints basic = new GridBagConstraints();
-      basic.gridx=startAt;
-      basic.gridy=0;
-      basic.gridwidth=1;
-      basic.gridheight=1;
-      basic.fill=GridBagConstraints.BOTH;
-
-      //Here I create 16 elements to put into my gameBoard
-
-      // Now I add each one, modifying the default gridx/y and add
-      // it along with the modified constraint
-
       this.addButtons();
-      return;
       
-      
+      setVisible(true);
     }
     /**
-     * Used by setUp() to configure the buttons on a button bar and
-     * add it to the gameBoard
+     * Used by setupUI() to create and configure the buttons.
      */
 
     public void addButtons(){
-
-      return;
+      
+      // We only use the layout for the buttons.
+      // If we need to add more elements somewhere else,
+      // we can make another container
+      FlowLayout button_layout = new FlowLayout(FlowLayout.LEFT, 5, 5);
+      this.setLayout(button_layout);
+      
+      Button btn_new = new Button("New Game");
+      btn_new.addActionListener((ActionEvent e) -> System.out.println("New Game"));
+      this.add(btn_new);
+      
+      Button btn_reset = new Button("Reset");
+      btn_reset.addActionListener((ActionEvent e) -> System.out.println("Reset"));
+      this.add(btn_reset);
+      
+      Button btn_quit = new Button("Quit");
+      btn_quit.addActionListener((ActionEvent e) -> System.exit(0));
+      this.add(btn_quit);
     }
-
+    
+    
+    /**
+     * We decided to draw the game board and tiles ourselves, rather than
+     * extending UI components.
+     */
+    @Override
+    public void paint(Graphics g) {
+      super.paint(g);
+      
+      board.draw(g);
+      
+      for (int i=0; i<16; i++) {
+        GameTile t = board.getTileByIndex(i);
+        t.draw(g);
+      }
+    }
   };
