@@ -1,0 +1,9 @@
+Team:
+Matt Grant - Testing and cleanup
+Jared Frank - Front End
+Adam Coggeshall - Front End
+Alex Germann - Back End
+Auston Larson - Back End
+
+Planning:
+See UML.png
