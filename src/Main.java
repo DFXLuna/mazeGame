@@ -1,13 +1,9 @@
-/**
- * @author Kim Buckner
- * Date: Feb 19, 2016
- *
- * A starting point for the COSC 3011 programming assignment
- * Probably need to fix a bunch of stuff, but this compiles and runs.
- *
+ /**
+ * @author Group L
+ * Matt Grant, Adam Coggeeshall, Jared Frank, Alex Germann, Auston Larson
+ * COSC 3011 Program 01
+ * Main.java
  */
-
-/** This is a test **/
 import javax.swing.*;
 import java.awt.*;
 

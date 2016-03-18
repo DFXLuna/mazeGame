@@ -1,18 +1,10 @@
  /**
- * @author Kim Buckner
- * Date: Feb 19, 2016
- *
- * This is the actual "game". May/will have to make some major changes.
- * This is just a "hollow" shell.
- *
- * When you get done, I should see the buttons at the top in the "play" area
- * (not a pull-down menu). The only one that should do anything is Quit.
- *
- * Should also see something that shows where the 4x4 board and the "spare"
- * tiles will be when we get them stuffed in.
+ * @author Group L
+ * Matt Grant, Adam Coggeeshall, Jared Frank, Alex Germann, Auston Larson
+ * COSC 3011 Program 01
+ * GameWindow.java
  */
 
-/* ousndounsdfn */
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

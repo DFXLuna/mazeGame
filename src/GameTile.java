@@ -1,3 +1,9 @@
+ /**
+ * @author Group L
+ * Matt Grant, Adam Coggeeshall, Jared Frank, Alex Germann, Auston Larson
+ * COSC 3011 Program 01
+ * Gametile.java
+ */
 import java.awt.Color;
 import java.awt.Graphics;
 
@@ -67,19 +73,20 @@ public class GameTile implements Drawable
   
   
   
-  //Checks to see if the tile is in the correct position on the grid by comparing the x and y positions 
-  //to the position for the correct spot on the grid.
+  //Checks to see if the tile is in the correct position on the grid by
+  //comparing the x and y positions to the position for the correct spot on the grid.
   public boolean correctPosition()
   {
-    if ((locX == 250+SIZE*(correctArrayPos%4)) && (locY == 300+SIZE*(correctArrayPos/4)))
+    if ((locX == 250+SIZE*(correctArrayPos%4)) && 
+        (locY == 300+SIZE*(correctArrayPos/4)))
     {
       return true;
     }
     return false;
     
     
-    //Originally thought we were implementing the grid as an array in which case this would
-    //be the way to do this method, corrected for pixels above.
+    //Originally thought we were implementing the grid as an array in which case
+    //this would be the way to do this method, corrected for pixels above.
     /*
     if (currentArrayPos == correctArrayPos)
     {
