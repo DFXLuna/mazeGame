@@ -10,10 +10,6 @@ import java.awt.*;
 public class Main 
 {
   
-  // Probably should declare any buttons here
-  public JButton lbutton,rbutton, mbutton;
-  
-  
   public static void main(String[] args)
   {
     // Create game window and board.
