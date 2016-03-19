@@ -10,15 +10,16 @@ import java.awt.Graphics;
 /**
  * This is the main component of the back-end
  * It is mainly responsible for handling the game state and tracking
- * where tiles are in the grid.
+ * where tiles are in the grid. -AC
  */
 public class GameBoard implements Drawable {
   // These represent the position of the upper left corner of the GameBoard
-  // on the screen. 
+  // on the screen. -AC
   private int locX;
   private int locY;
   
-  // This stores all our tiles. Not sure about the ordering in the array yet.
+  // This stores all our tiles.
+  // Not sure if the ordering in the array is important yet. -AC
   private GameTile[] tiles = new GameTile[16];
   private GameTile[] sideArray = new GameTile[16];
   
@@ -34,7 +35,7 @@ public class GameBoard implements Drawable {
   }
   
   // The GameWindow needs to be able to get tiles, but it should not be able
-  // to change the array.
+  // to change the array. -AC
   public GameTile getTileByIndex(int i) {
     return tiles[i];
   }
@@ -44,6 +45,8 @@ public class GameBoard implements Drawable {
     
     int size = GameTile.SIZE;
     
+    // Currently we draw the empty GameBoard with
+    // a grey checkerboard pattern. -AC
     for (int x=0; x<4; x++) {
       for (int y=0;y<4; y++) {
         if ((x+y)%2==0)

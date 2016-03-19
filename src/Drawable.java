@@ -7,8 +7,9 @@
 
 import java.awt.Graphics;
 
-/** An interface for drawable things. This is probably not necessary, and may be
- * replaced by something more robust in the future.
+/** An interface for drawable objects in the game.
+ * This is probably not necessary, and may be replaced by something more robust
+ * in the future. -AC
  */
 public interface Drawable {
   public void draw(Graphics g); 

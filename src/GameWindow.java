@@ -19,11 +19,11 @@ public class GameWindow extends JFrame
     
     private GameBoard board;
     
+    
     /**
      * The constructor sets up the UI.
-     * We pass it a reference to the backend GameBoard.
+     * We pass it a reference to the backend GameBoard. -AC
      */
-
     public GameWindow(GameBoard board)
     {
       super("Group L aMaze");
@@ -35,7 +35,7 @@ public class GameWindow extends JFrame
 
     /**
      *  Sets up the UI.
-     *  Also sets the initial position of the board and tiles.
+     *  Also sets the initial position of the board and tiles. -AC
      */
 
     public void setupUI()
@@ -44,10 +44,10 @@ public class GameWindow extends JFrame
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       getContentPane().setBackground(Color.cyan);
       
-      // Set the location of the board.
+      // Set the location of the board. -AC
       board.setScreenLoc(250, 300);
       
-      // Set the initial position of all the tiles.
+      // Set the initial position of all the tiles. -AC
       for (int i=0; i<16; i++) {
         GameTile t = board.getTileByIndex(i);
         if (i<8)
@@ -60,15 +60,17 @@ public class GameWindow extends JFrame
       
       setVisible(true);
     }
+    
+    
     /**
-     * Used by setupUI() to create and configure the buttons.
+     * Used by setupUI() to create and configure the buttons. -AC
      */
-
     public void addButtons(){
       
-      // We only use the layout for the buttons.
-      // If we need to add more elements somewhere else,
-      // we can make another container
+      // We decided to create the layout here, and use a FlowLayout.
+      // It handles buttons much more naturally than a GridLayout.
+      // If we really need to add more elements using more advanced
+      // layout, we can add another container later. -AC
       FlowLayout button_layout = new FlowLayout(FlowLayout.LEFT, 5, 5);
       this.setLayout(button_layout);
       
@@ -88,7 +90,8 @@ public class GameWindow extends JFrame
     
     /**
      * We decided to draw the game board and tiles ourselves, rather than
-     * extending UI components.
+     * extending UI components. This calls the draw method of board and
+     * each tile. -AC
      */
     @Override
     public void paint(Graphics g) {

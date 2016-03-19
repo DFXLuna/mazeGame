@@ -14,9 +14,9 @@ public class GameTile implements Drawable
   
   public static final int SIZE = 100;
     
-    // We should probably inherit from a some kind of base class, since
-    // this behavior is the same as the Board's.
-    // If we do, it should probably replace the Drawable interface.
+    // We should probably inherit from a some kind of abstract base class,
+    // since this behavior is the same as the Board's.
+    // If we do, it should probably replace the Drawable interface. -AC
     private int locX;
     private int locY;
     private int correctArrayPos;
@@ -28,7 +28,7 @@ public class GameTile implements Drawable
       locY = y;
     }
     
-    // This should eventually be drawing the parts of the image.
+    // This should eventually draw the parts of the image. -AC
     @Override
     public void draw(Graphics g) {
       g.setColor(Color.ORANGE);
