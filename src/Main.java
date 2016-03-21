@@ -1,6 +1,6 @@
  /**
  * @author Group L
- * Matt Grant, Adam Coggeeshall, Jared Frank, Alex Germann, Auston Larson
+ * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
  * Main.java
  */
@@ -10,16 +10,15 @@ import java.awt.*;
 public class Main 
 {
   
-  // Probably should declare any buttons here
-  public JButton lbutton,rbutton, mbutton;
-  
-  
   public static void main(String[] args)
   {
-    // This is the play area
+    // Create game window and board.
+    // Most of the game logic is handled by these two classes. -AC
     GameBoard board = new GameBoard();
     GameWindow game = new GameWindow(board);
     
+    // I am still not sure how we should be handling these.
+    // The current LookAndFeel seems to work on both Windows and Linux. -AC
     try {
       // The 4 that installed on Linux here
       // May have to test on Windows boxes to see what is there.
