@@ -6,6 +6,7 @@
  */
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,12 +19,14 @@ public class GameWindow extends JFrame implements ActionListener
      */
     public static final long serialVersionUID=1;
     
+    private ArrayList<FrontEndTileHolder> tileHolders = new ArrayList<FrontEndTileHolder>();
+    
     private Messenger messenger;
     
     /** This determines the size that tiles are rendered at. It also controls
      * the size of the containers.
      */
-    public static final int TILE_SIZE = 100;
+    public static final int TILE_SIZE = 80;
     
     /**
      * The constructor sets up the UI.
@@ -36,6 +39,7 @@ public class GameWindow extends JFrame implements ActionListener
       this.messenger = messenger;
       
       setupUI();
+      setupGame();
     }
 
     /**
@@ -66,9 +70,13 @@ public class GameWindow extends JFrame implements ActionListener
       setVisible(true);
     }
     
+    /**
+     * Sets up the visual representation of tile containers.
+     */
     public void setupGame() {
-      
-      
+      tileHolders.add( new FrontEndGameBoard(290, 300) );
+      tileHolders.add( new FrontEndSideHolder(50, 80) );
+      tileHolders.add( new FrontEndSideHolder(770, 80) );
     }
     
     
@@ -126,7 +134,10 @@ public class GameWindow extends JFrame implements ActionListener
     public void paint(Graphics g) {
       super.paint(g);
       
-      System.out.println("x");
+      for (FrontEndTileHolder holder : tileHolders) {
+        holder.draw(g);
+      }
+      
       /*
       board.draw(g);
       

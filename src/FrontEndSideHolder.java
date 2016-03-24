@@ -5,9 +5,9 @@
  * GameWindow.java
  */
 
-public class FrontEndBoard extends FrontEndTileHolder {
+public class FrontEndSideHolder extends FrontEndTileHolder {
 
-  protected FrontEndBoard(int x, int y) {
+  protected FrontEndSideHolder(int x, int y) {
     super(x, y, 1, 8);
   }
   
