@@ -6,4 +6,16 @@ Alex Germann - Back End
 Auston Larson - Back End
 
 Planning:
-See UML.png
+
+
+Meeting 2
+  -Figure out what the front end needs from the back end to draw and move tiles
+    -Tile positions
+  
+  -Determine how the front end and back end will communicate
+    -Implement a messenger interface, it's in charge of this communication
+    -Messenger is a two way proxy between front and back ends
+    
+  -Implement drawing on the front end, maybe through drawer class
+  
+  -Decide onscreen tile position by position in array
