@@ -7,6 +7,16 @@ Auston Larson - Back End
 
 Planning:
 
+Meeting 1:
+    -Roles assigned 
+    -Base design established
+        -Development broken up into 2 portions
+            front end and back end
+        -Front end handles gui and user interaction
+        -Back end handles game objects and logic
+    -Got everyone using Github, repos forked, cloned, synced
+    -Made sure everyone would be able to do work independantly
+        in their two man teams.
 
 Meeting 2
   -Figure out what the front end needs from the back end to draw and move tiles
@@ -19,3 +29,6 @@ Meeting 2
   -Implement drawing on the front end, maybe through drawer class
   
   -Decide onscreen tile position by position in array
+  
+All small issues are addressed via issue tickets in the main Github repo.
+Planning and big picture stuff takes place in in-person meetings
