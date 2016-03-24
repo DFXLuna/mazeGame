@@ -4,15 +4,12 @@
  * COSC 3011 Program 01
  * Gametile.java
  */
-import java.awt.Color;
-import java.awt.Graphics;
 
-public class GameTile implements Drawable 
+public class GameTile 
 {
   
   
   
-  public static final int SIZE = 100;
     
     // We should probably inherit from a some kind of abstract base class,
     // since this behavior is the same as the Board's.
@@ -29,11 +26,11 @@ public class GameTile implements Drawable
     }
     
     // This should eventually draw the parts of the image. -AC
-    @Override
+    /*@Override
     public void draw(Graphics g) {
       g.setColor(Color.ORANGE);
       g.fillRect(locX, locY, SIZE, SIZE);
-    }
+    }*/
 
 
   
@@ -77,7 +74,7 @@ public class GameTile implements Drawable
   //comparing the x and y positions to the position for the correct spot on the grid.
   public boolean correctPosition()
   {
-    if ((locX == 250+SIZE*(correctArrayPos%4)) && 
+    /*if ((locX == 250+SIZE*(correctArrayPos%4)) && 
         (locY == 300+SIZE*(correctArrayPos/4)))
     {
       return true;
@@ -93,6 +90,7 @@ public class GameTile implements Drawable
       return true;
     }
     return false;*/
+    return false;
   }
   
 }

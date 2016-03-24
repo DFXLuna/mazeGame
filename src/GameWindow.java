@@ -18,17 +18,22 @@ public class GameWindow extends JFrame implements ActionListener
      */
     public static final long serialVersionUID=1;
     
-    private GameBoard board;
+    private Messenger messenger;
+    
+    /** This determines the size that tiles are rendered at. It also controls
+     * the size of the containers.
+     */
+    public static final int TILE_SIZE = 100;
     
     /**
      * The constructor sets up the UI.
      * We pass it a reference to the backend GameBoard. -AC
      */
-    public GameWindow(GameBoard board)
+    public GameWindow(Messenger messenger)
     {
       super("Group L aMaze");
       
-      this.board = board;
+      this.messenger = messenger;
       
       setupUI();
     }
@@ -45,7 +50,7 @@ public class GameWindow extends JFrame implements ActionListener
       getContentPane().setBackground(Color.cyan);
       
       // Set the location of the board. -AC
-      board.setScreenLoc(250, 300);
+      /*board.setScreenLoc(250, 300);
       
       // Set the initial position of all the tiles. -AC
       for (int i=0; i<16; i++) {
@@ -55,10 +60,15 @@ public class GameWindow extends JFrame implements ActionListener
         else
           t.setScreenLoc(780, 60+(i-8)*110);
       }
-      
+      */
       this.addButtons();
       
       setVisible(true);
+    }
+    
+    public void setupGame() {
+      
+      
     }
     
     
@@ -116,11 +126,18 @@ public class GameWindow extends JFrame implements ActionListener
     public void paint(Graphics g) {
       super.paint(g);
       
+      System.out.println("x");
+      /*
       board.draw(g);
       
       for (int i=0; i<16; i++) {
         GameTile t = board.getTileByIndex(i);
         t.draw(g);
-      }
+      }*/
     }
+    
   };
+  
+  class Messenger {
+    
+  }

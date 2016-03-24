@@ -12,7 +12,7 @@ import java.awt.Graphics;
  * It is mainly responsible for handling the game state and tracking
  * where tiles are in the grid. -AC
  */
-public class GameBoard implements Drawable {
+public class GameBoard {
   // These represent the position of the upper left corner of the GameBoard
   // on the screen. -AC
   private int locX;
@@ -40,7 +40,7 @@ public class GameBoard implements Drawable {
     return tiles[i];
   }
   
-  @Override
+  /*@Override
   public void draw(Graphics g) {
     
     int size = GameTile.SIZE;
@@ -56,7 +56,7 @@ public class GameBoard implements Drawable {
         g.fillRect(locX+x*size, locY+y*size, size, size);
       }
     }
-  }
+  }*/
   
   //Moves the tile to a specified location.
   public void moveTile(GameTile t, int x, int y)
@@ -86,8 +86,8 @@ public class GameBoard implements Drawable {
   //or not a tile is already at that position in the grid.
   public void setTileInGrid(GameTile t, int gridX, int gridY)
   {
-    int size = GameTile.SIZE;
-    t.setScreenLoc(250+size*gridX, 300+size*gridY);
+    //int size = GameTile.SIZE;
+    //t.setScreenLoc(250+size*gridX, 300+size*gridY);
   }
   
   

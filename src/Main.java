@@ -15,7 +15,7 @@ public class Main
     // Create game window and board.
     // Most of the game logic is handled by these two classes. -AC
     GameBoard board = new GameBoard();
-    GameWindow game = new GameWindow(board);
+    GameWindow game = new GameWindow(null);
     
     // I am still not sure how we should be handling these.
     // The current LookAndFeel seems to work on both Windows and Linux. -AC
