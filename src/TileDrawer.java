@@ -39,6 +39,6 @@ public class TileDrawer {
     g.fillRect(x+2, y+2, TILE_SIZE-4, TILE_SIZE-4);
     g.setColor(Color.BLACK);
     g.setFont(numberFont);
-    g.drawString(""+number, x+5, y+30);
+    g.drawString(String.valueOf(number), x+5, y+30);
   }
 }

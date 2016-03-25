@@ -22,4 +22,12 @@ public class FrontEndSideHolder extends FrontEndTileHolder {
     else
       return getMessenger().getTileInRight(y);
   }
+
+  @Override
+  protected int getSlotIdAt(int x, int y) {
+    if (side==BoardSide.LEFT)
+      return y;
+    else
+      return y+8;
+  }
 }

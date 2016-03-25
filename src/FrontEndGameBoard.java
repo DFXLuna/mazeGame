@@ -15,4 +15,9 @@ public class FrontEndGameBoard extends FrontEndTileHolder {
   protected int getTileNumberAt(int x, int y) {
     return getMessenger().getTileInGrid(x, y);
   }
+
+  @Override
+  protected int getSlotIdAt(int x, int y) {
+    return 16+x+y*4;
+  }
 }

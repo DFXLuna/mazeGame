@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class GameWindow extends JFrame implements ActionListener
+public class GameWindow extends JFrame implements ActionListener, MouseListener
   {
     /**
      * because it is a serializable object, need this or javac
@@ -48,6 +50,7 @@ public class GameWindow extends JFrame implements ActionListener
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       getContentPane().setBackground(Color.cyan);
       
+      addMouseListener(this);
       this.addButtons();
       
       setVisible(true);
@@ -132,4 +135,51 @@ public class GameWindow extends JFrame implements ActionListener
       }
     }
     
+    // Here we handle mouse input. We end up with some empty methods since
+    // we're using the MouseListener interface.
+    
+    @Override
+    public void mouseClicked(MouseEvent e) {
+      // Do nothing. -AC
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+      // Do nothing. -AC
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+      
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+      for (FrontEndTileHolder holder : tileHolders) {
+        int tileNumber = holder.getTileNumberFromClick(e);
+        // If there is a tile present, then we can start the drag!
+        if (tileNumber >= 0) {
+          int slot = holder.getSlotFromClick(e);
+          messenger.setDragInfo(slot, tileNumber);
+          this.repaint();
+          break;
+        }
+      }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+      if (messenger.getDraggedTileNumber() >= 0) {
+        for (FrontEndTileHolder holder : tileHolders) {
+          int slot = holder.getSlotFromClick(e);
+          // If we have a destination slot, do a swap. --AC
+          if (slot >= 0) {
+            messenger.movetile( messenger.getDragSourceSlot(), slot);
+            break;
+          }
+        }
+        messenger.clearDragInfo();
+        this.repaint();
+      }
+    }
   };
