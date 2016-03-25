@@ -19,11 +19,13 @@ public class GameTile implements Drawable
     // If we do, it should probably replace the Drawable interface. -AC
     private int locX;
     private int locY;
+    private int displayNum;
     private int correctArrayPos;
     //private int currentArrayPos;
     
     
-    public void setScreenLoc(int x, int y) {
+    public void setScreenLoc(int x, int y) 
+    {
       locX = x;
       locY = y;
     }
@@ -38,13 +40,19 @@ public class GameTile implements Drawable
 
   
   //Initializing GameTile. currentArrayPos was only needed if we are going to
-  //manipulate the array past initialization.
+  //manipulate the array past initialization. -AG
   public GameTile(int arrayPos)
   {
     //currentArrayPos = arrayPos;
+    displayNum = arrayPos;
     correctArrayPos = arrayPos;
   }
   
+  //Returns the number on the tile. -AG
+  public int getNum()
+  {
+    return displayNum;
+  }
   
   public int getScreenXLoc()
   {
@@ -57,8 +65,7 @@ public class GameTile implements Drawable
   }
 
   
-  //Both of these are methods that would be used if we were manipulating the array
-  //in some way (e.g. if it were used for the grid or the side array)
+  //Not sure if we will need these in the future -AL
   /*
   public int getArrayPos()
   {
@@ -74,7 +81,9 @@ public class GameTile implements Drawable
   
   
   //Checks to see if the tile is in the correct position on the grid by
-  //comparing the x and y positions to the position for the correct spot on the grid.
+  //comparing the x and y positions to the position for the correct spot on the grid. -AG
+  //May be needed in the future -AL
+  /*
   public boolean correctPosition()
   {
     if ((locX == 250+SIZE*(correctArrayPos%4)) && 
@@ -83,16 +92,7 @@ public class GameTile implements Drawable
       return true;
     }
     return false;
-    
-    
-    //Originally thought we were implementing the grid as an array in which case
-    //this would be the way to do this method, corrected for pixels above.
-    /*
-    if (currentArrayPos == correctArrayPos)
-    {
-      return true;
-    }
-    return false;*/
   }
+  */
   
 }
