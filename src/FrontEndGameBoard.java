@@ -7,8 +7,12 @@
 
 public class FrontEndGameBoard extends FrontEndTileHolder {
 
-  protected FrontEndGameBoard(int x, int y) {
-    super(x, y, 4, 4);
+  protected FrontEndGameBoard(Messenger msgr, int x, int y) {
+    super(msgr, x, y, 4, 4);
   }
   
+  @Override
+  protected int getTileNumberAt(int x, int y) {
+    return getMessenger().getTileInGrid(x, y);
+  }
 }

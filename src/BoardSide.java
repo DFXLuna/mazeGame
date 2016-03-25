@@ -2,15 +2,13 @@
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
- * Drawable.java
+ * BoardSide.java
  */
 
-import java.awt.Graphics;
-
-/** An interface for drawable objects in the game.
- * This is probably not necessary, and may be replaced by something more robust
- * in the future. -AC
+/**
+ * A simple enum to represent the left/right sides of the board.
+ * Used by FrontEndSideHolder. -AC
  */
-public interface Drawable {
-  public void draw(Graphics g); 
+public enum BoardSide {
+  LEFT, RIGHT
 }

@@ -6,9 +6,20 @@
  */
 
 public class FrontEndSideHolder extends FrontEndTileHolder {
-
-  protected FrontEndSideHolder(int x, int y) {
-    super(x, y, 1, 8);
+  // We need to know what side we are so we can query the messenger for the
+  // correct information. -AC
+  private BoardSide side;
+  
+  protected FrontEndSideHolder(Messenger msgr, BoardSide side, int x, int y) {
+    super(msgr, x, y, 1, 8);
+    this.side = side;
   }
   
+  @Override
+  protected int getTileNumberAt(int x, int y) {
+    if (side==BoardSide.LEFT)
+      return getMessenger().getTileInLeft(y);
+    else
+      return getMessenger().getTileInRight(y);
+  }
 }

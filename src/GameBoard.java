@@ -146,20 +146,26 @@ public class GameBoard {
   //Returns the number displayed on the Tile in the specified position of the left side of the holding area. -AG
   public int getTileInLeft(int pos)
   {
-    return sideArray[pos].getNum();
+    if (sideArray[pos] != null)
+      return sideArray[pos].getNum();
+    return -1;
   }
   
   
   //Returns the number displayed on the Tile in the specified position of the right side of the holding area. -AG
   public int getTileInRight(int pos)
   {
-    return sideArray[pos+8].getNum();
+    if (sideArray[pos+8] != null)
+      return sideArray[pos+8].getNum();
+    return -1;
   }
   
   //Returns the number displayed on the Tile in the specified position of the grid. -AG
   public int getTileInGrid(int x, int y)
   {
-    return gridArray[y*4+x].getNum();
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getNum();
+    return -1;
   }
   
   

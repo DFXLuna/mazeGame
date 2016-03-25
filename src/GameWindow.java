@@ -57,9 +57,18 @@ public class GameWindow extends JFrame implements ActionListener
      * Sets up the visual representation of tile containers.
      */
     public void setupGame() {
-      tileHolders.add( new FrontEndGameBoard(290, 300) );
-      tileHolders.add( new FrontEndSideHolder(50, 80) );
-      tileHolders.add( new FrontEndSideHolder(770, 80) );
+      FrontEndGameBoard board =
+          new FrontEndGameBoard(messenger, 290, 300);
+      
+      FrontEndSideHolder leftSide =
+          new FrontEndSideHolder(messenger, BoardSide.LEFT, 50, 80);
+      
+      FrontEndSideHolder rightSide = 
+          new FrontEndSideHolder(messenger, BoardSide.RIGHT, 770, 80);
+      
+      tileHolders.add( board );
+      tileHolders.add( leftSide );
+      tileHolders.add( rightSide );
     }
     
     

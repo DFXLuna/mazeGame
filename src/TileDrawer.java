@@ -1,4 +1,8 @@
- /**
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+
+/**
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
@@ -20,11 +24,21 @@ public class TileDrawer {
    */
   public static final int TILE_SIZE = 80;
   
+  // This is the font that we draw numbers with.
+  private static final Font numberFont =
+      new Font(Font.DIALOG,Font.BOLD,30);
+  
   /**
    * Draws a tile to a graphics object at a specified position with a specified
    * number. -AC
    */
-  public static void drawTile() {
-    
+  public static void drawTile(Graphics g, int x, int y, int number) {
+    g.setColor(Color.BLACK);
+    g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+    g.setColor(Color.YELLOW);
+    g.fillRect(x+2, y+2, TILE_SIZE-4, TILE_SIZE-4);
+    g.setColor(Color.BLACK);
+    g.setFont(numberFont);
+    g.drawString(""+number, x+5, y+30);
   }
 }
