@@ -22,10 +22,15 @@ public class GameBoard {
   // Not sure if the ordering in the array is important yet. -AC
   private GameTile[] tiles = new GameTile[16];
   private GameTile[] sideArray = new GameTile[16];
+  private GameTile[] gridArray = new GameTile[16];
   
-  public GameBoard() {
-    for (int i=0; i<16; i++) {
+  public GameBoard() 
+  {
+    for (int i=0; i<16; i++) 
+    {
       tiles[i] = new GameTile(i);
+      sideArray[i] = tiles[i];
+      gridArray[i] = null;
     }
   }
   
@@ -36,7 +41,8 @@ public class GameBoard {
   
   // The GameWindow needs to be able to get tiles, but it should not be able
   // to change the array. -AC
-  public GameTile getTileByIndex(int i) {
+  public GameTile getTileByIndex(int i) 
+  {
     return tiles[i];
   }
   
@@ -58,16 +64,112 @@ public class GameBoard {
     }
   }*/
   
-  //Moves the tile to a specified location.
-  public void moveTile(GameTile t, int x, int y)
+  //Moves the tile to a specified location. sideArray is 0-15, gridArray 16-31. -AG
+  public void moveTile(int from, int to)
   {
-    t.setScreenLoc(x, y);
+    //If "to" is in the gridArray. -AG
+    if (to > 15)
+    {
+      //If "from" is in the gridArray. -AG
+      if (from > 15)
+      {
+        //If no tile in "to" position, moves the tile. -AG
+        if (gridArray[to-16] == null)
+        {
+          gridArray[to-16]=gridArray[from-16];
+          gridArray[from-16] = null;
+        }
+        //Swaps tiles if there is already a tile in "to" position. -AG
+        else
+        {
+          GameTile placeholder = gridArray[to-16];
+          gridArray[to-16]=gridArray[from-16];
+          gridArray[from-16] = placeholder;
+        }
+      }
+      //If "from" is in the sideArray. -AG
+      else
+      {
+         //If no tile in "to" position, moves the tile. -AG
+          if (gridArray[to-16] == null)
+          {
+            gridArray[to-16] = sideArray[from];
+            sideArray[from] = null;
+          }
+          //Swaps tiles if there is already a tile in "to" position. -AG
+          else
+          {
+            GameTile placeholder = gridArray[to-16];
+            gridArray[to-16] = sideArray[from];
+            sideArray[from] = placeholder;
+          }
+      }
+    }
+    //If "to" is in the sideArray. -AG
+    else
+    {
+      //If "from" is in the gridArray. -AG
+      if (from > 15)
+      {
+        //If no tile in "to" position, moves the tile. -AG
+        if (sideArray[to] == null)
+        {
+          sideArray[to]=gridArray[from-16];
+          gridArray[from-16] = null;
+        }
+        //Swaps tiles if there is already a tile in "to" position. -AG
+        else
+        {
+          GameTile placeholder = sideArray[to];
+          sideArray[to]=gridArray[from-16];
+          gridArray[from-16] = placeholder;
+        }
+      }
+      //If "from" is in the sideArray. -AG
+      else
+      {
+         //If no tile in "to" position, moves the tile. -AG
+          if (sideArray[to] == null)
+          {
+            sideArray[to] = sideArray[from];
+            sideArray[from] = null;
+          }
+          //Swaps tiles if there is already a tile in "to" position. -AG
+          else
+          {
+            GameTile placeholder = sideArray[to];
+            sideArray[to] = sideArray[from];
+            sideArray[from] = placeholder;
+          }
+      }
+    }
+  }
+  
+  //Returns the number displayed on the Tile in the specified position of the left side of the holding area. -AG
+  public int getTileInLeft(int pos)
+  {
+    return sideArray[pos].getNum();
+  }
+  
+  
+  //Returns the number displayed on the Tile in the specified position of the right side of the holding area. -AG
+  public int getTileInRight(int pos)
+  {
+    return sideArray[pos+8].getNum();
+  }
+  
+  //Returns the number displayed on the Tile in the specified position of the grid. -AG
+  public int getTileInGrid(int x, int y)
+  {
+    return gridArray[y*4+x].getNum();
   }
   
   
   
   //Checks if each tile is in the correct position, returns true only if all
-  //tiles are in the correct position.
+  //tiles are in the correct position. -AG
+  //May be needed in future. -AL
+  /*
   private boolean checkHasWon()
   {
     boolean victory = true;
@@ -80,10 +182,11 @@ public class GameBoard {
     }
     return victory;
   }
+  */
   
   //Assuming the grid starts at 0,0 being 250 pixels, 300 pixels. Limited
   //functionality - does not check to see whether
-  //or not a tile is already at that position in the grid.
+  //or not a tile is already at that position in the grid. -AG
   public void setTileInGrid(GameTile t, int gridX, int gridY)
   {
     //int size = GameTile.SIZE;
@@ -91,45 +194,14 @@ public class GameBoard {
   }
   
   
-  //Pretty janky method. Basically checks to see if there are tiles in each of
-  //the starting positions and keeping track of the position as it goes.
-  //Eventually sets the position to the first available position corresponding
-  //to one that the tiles were set to at the start of the game. Overall unclear
-  //on why this method is needed, could have missed the mark entirely on what it
-  //needs to do.
-  public void removeTileFromGrid(GameTile t)
+  //Testing our moveTile method. -AG
+  public void testBoard()
   {
-    int position = 0;
-    for (int i=0; i<16; i++) 
-    {
-      if (position<8)  
-      {
-        if ((tiles[i].getScreenXLoc() == 20) &&
-            (tiles[i].getScreenYLoc() == 60+position*110))
-        {
-          i = 0;
-          position++;
-        }
-      }
-      else
-      {
-        if ((tiles[i].getScreenXLoc() == 780) && 
-            (tiles[i].getScreenYLoc() == 60+(position-8)*110))
-        {
-          i = 0;
-          position++;
-        }
-      }
-    }
+    moveTile(3, 6);
+    System.out.println("sideArray[3] is now " + sideArray[3].getNum() + "  and sideArray[6] is now " + sideArray[6].getNum());
     
-    if (position<8)
-    {
-      t.setScreenLoc(20, 60+position*110);
-    }
-    else
-    {
-        t.setScreenLoc(780, 60+(position-8)*110);
-    }
+    moveTile(1, 18);
+    System.out.println("sideArray[1] is now " + sideArray[1] + "  and gridArray[2] is now " + gridArray[2].getNum());
   }
   
   
