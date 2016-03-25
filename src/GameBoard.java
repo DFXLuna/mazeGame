@@ -4,8 +4,6 @@
  * COSC 3011 Program 01
  * GameBoard.java
  */
-import java.awt.Color;
-import java.awt.Graphics;
 
 /**
  * This is the main component of the back-end

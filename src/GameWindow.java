@@ -23,11 +23,6 @@ public class GameWindow extends JFrame implements ActionListener
     
     private Messenger messenger;
     
-    /** This determines the size that tiles are rendered at. It also controls
-     * the size of the containers.
-     */
-    public static final int TILE_SIZE = 80;
-    
     /**
      * The constructor sets up the UI.
      * We pass it a reference to the backend GameBoard. -AC
@@ -53,18 +48,6 @@ public class GameWindow extends JFrame implements ActionListener
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       getContentPane().setBackground(Color.cyan);
       
-      // Set the location of the board. -AC
-      /*board.setScreenLoc(250, 300);
-      
-      // Set the initial position of all the tiles. -AC
-      for (int i=0; i<16; i++) {
-        GameTile t = board.getTileByIndex(i);
-        if (i<8)
-          t.setScreenLoc(20, 60+i*110);
-        else
-          t.setScreenLoc(780, 60+(i-8)*110);
-      }
-      */
       this.addButtons();
       
       setVisible(true);
@@ -127,8 +110,9 @@ public class GameWindow extends JFrame implements ActionListener
     
     /**
      * We decided to draw the game board and tiles ourselves, rather than
-     * extending UI components. This calls the draw method of board and
-     * each tile. -AC
+     * extending UI components. This now calls the draw method of each
+     * tile holder. The tile holders are responsible for drawing their
+     * tiles. -AC
      */
     @Override
     public void paint(Graphics g) {
@@ -137,18 +121,6 @@ public class GameWindow extends JFrame implements ActionListener
       for (FrontEndTileHolder holder : tileHolders) {
         holder.draw(g);
       }
-      
-      /*
-      board.draw(g);
-      
-      for (int i=0; i<16; i++) {
-        GameTile t = board.getTileByIndex(i);
-        t.draw(g);
-      }*/
     }
     
   };
-  
-  class Messenger {
-    
-  }

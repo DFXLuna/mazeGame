@@ -2,7 +2,7 @@
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
- * GameWindow.java
+ * FrontEndSideHolder.java
  */
 
 public class FrontEndSideHolder extends FrontEndTileHolder {
