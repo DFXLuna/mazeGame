@@ -6,11 +6,14 @@
  */
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class GameWindow extends JFrame implements ActionListener
+public class GameWindow extends JFrame implements ActionListener, MouseListener
   {
     /**
      * because it is a serializable object, need this or javac
@@ -18,19 +21,22 @@ public class GameWindow extends JFrame implements ActionListener
      */
     public static final long serialVersionUID=1;
     
-    private GameBoard board;
+    private ArrayList<FrontEndTileHolder> tileHolders = new ArrayList<FrontEndTileHolder>();
+    
+    private Messenger messenger;
     
     /**
      * The constructor sets up the UI.
      * We pass it a reference to the backend GameBoard. -AC
      */
-    public GameWindow(GameBoard board)
+    public GameWindow(Messenger messenger)
     {
       super("Group L aMaze");
       
-      this.board = board;
+      this.messenger = messenger;
       
       setupUI();
+      setupGame();
     }
 
     /**
@@ -44,21 +50,28 @@ public class GameWindow extends JFrame implements ActionListener
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       getContentPane().setBackground(Color.cyan);
       
-      // Set the location of the board. -AC
-      board.setScreenLoc(250, 300);
-      
-      // Set the initial position of all the tiles. -AC
-      for (int i=0; i<16; i++) {
-        GameTile t = board.getTileByIndex(i);
-        if (i<8)
-          t.setScreenLoc(20, 60+i*110);
-        else
-          t.setScreenLoc(780, 60+(i-8)*110);
-      }
-      
+      addMouseListener(this);
       this.addButtons();
       
       setVisible(true);
+    }
+    
+    /**
+     * Sets up the visual representation of tile containers.
+     */
+    public void setupGame() {
+      FrontEndGameBoard board =
+          new FrontEndGameBoard(messenger, 290, 300);
+      
+      FrontEndSideHolder leftSide =
+          new FrontEndSideHolder(messenger, BoardSide.LEFT, 50, 80);
+      
+      FrontEndSideHolder rightSide = 
+          new FrontEndSideHolder(messenger, BoardSide.RIGHT, 770, 80);
+      
+      tileHolders.add( board );
+      tileHolders.add( leftSide );
+      tileHolders.add( rightSide );
     }
     
     
@@ -109,18 +122,64 @@ public class GameWindow extends JFrame implements ActionListener
     
     /**
      * We decided to draw the game board and tiles ourselves, rather than
-     * extending UI components. This calls the draw method of board and
-     * each tile. -AC
+     * extending UI components. This now calls the draw method of each
+     * tile holder. The tile holders are responsible for drawing their
+     * tiles. -AC
      */
     @Override
     public void paint(Graphics g) {
       super.paint(g);
       
-      board.draw(g);
+      for (FrontEndTileHolder holder : tileHolders) {
+        holder.draw(g);
+      }
+    }
+    
+    // Here we handle mouse input. We end up with some empty methods since
+    // we're using the MouseListener interface.
+    
+    @Override
+    public void mouseClicked(MouseEvent e) {
+      // Do nothing. -AC
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+      // Do nothing. -AC
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
       
-      for (int i=0; i<16; i++) {
-        GameTile t = board.getTileByIndex(i);
-        t.draw(g);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+      for (FrontEndTileHolder holder : tileHolders) {
+        int tileNumber = holder.getTileNumberFromClick(e);
+        // If there is a tile present, then we can start the drag!
+        if (tileNumber >= 0) {
+          int slot = holder.getSlotFromClick(e);
+          messenger.setDragInfo(slot, tileNumber);
+          this.repaint();
+          break;
+        }
+      }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+      if (messenger.getDraggedTileNumber() >= 0) {
+        for (FrontEndTileHolder holder : tileHolders) {
+          int slot = holder.getSlotFromClick(e);
+          // If we have a destination slot, do a swap. --AC
+          if (slot >= 0) {
+            messenger.movetile( messenger.getDragSourceSlot(), slot);
+            break;
+          }
+        }
+        messenger.clearDragInfo();
+        this.repaint();
       }
     }
   };

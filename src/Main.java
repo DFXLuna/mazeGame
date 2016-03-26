@@ -15,7 +15,8 @@ public class Main
     // Create game window and board.
     // Most of the game logic is handled by these two classes. -AC
     GameBoard board = new GameBoard();
-    GameWindow game = new GameWindow(board);
+    Messenger messenger = new Messenger(board);
+    GameWindow window = new GameWindow(messenger);
     
     // I am still not sure how we should be handling these.
     // The current LookAndFeel seems to work on both Windows and Linux. -AC

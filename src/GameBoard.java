@@ -4,15 +4,13 @@
  * COSC 3011 Program 01
  * GameBoard.java
  */
-import java.awt.Color;
-import java.awt.Graphics;
 
 /**
  * This is the main component of the back-end
  * It is mainly responsible for handling the game state and tracking
  * where tiles are in the grid. -AC
  */
-public class GameBoard implements Drawable {
+public class GameBoard {
   // These represent the position of the upper left corner of the GameBoard
   // on the screen. -AC
   private int locX;
@@ -46,7 +44,7 @@ public class GameBoard implements Drawable {
     return tiles[i];
   }
   
-  @Override
+  /*@Override
   public void draw(Graphics g) {
     
     int size = GameTile.SIZE;
@@ -62,7 +60,7 @@ public class GameBoard implements Drawable {
         g.fillRect(locX+x*size, locY+y*size, size, size);
       }
     }
-  }
+  }*/
   
   //Moves the tile to a specified location. sideArray is 0-15, gridArray 16-31. -AG
   public void moveTile(int from, int to)
@@ -148,20 +146,26 @@ public class GameBoard implements Drawable {
   //Returns the number displayed on the Tile in the specified position of the left side of the holding area. -AG
   public int getTileInLeft(int pos)
   {
-    return sideArray[pos].getNum();
+    if (sideArray[pos] != null)
+      return sideArray[pos].getNum();
+    return -1;
   }
   
   
   //Returns the number displayed on the Tile in the specified position of the right side of the holding area. -AG
   public int getTileInRight(int pos)
   {
-    return sideArray[pos+8].getNum();
+    if (sideArray[pos+8] != null)
+      return sideArray[pos+8].getNum();
+    return -1;
   }
   
   //Returns the number displayed on the Tile in the specified position of the grid. -AG
   public int getTileInGrid(int x, int y)
   {
-    return gridArray[y*4+x].getNum();
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getNum();
+    return -1;
   }
   
   
@@ -189,8 +193,8 @@ public class GameBoard implements Drawable {
   //or not a tile is already at that position in the grid. -AG
   public void setTileInGrid(GameTile t, int gridX, int gridY)
   {
-    int size = GameTile.SIZE;
-    t.setScreenLoc(250+size*gridX, 300+size*gridY);
+    //int size = GameTile.SIZE;
+    //t.setScreenLoc(250+size*gridX, 300+size*gridY);
   }
   
   
