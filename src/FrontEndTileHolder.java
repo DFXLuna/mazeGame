@@ -7,6 +7,7 @@
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 
 
@@ -50,6 +51,7 @@ public abstract class FrontEndTileHolder {
     for (int x=0; x<width; x++) {
       for (int y=0;y<height; y++) {
         int tileNumber = getTileNumberAt(x, y);
+        
         // We only draw the tile if it exists and is not being dragged. -AC
         if (tileNumber>=0 && messenger.getDraggedTileNumber() != tileNumber)
           TileDrawer.drawTile(g, posX+x*size, posY+y*size, tileNumber);
@@ -64,7 +66,11 @@ public abstract class FrontEndTileHolder {
     }
   }
   
-  private TilePosition getCoordsFromClick(MouseEvent e) {
+  /**
+   * Gets the x/y location of a slot in the container from a mouse click.
+   * Returns null if there is no slot at that position.
+   */
+  private Point getLocationFromClick(MouseEvent e) {
     int x = e.getX();
     int y = e.getY();
     
@@ -79,18 +85,18 @@ public abstract class FrontEndTileHolder {
     int tileX = (x-posX)/TileDrawer.TILE_SIZE;
     int tileY = (y-posY)/TileDrawer.TILE_SIZE;
     
-    return new TilePosition(tileX,tileY);
+    return new Point(tileX,tileY);
   }
   
   public int getSlotFromClick(MouseEvent e) {
-    TilePosition position = getCoordsFromClick(e);
+    Point position = getLocationFromClick(e);
     if (position != null)
       return getSlotIdAt(position.x, position.y);
     return -1;
   }
   
   public int getTileNumberFromClick(MouseEvent e) {
-    TilePosition position = getCoordsFromClick(e);
+    Point position = getLocationFromClick(e);
     if (position != null)
       return getTileNumberAt(position.x, position.y);
     return -1;
@@ -103,20 +109,8 @@ public abstract class FrontEndTileHolder {
   protected abstract int getTileNumberAt(int x, int y);
   
   /**
-   * Get the slot ID from a mouse click. We need the slot ID to preform
-   * swaps between slots when drags are successful.
+   * Get the slot ID from a mouse click. We need the slot ID to perform
+   * swaps between slots when drags are successful. -AC
    */
   protected abstract int getSlotIdAt(int x, int y);
-}
-
-/**
- * I will never forgive Java for not having a built in TUPLE class. -AC
- */
-class TilePosition {
-  public int x;
-  public int y;
-  public TilePosition(int x, int y) {
-    this.x = x;
-    this.y = y;
-  }
 }
