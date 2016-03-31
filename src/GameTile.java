@@ -1,4 +1,9 @@
- /**
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+
+/**
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
@@ -45,10 +50,28 @@ public class GameTile
     correctArrayPos = arrayPos;
   }
   
+  private static Image PLACEHOLDER_IMAGE;
+  
+  // Here we set up a PLACEHOLDER image for tiles. You can delete this when
+  // you have the real images. I know dragging looks horribly broken, but it
+  // should resolve itself once you have real images. -AC
+  
+  static {
+    PLACEHOLDER_IMAGE = new BufferedImage(
+        TileDrawer.TILE_SIZE,
+        TileDrawer.TILE_SIZE,
+        BufferedImage.TYPE_INT_RGB );
+    
+    Graphics g = PLACEHOLDER_IMAGE.getGraphics();
+    g.setColor(Color.GREEN);
+    g.fillRect(0, 0, TileDrawer.TILE_SIZE, TileDrawer.TILE_SIZE);
+  }
+  
   //Returns the number on the tile. -AG
-  public int getNum()
+  // Changed to getImage() -- should now return the image on the tile!
+  public Image getImage()
   {
-    return displayNum;
+    return PLACEHOLDER_IMAGE;
   }
   
   public int getScreenXLoc()

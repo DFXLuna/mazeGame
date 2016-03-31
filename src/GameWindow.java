@@ -137,7 +137,7 @@ public class GameWindow extends JFrame
         System.out.println("New Game");
         break;
       case "reset":
-        System.out.println("Reset");
+        messenger.resetGame();
         break;
       case "quit":
         System.exit(0);
@@ -167,8 +167,8 @@ public class GameWindow extends JFrame
       }
       
       // We draw the tile currently being dragged. -AC
-      int draggedTileNumber = messenger.getDraggedTileNumber();
-      if (draggedTileNumber >= 0) {
+      Image draggedTileImage = messenger.getDraggedTileImage();
+      if (draggedTileImage != null) {
         // We position the dragged tile so that its center is on the cursor.
         // I had considered keeping the offset consistent with the offset
         // when the drag starts, but this is a good deal less complicated
@@ -176,7 +176,7 @@ public class GameWindow extends JFrame
         // more sense. -AC
         int draggedX = lastMouseEvent.getX() - TileDrawer.TILE_SIZE/2;
         int draggedY = lastMouseEvent.getY() - TileDrawer.TILE_SIZE/2;
-        TileDrawer.drawTile(g, draggedX, draggedY, draggedTileNumber);
+        TileDrawer.drawTile(g, draggedX, draggedY, draggedTileImage);
       }
       
       windowGraphics.drawImage(backBuffer, 0, 0, null);
@@ -188,12 +188,12 @@ public class GameWindow extends JFrame
     @Override
     public void mousePressed(MouseEvent e) {
       for (FrontEndTileHolder holder : tileHolders) {
-        int tileNumber = holder.getTileNumberFromClick(e);
+        Image tileImage = holder.getTileImageFromClick(e);
         // If there is a tile present, then we can start the drag! -AC
-        if (tileNumber >= 0) {
+        if (tileImage != null) {
           int slot = holder.getSlotFromClick(e);
           
-          messenger.setDragInfo(slot, tileNumber);
+          messenger.setDragInfo(slot, tileImage);
           lastMouseEvent = e;
           this.repaint();
           
@@ -205,7 +205,7 @@ public class GameWindow extends JFrame
     @Override
     public void mouseReleased(MouseEvent e) {
       // We only have to handle a drop if we are currently dragging. -AC
-      if (messenger.getDraggedTileNumber() >= 0) {
+      if (messenger.getDraggedTileImage() != null) {
         for (FrontEndTileHolder holder : tileHolders) {
           int destinationSlot = holder.getSlotFromClick(e);
           // If we have a destination slot, do a swap. -AC

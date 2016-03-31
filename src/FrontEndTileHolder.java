@@ -7,6 +7,7 @@
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
@@ -50,11 +51,11 @@ public abstract class FrontEndTileHolder {
     // a grey checkerboard pattern. -AC
     for (int x=0; x<width; x++) {
       for (int y=0;y<height; y++) {
-        int tileNumber = getTileNumberAt(x, y);
+        Image tileImg = getTileImageAt(x, y);
         
         // We only draw the tile if it exists and is not being dragged. -AC
-        if (tileNumber>=0 && messenger.getDraggedTileNumber() != tileNumber)
-          TileDrawer.drawTile(g, posX+x*size, posY+y*size, tileNumber);
+        if (tileImg != null && messenger.getDraggedTileImage() != tileImg)
+          TileDrawer.drawTile(g, posX+x*size, posY+y*size, tileImg);
         else {
           if ((x+y)%2==0)
             g.setColor(Color.WHITE);
@@ -95,18 +96,18 @@ public abstract class FrontEndTileHolder {
     return -1;
   }
   
-  public int getTileNumberFromClick(MouseEvent e) {
+  public Image getTileImageFromClick(MouseEvent e) {
     Point position = getLocationFromClick(e);
     if (position != null)
-      return getTileNumberAt(position.x, position.y);
-    return -1;
+      return getTileImageAt(position.x, position.y);
+    return null;
   }
   
   /**
    * Get the tile number at a tile position. Sub-classes must implement this.
    * A negative number indicates that there is no tile present. -AC
    */
-  protected abstract int getTileNumberAt(int x, int y);
+  protected abstract Image getTileImageAt(int x, int y);
   
   /**
    * Get the slot ID from a mouse click. We need the slot ID to perform
