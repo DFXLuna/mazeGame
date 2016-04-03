@@ -1,44 +1,78 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 
-public class GameTile implements Drawable 
+/**
+ * @author Group L
+ * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
+ * COSC 3011 Program 01
+ * Gametile.java
+ */
+
+public class GameTile 
 {
   
   
   
-  public static final int SIZE = 100;
     
-    // We should probably inherit from a some kind of base class, since
-    // this behavior is the same as the Board's.
-    // If we do, it should probably replace the Drawable interface.
+    // We should probably inherit from a some kind of abstract base class,
+    // since this behavior is the same as the Board's.
+    // If we do, it should probably replace the Drawable interface. -AC
     private int locX;
     private int locY;
+    private int displayNum;
     private int correctArrayPos;
     //private int currentArrayPos;
     
     
-    public void setScreenLoc(int x, int y) {
+    public void setScreenLoc(int x, int y) 
+    {
       locX = x;
       locY = y;
     }
     
-    // This should eventually be drawing the parts of the image.
-    @Override
+    // This should eventually draw the parts of the image. -AC
+    /*@Override
     public void draw(Graphics g) {
       g.setColor(Color.ORANGE);
       g.fillRect(locX, locY, SIZE, SIZE);
-    }
+    }*/
 
 
   
   //Initializing GameTile. currentArrayPos was only needed if we are going to
-  //manipulate the array past initialization.
+  //manipulate the array past initialization. -AG
   public GameTile(int arrayPos)
   {
     //currentArrayPos = arrayPos;
+    displayNum = arrayPos;
     correctArrayPos = arrayPos;
   }
   
+  private static Image PLACEHOLDER_IMAGE;
+  
+  // Here we set up a PLACEHOLDER image for tiles. You can delete this when
+  // you have the real images. I know dragging looks horribly broken, but it
+  // should resolve itself once you have real images. -AC
+  
+  static {
+    PLACEHOLDER_IMAGE = new BufferedImage(
+        TileDrawer.TILE_SIZE,
+        TileDrawer.TILE_SIZE,
+        BufferedImage.TYPE_INT_RGB );
+    
+    Graphics g = PLACEHOLDER_IMAGE.getGraphics();
+    g.setColor(Color.GREEN);
+    g.fillRect(0, 0, TileDrawer.TILE_SIZE, TileDrawer.TILE_SIZE);
+  }
+  
+  //Returns the number on the tile. -AG
+  // Changed to getImage() -- should now return the image on the tile!
+  public Image getImage()
+  {
+    return PLACEHOLDER_IMAGE;
+  }
   
   public int getScreenXLoc()
   {
@@ -51,8 +85,7 @@ public class GameTile implements Drawable
   }
 
   
-  //Both of these are methods that would be used if we were manipulating the array
-  //in some way (e.g. if it were used for the grid or the side array)
+  //Not sure if we will need these in the future -AL
   /*
   public int getArrayPos()
   {
@@ -67,25 +100,19 @@ public class GameTile implements Drawable
   
   
   
-  //Checks to see if the tile is in the correct position on the grid by comparing the x and y positions 
-  //to the position for the correct spot on the grid.
+  //Checks to see if the tile is in the correct position on the grid by
+  //comparing the x and y positions to the position for the correct spot on the grid. -AG
+  //May be needed in the future -AL
+  /*
   public boolean correctPosition()
   {
-    if ((locX == 250+SIZE*(correctArrayPos%4)) && (locY == 300+SIZE*(correctArrayPos/4)))
+    /*if ((locX == 250+SIZE*(correctArrayPos%4)) && 
+        (locY == 300+SIZE*(correctArrayPos/4)))
     {
       return true;
     }
     return false;
-    
-    
-    //Originally thought we were implementing the grid as an array in which case this would
-    //be the way to do this method, corrected for pixels above.
-    /*
-    if (currentArrayPos == correctArrayPos)
-    {
-      return true;
-    }
-    return false;*/
   }
+  */
   
 }
