@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 
 /**
  * @author Group L
@@ -30,15 +31,9 @@ public class TileDrawer {
   
   /**
    * Draws a tile to a graphics object at a specified position with a specified
-   * number. -AC
+   * image -- Basically a wrapper for drawImage now. -AC
    */
-  public static void drawTile(Graphics g, int x, int y, int number) {
-    g.setColor(Color.BLACK);
-    g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-    g.setColor(Color.YELLOW);
-    g.fillRect(x+2, y+2, TILE_SIZE-4, TILE_SIZE-4);
-    g.setColor(Color.BLACK);
-    g.setFont(numberFont);
-    g.drawString(String.valueOf(number), x+5, y+30);
+  public static void drawTile(Graphics g, int x, int y, Image img) {
+    g.drawImage(img, x, y, null);
   }
 }

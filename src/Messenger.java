@@ -1,4 +1,6 @@
- /**
+import java.awt.Image;
+
+/**
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 02
@@ -20,22 +22,27 @@ public class Messenger
     board = gameboard;
   }
   
+  public void resetGame() {
+    // TODO reset the game!
+    System.out.println("RESET!!!");
+  }
+  
   //Calls back-end method which returns the number of a tile in a given position in the left side array. -AG
-  public int getTileInLeft(int pos)
+  public Image getTileInLeft(int pos)
   {
     return board.getTileInLeft(pos);
   }
   
   // Calls back-end method which returns the number of a tile in a given
   // position in the right side array. -AG
-  public int getTileInRight(int pos)
+  public Image getTileInRight(int pos)
   {
     return board.getTileInRight(pos);
   }
   
   // Calls back-end method which returns the number of a tile in a given
   // position in the grid. -AG
-  public int getTileInGrid(int x, int y)
+  public Image getTileInGrid(int x, int y)
   {
     return board.getTileInGrid(x, y);
   }
@@ -50,19 +57,19 @@ public class Messenger
   // The Messenger holds drag information. It includes the source slot, dragged
   // tile number, and possibly x/y offsets from the mouse.
   private int dragSourceSlot = -1;
-  private int dragTileNumber = -1;
+  private Image dragTileImage = null;
   
-  public void setDragInfo(int sourceSlot, int tileNumber) {
+  public void setDragInfo(int sourceSlot, Image tileImage) {
     dragSourceSlot = sourceSlot;
-    dragTileNumber = tileNumber;
+    dragTileImage = tileImage;
   }
   
   public void clearDragInfo() {
-    setDragInfo(-1,-1);
+    setDragInfo(-1,null);
   }
   
-  public int getDraggedTileNumber() {
-    return dragTileNumber;
+  public Image getDraggedTileImage() {
+    return dragTileImage;
   }
   
   public int getDragSourceSlot() {

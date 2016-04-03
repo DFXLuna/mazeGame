@@ -1,4 +1,6 @@
- /**
+import java.awt.Image;
+
+/**
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
@@ -16,7 +18,7 @@ public class FrontEndSideHolder extends FrontEndTileHolder {
   }
   
   @Override
-  protected int getTileNumberAt(int x, int y) {
+  protected Image getTileImageAt(int x, int y) {
     if (side==BoardSide.LEFT)
       return getMessenger().getTileInLeft(y);
     else

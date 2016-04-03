@@ -1,4 +1,6 @@
- /**
+import java.awt.Image;
+
+/**
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
@@ -144,28 +146,28 @@ public class GameBoard {
   }
   
   //Returns the number displayed on the Tile in the specified position of the left side of the holding area. -AG
-  public int getTileInLeft(int pos)
+  public Image getTileInLeft(int pos)
   {
     if (sideArray[pos] != null)
-      return sideArray[pos].getNum();
-    return -1;
+      return sideArray[pos].getImage();
+    return null;
   }
   
   
   //Returns the number displayed on the Tile in the specified position of the right side of the holding area. -AG
-  public int getTileInRight(int pos)
+  public Image getTileInRight(int pos)
   {
     if (sideArray[pos+8] != null)
-      return sideArray[pos+8].getNum();
-    return -1;
+      return sideArray[pos+8].getImage();
+    return null;
   }
   
   //Returns the number displayed on the Tile in the specified position of the grid. -AG
-  public int getTileInGrid(int x, int y)
+  public Image getTileInGrid(int x, int y)
   {
     if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getNum();
-    return -1;
+      return gridArray[y*4+x].getImage();
+    return null;
   }
   
   
@@ -202,10 +204,12 @@ public class GameBoard {
   public void testBoard()
   {
     moveTile(3, 6);
-    System.out.println("sideArray[3] is now " + sideArray[3].getNum() + "  and sideArray[6] is now " + sideArray[6].getNum());
+    System.out.println("sideArray[3] is now " + sideArray[3].getImage() +
+        "  and sideArray[6] is now " + sideArray[6].getImage());
     
     moveTile(1, 18);
-    System.out.println("sideArray[1] is now " + sideArray[1] + "  and gridArray[2] is now " + gridArray[2].getNum());
+    System.out.println("sideArray[1] is now " + sideArray[1]
+        + "  and gridArray[2] is now " + gridArray[2].getImage());
   }
   
   
