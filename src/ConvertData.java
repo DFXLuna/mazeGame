@@ -11,6 +11,9 @@
 import java.nio.ByteBuffer;
 
 public class ConvertData {
+  
+  //Converting from data types to Byte Array
+  //Auxiliary methods for convertToByteArray
   public static byte[] convertToByteArray(char value) {
     byte[] bytes = new byte[2];
     ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
@@ -72,6 +75,8 @@ public static byte convertToByte(byte[] array) {
 
 }
 
+//Converting from byte[] to data types
+//Auxiliary methods for convertToValue
 public static int convertToInt(byte[] array) {
     ByteBuffer buffer = ByteBuffer.wrap(array);
     return buffer.getInt();
@@ -90,6 +95,25 @@ public static short convertToShort(byte[] array) {
 public static String convertToString(byte[] array) {
     String value = new String(array);
     return value;
+}
+
+public static boolean convertToBoolean(byte[] array) {
+    return (array[0] > 0 ? true : false );
+}
+
+public static char convertToCharacter(byte[] array) {
+    ByteBuffer buffer = ByteBuffer.wrap(array);
+    return buffer.getChar();
+}
+
+public static double convertToDouble(byte[] array) {
+    ByteBuffer buffer = ByteBuffer.wrap(array);
+    return buffer.getDouble();
+}
+
+public static float convertToFloat(byte[] array) {
+    ByteBuffer buffer = ByteBuffer.wrap(array);
+    return buffer.getFloat();
 }
 
 public static Object convertToValue(Class aClass, byte[] inputArray) throws Exception {
@@ -161,24 +185,5 @@ public static byte[] convertToByteArray(Object object) throws Exception {
     }
 
     return returnArray;
-}
-
-public static boolean convertToBoolean(byte[] array) {
-    return (array[0] > 0 ? true : false );
-}
-
-public static char convertToCharacter(byte[] array) {
-    ByteBuffer buffer = ByteBuffer.wrap(array);
-    return buffer.getChar();
-}
-
-public static double convertToDouble(byte[] array) {
-    ByteBuffer buffer = ByteBuffer.wrap(array);
-    return buffer.getDouble();
-}
-
-public static float convertToFloat(byte[] array) {
-    ByteBuffer buffer = ByteBuffer.wrap(array);
-    return buffer.getFloat();
 }
 }

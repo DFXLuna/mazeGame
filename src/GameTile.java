@@ -25,6 +25,15 @@ public class GameTile
     private Image image;
     //private int currentArrayPos;
     
+    //Initializing GameTile. currentArrayPos was only needed if we are going to
+    //manipulate the array past initialization. -AG
+    public GameTile(int arrayPos)
+    {
+      //currentArrayPos = arrayPos;
+      displayNum = arrayPos;
+      correctArrayPos = arrayPos;
+    }
+    
     
     public void setScreenLoc(int x, int y) 
     {
@@ -38,17 +47,6 @@ public class GameTile
       g.setColor(Color.ORANGE);
       g.fillRect(locX, locY, SIZE, SIZE);
     }*/
-
-
-  
-  //Initializing GameTile. currentArrayPos was only needed if we are going to
-  //manipulate the array past initialization. -AG
-  public GameTile(int arrayPos)
-  {
-    //currentArrayPos = arrayPos;
-    displayNum = arrayPos;
-    correctArrayPos = arrayPos;
-  }
   
   // Changed to getImage() -- should now return the image on the tile!
   public Image getImage()
