@@ -5,16 +5,19 @@
  * Main.java
  */
 import javax.swing.*;
+import java.io.IOException;
 import java.awt.*;
 
 public class Main 
 {
   
-  public static void main(String[] args)
+  public static void main(String[] args) throws IOException
   {
+    // Testing FileReader
+    FileReader fr = new FileReader("default.mze");
     // Create game window and board.
     // Most of the game logic is handled by these two classes. -AC
-    GameBoard board = new GameBoard();
+    GameBoard board = new GameBoard(fr);
     Messenger messenger = new Messenger(board);
     GameWindow window = new GameWindow(messenger);
     
