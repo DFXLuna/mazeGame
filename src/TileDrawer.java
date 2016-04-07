@@ -23,7 +23,7 @@ public class TileDrawer {
    * This determines the size that tiles are rendered at. It also controls
    * the size of the containers. -AC
    */
-  public static final int TILE_SIZE = 80;
+  public static final int TILE_SIZE = 100;
   
   // This is the font that we draw numbers with.
   private static final Font numberFont =

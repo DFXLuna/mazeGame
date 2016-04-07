@@ -1,4 +1,5 @@
 import java.awt.Image;
+import java.io.IOException;
 
 /**
  * @author Group L
@@ -22,8 +23,9 @@ public class Messenger
     board = gameboard;
   }
   
-  public void resetGame() {
-    // TODO reset the game!
+  public void resetGame()
+  {
+    board.resetGame();
     System.out.println("RESET!!!");
   }
   

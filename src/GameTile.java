@@ -23,6 +23,7 @@ public class GameTile
     private int locY;
     private int displayNum;
     private int correctArrayPos;
+    private Image image;
     //private int currentArrayPos;
     
     
@@ -50,30 +51,18 @@ public class GameTile
     correctArrayPos = arrayPos;
   }
   
-  private static Image PLACEHOLDER_IMAGE;
-  
-  // Here we set up a PLACEHOLDER image for tiles. You can delete this when
-  // you have the real images. I know dragging looks horribly broken, but it
-  // should resolve itself once you have real images. -AC
-  
-  static {
-    PLACEHOLDER_IMAGE = new BufferedImage(
-        TileDrawer.TILE_SIZE,
-        TileDrawer.TILE_SIZE,
-        BufferedImage.TYPE_INT_RGB );
-    
-    Graphics g = PLACEHOLDER_IMAGE.getGraphics();
-    g.setColor(Color.GREEN);
-    g.fillRect(0, 0, TileDrawer.TILE_SIZE, TileDrawer.TILE_SIZE);
-  }
-  
-  //Returns the number on the tile. -AG
   // Changed to getImage() -- should now return the image on the tile!
   public Image getImage()
   {
-    return PLACEHOLDER_IMAGE;
+    return image;
   }
   
+  // Sets the Tile's image -AL
+  public void setImage(Image img)
+  {
+    image = img;
+  }
+
   public int getScreenXLoc()
   {
     return locX;
@@ -83,36 +72,5 @@ public class GameTile
   {
     return locY;
   }
-
-  
-  //Not sure if we will need these in the future -AL
-  /*
-  public int getArrayPos()
-  {
-    return currentArrayPos;
-  }*/
-  
-  /*
-  public void setArrayPos(int pos)
-  {
-    currentArrayPos = pos;
-  }*/
-  
-  
-  
-  //Checks to see if the tile is in the correct position on the grid by
-  //comparing the x and y positions to the position for the correct spot on the grid. -AG
-  //May be needed in the future -AL
-  /*
-  public boolean correctPosition()
-  {
-    /*if ((locX == 250+SIZE*(correctArrayPos%4)) && 
-        (locY == 300+SIZE*(correctArrayPos/4)))
-    {
-      return true;
-    }
-    return false;
-  }
-  */
   
 }

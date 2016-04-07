@@ -1,4 +1,5 @@
 import java.awt.Image;
+import java.io.IOException;
 
 /**
  * @author Group L
@@ -24,11 +25,12 @@ public class GameBoard {
   private GameTile[] sideArray = new GameTile[16];
   private GameTile[] gridArray = new GameTile[16];
   
-  public GameBoard() 
+  public GameBoard(FileReader fr) 
   {
     for (int i=0; i<16; i++) 
     {
       tiles[i] = new GameTile(i);
+      tiles[i].setImage(fr.getImageAtIndex(i)); 
       sideArray[i] = tiles[i];
       gridArray[i] = null;
     }
@@ -145,6 +147,7 @@ public class GameBoard {
     }
   }
   
+  
   //Returns the number displayed on the Tile in the specified position of the left side of the holding area. -AG
   public Image getTileInLeft(int pos)
   {
@@ -197,6 +200,19 @@ public class GameBoard {
   {
     //int size = GameTile.SIZE;
     //t.setScreenLoc(250+size*gridX, 300+size*gridY);
+  }
+  
+  //Resets the game by moving every tile to their original position and making the grid empty. -AG
+  public void resetGame()
+  {
+    for (int i=0; i<16; i++)
+    {
+      sideArray[i] = getTileByIndex(i);
+    }
+    for (int i=0; i<16; i++)
+    {
+      gridArray[i] = null;
+    }
   }
   
   

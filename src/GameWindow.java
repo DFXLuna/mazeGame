@@ -138,6 +138,7 @@ public class GameWindow extends JFrame
         break;
       case "reset":
         messenger.resetGame();
+        this.repaint();
         break;
       case "quit":
         System.exit(0);
