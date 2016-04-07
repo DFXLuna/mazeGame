@@ -1,11 +1,10 @@
-import java.awt.Image;
-
 /**
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
  * FrontEndGameBoard.java
  */
+import java.awt.Image;
 
 public class FrontEndGameBoard extends FrontEndTileHolder {
 

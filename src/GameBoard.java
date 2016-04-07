@@ -1,12 +1,13 @@
-import java.awt.Image;
-import java.io.IOException;
-
 /**
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
  * GameBoard.java
  */
+
+import java.awt.Image;
+import java.io.IOException;
+
 
 /**
  * This is the main component of the back-end

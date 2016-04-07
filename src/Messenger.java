@@ -1,12 +1,12 @@
-import java.awt.Image;
-import java.io.IOException;
-
 /**
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 02
  * Messenger.java
  */
+import java.awt.Image;
+import java.io.IOException;
+
 
 /**
  * This is the communication module between the front and back-end

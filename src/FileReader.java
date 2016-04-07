@@ -1,3 +1,9 @@
+/**
+ * @author Group L
+ * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
+ * COSC 3011 Program 01
+ * FileReader.java
+ */
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -7,13 +13,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-/**
- * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
- * FileReader.java
- */
 
 public class FileReader extends FileInputStream
 {

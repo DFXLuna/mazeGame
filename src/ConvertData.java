@@ -1,3 +1,13 @@
+/**
+ * @author Group L
+ * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
+ * COSC 3011 Program 01
+ * ConvertData.java
+ */
+
+/**
+ * Utility class for converting to and from byte arrays
+ */
 import java.nio.ByteBuffer;
 
 public class ConvertData {
