@@ -94,7 +94,8 @@ public class FileReader extends FileInputStream
         pointsArray[point] = readFloat();
       }
       g2d.setColor(Color.BLACK);
-      g2d.drawLine(pointsArray[0].intValue(), pointsArray[1].intValue(), pointsArray[2].intValue(), pointsArray[3].intValue());
+      g2d.drawLine(pointsArray[0].intValue(), pointsArray[1].intValue(),
+          pointsArray[2].intValue(), pointsArray[3].intValue());
       System.out.println("Line drawn");  // For testing purposes. -AL
     }
     return image;

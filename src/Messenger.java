@@ -10,7 +10,8 @@ import java.io.IOException;
 
 /**
  * This is the communication module between the front and back-end
- * It is responsible for all method calls to the back-end, and responses to the front-end. -AG
+ * It is responsible for all method calls to the back-end, and 
+ *responses to the front-end. -AG
  */
 
 
@@ -29,7 +30,8 @@ public class Messenger
     System.out.println("RESET!!!");
   }
   
-  //Calls back-end method which returns the number of a tile in a given position in the left side array. -AG
+  //Calls back-end method which returns the number of a tile in a given
+  //position in the left side array. -AG
   public Image getTileInLeft(int pos)
   {
     return board.getTileInLeft(pos);

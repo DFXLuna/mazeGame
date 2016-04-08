@@ -24,7 +24,8 @@ public class GameWindow extends JFrame
      */
     public static final long serialVersionUID=1;
     
-    private ArrayList<FrontEndTileHolder> tileHolders = new ArrayList<FrontEndTileHolder>();
+    private ArrayList<FrontEndTileHolder> tileHolders = 
+        new ArrayList<FrontEndTileHolder>();
     
     private Messenger messenger;
     
@@ -211,7 +212,8 @@ public class GameWindow extends JFrame
           int destinationSlot = holder.getSlotFromClick(e);
           // If we have a destination slot, do a swap. -AC
           if (destinationSlot >= 0) {
-            messenger.movetile( messenger.getDragSourceSlot(), destinationSlot);
+            messenger.movetile( messenger.getDragSourceSlot(),
+                destinationSlot);
             break;
           }
         }

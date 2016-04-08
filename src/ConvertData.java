@@ -116,7 +116,8 @@ public static float convertToFloat(byte[] array) {
     return buffer.getFloat();
 }
 
-public static Object convertToValue(Class aClass, byte[] inputArray) throws Exception {
+public static Object convertToValue(Class aClass, byte[] inputArray) 
+    throws Exception {
 
     Object returnValue = null;
     String className = aClass.getName();
