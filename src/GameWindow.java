@@ -49,8 +49,8 @@ public class GameWindow extends JFrame
       
       this.messenger = messenger;
       
-      setupUI();
       setupGame();
+      setupUI();
     }
 
     /**
@@ -66,7 +66,7 @@ public class GameWindow extends JFrame
       setSize(windowSize);
       setResizable(false);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      getContentPane().setBackground(Color.cyan);
+      getContentPane().setBackground(new Color(150,150,150));
       
       // Set up out backbuffer. -AC
       backBuffer = new BufferedImage(
@@ -88,13 +88,13 @@ public class GameWindow extends JFrame
      */
     public void setupGame() {
       FrontEndGameBoard board =
-          new FrontEndGameBoard(messenger, 290, 300);
+          new FrontEndGameBoard(messenger, 250, 250);
       
       FrontEndSideHolder leftSide =
           new FrontEndSideHolder(messenger, BoardSide.LEFT, 50, 80);
       
       FrontEndSideHolder rightSide = 
-          new FrontEndSideHolder(messenger, BoardSide.RIGHT, 770, 80);
+          new FrontEndSideHolder(messenger, BoardSide.RIGHT, 750, 80);
       
       tileHolders.add( board );
       tileHolders.add( leftSide );
