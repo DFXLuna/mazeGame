@@ -58,7 +58,7 @@ public abstract class FrontEndTileHolder {
           TileDrawer.drawTile(g, posX+x*size, posY+y*size, tileImg);
         else {
           if ((x+y)%2==0)
-            g.setColor(Color.WHITE);
+            g.setColor(new Color(100,100,100));
           else
             g.setColor(new Color(200,200,200));
           g.fillRect(posX+x*size, posY+y*size, size, size);
