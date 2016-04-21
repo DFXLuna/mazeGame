@@ -30,6 +30,11 @@ public class Messenger
     System.out.println("RESET!!!");
   }
   
+  public void newGame()
+  {
+    // TODO
+  }
+  
   //Calls back-end method which returns the number of a tile in a given
   //position in the left side array. -AG
   public Image getTileInLeft(int pos)
@@ -59,17 +64,21 @@ public class Messenger
   }
   
   // The Messenger holds drag information. It includes the source slot, dragged
-  // tile number, and possibly x/y offsets from the mouse.
+  // tile number, and possibly x/y offsets from the mouse. -AC
+  
+  // Now also includes dragged tile rotation! -AC
   private int dragSourceSlot = -1;
   private Image dragTileImage = null;
+  private int dragRotation = -1;
   
-  public void setDragInfo(int sourceSlot, Image tileImage) {
+  public void setDragInfo(int sourceSlot, Image tileImage, int rot) {
     dragSourceSlot = sourceSlot;
     dragTileImage = tileImage;
+    dragRotation = rot;
   }
   
   public void clearDragInfo() {
-    setDragInfo(-1,null);
+    setDragInfo(-1,null,-1);
   }
   
   public Image getDraggedTileImage() {
@@ -78,6 +87,37 @@ public class Messenger
   
   public int getDragSourceSlot() {
     return dragSourceSlot;
+  }
+  
+  public int getDragRotation() {
+    return dragRotation;
+  }
+  
+  public int getTileRotationInGrid(int x, int y) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+  
+  public int getTileRotationInLeft(int y) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+  
+  public int getTileRotationInRight(int y) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+  
+  public void doRotateInGrid(int x, int y) {
+    // TODO Auto-generated method stub
+  }
+
+  public void doRotateInLeft(int y) {
+    // TODO Auto-generated method stub
+  }
+
+  public void doRotateInRight(int y) {
+    // TODO Auto-generated method stub
   }
   
   

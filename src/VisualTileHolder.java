@@ -2,11 +2,11 @@
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
- * FrontEndTileHolder.java
+ * VisualTileHolder.java
  */
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -18,7 +18,7 @@ import java.awt.event.MouseEvent;
  * It should also translate mouse coordinates to slot IDs... -AC
  */
 
-public abstract class FrontEndTileHolder {
+public abstract class VisualTileHolder {
   
   // Screen position of the holder (Upper left corner!) -AC
   private int posX;
@@ -30,7 +30,7 @@ public abstract class FrontEndTileHolder {
   // Our sub-classes generally require a reference to a messenger. -AC
   private Messenger messenger;
   
-  protected FrontEndTileHolder(Messenger msgr, int x, int y, int w, int h) {
+  protected VisualTileHolder(Messenger msgr, int x, int y, int w, int h) {
     messenger = msgr;
     posX = x;
     posY = y;
@@ -43,7 +43,7 @@ public abstract class FrontEndTileHolder {
     return messenger;
   }
   
-  public void draw(Graphics g) {
+  public void draw(Graphics2D g) {
     
     int size = TileDrawer.TILE_SIZE;
     
@@ -51,11 +51,13 @@ public abstract class FrontEndTileHolder {
     // a grey checkerboard pattern. -AC
     for (int x=0; x<width; x++) {
       for (int y=0;y<height; y++) {
-        Image tileImg = getTileImageAt(x, y);
+        Point loc = new Point(x, y);
+        Image tileImg = getTileImageAt(loc);
+        int tileRot = getTileRotationAt(loc);
         
         // We only draw the tile if it exists and is not being dragged. -AC
         if (tileImg != null && messenger.getDraggedTileImage() != tileImg)
-          TileDrawer.drawTile(g, posX+x*size, posY+y*size, tileImg);
+          TileDrawer.drawTile(g, posX+x*size, posY+y*size, tileImg, tileRot);
         else {
           if ((x+y)%2==0)
             g.setColor(new Color(100,100,100));
@@ -89,29 +91,56 @@ public abstract class FrontEndTileHolder {
     return new Point(tileX,tileY);
   }
   
+  /**
+   * Get the slot ID from a mouse click. We need the slot ID to perform
+   * swaps between slots when drags are successful. -AC
+   */
   public int getSlotFromClick(MouseEvent e) {
     Point position = getLocationFromClick(e);
     if (position != null)
-      return getSlotIdAt(position.x, position.y);
+      return getSlotIdAt(position);
     return -1;
   }
   
   public Image getTileImageFromClick(MouseEvent e) {
     Point position = getLocationFromClick(e);
     if (position != null)
-      return getTileImageAt(position.x, position.y);
+      return getTileImageAt(position);
     return null;
+  }
+  
+  public int getRotationFromClick(MouseEvent e) {
+    Point position = getLocationFromClick(e);
+    if (position != null) {
+      return getTileRotationAt(position);
+    }
+    return -1;
+  }
+  
+  public void rotateTileFromClick(MouseEvent e) {
+    Point position = getLocationFromClick(e);
+    if (position != null)
+      doRotateAt(position);
   }
   
   /**
    * Get the tile number at a tile position. Sub-classes must implement this.
    * A negative number indicates that there is no tile present. -AC
    */
-  protected abstract Image getTileImageAt(int x, int y);
+  protected abstract Image getTileImageAt(Point loc);
   
   /**
-   * Get the slot ID from a mouse click. We need the slot ID to perform
-   * swaps between slots when drags are successful. -AC
+   * Same, for slot IDs. -AC
    */
-  protected abstract int getSlotIdAt(int x, int y);
+  protected abstract int getSlotIdAt(Point loc);
+  
+  /**
+   * Same, for rotation. -AC
+   */
+  protected abstract int getTileRotationAt(Point loc);
+  
+  /**
+   * Same, for PERFORMING rotations. -AC
+   */ 
+  protected abstract void doRotateAt(Point loc);
 }
