@@ -27,12 +27,12 @@ public class Messenger
   public void resetGame()
   {
     board.resetGame();
-    System.out.println("RESET!!!");
+    //System.out.println("RESET!!!");
   }
   
   public void newGame()
   {
-    // TODO
+    board.newGame();
   }
   
   //Calls back-end method which returns the number of a tile in a given

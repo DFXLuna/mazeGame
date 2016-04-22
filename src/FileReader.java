@@ -38,7 +38,6 @@ public class FileReader extends FileInputStream
       tileNum = readInt();
       lineNum = readInt();
       tileImages[tileNum] = makeImage(lineNum);
-      System.out.println("Tile Image made");  // For testing purposes -AL
     }
   }
   
@@ -96,7 +95,6 @@ public class FileReader extends FileInputStream
       g2d.setColor(Color.BLACK);
       g2d.drawLine(pointsArray[0].intValue(), pointsArray[1].intValue(),
           pointsArray[2].intValue(), pointsArray[3].intValue());
-      System.out.println("Line drawn");  // For testing purposes. -AL
     }
     return image;
   }

@@ -15,6 +15,8 @@ public class GameTile
     
     private int correctArrayPos;
     private Image image;
+    private int rotation;
+    private int origRotation;
     //private int currentArrayPos;
     
     //Initializing GameTile. currentArrayPos was only needed if we are going to
@@ -22,6 +24,7 @@ public class GameTile
     public GameTile(int arrayPos)
     {
       correctArrayPos = arrayPos;
+      rotation = -999;
     }
     
   
@@ -36,4 +39,24 @@ public class GameTile
   {
     image = img;
   }
+  
+  // Sets the Tile's rotation (0-3) -AG
+  public void setRotation(int rot)
+  {
+    if (rotation == -999)
+    {
+      origRotation = rot;
+    }
+    rotation = rot;
+    //System.out.println("Rotation set to " + rot);
+  }
+  
+  // Returns the Tile's rotation (0-3) -AG
+  public int getRotation()
+  {
+    //System.out.println(rotation + " returned.");
+    return rotation;
+  }
+  
+ 
 }
