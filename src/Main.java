@@ -32,7 +32,8 @@ public class Main
       //Linux only
       //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
       // really old style Motif 
-      //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+      //UIManager.setLookAndFeel
+      //("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
     } 
     catch (UnsupportedLookAndFeelException e) {
      // handle possible exception

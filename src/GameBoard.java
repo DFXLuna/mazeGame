@@ -1,12 +1,13 @@
-import java.awt.Image;
-import java.io.IOException;
-
 /**
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
  * GameBoard.java
  */
+
+import java.awt.Image;
+import java.io.IOException;
+
 
 /**
  * This is the main component of the back-end
@@ -66,7 +67,8 @@ public class GameBoard {
     }
   }*/
   
-  //Moves the tile to a specified location. sideArray is 0-15, gridArray 16-31. -AG
+  //Moves the tile to a specified location. sideArray is 0-15,
+  //gridArray 16-31. -AG
   public void moveTile(int from, int to)
   {
     //If "to" is in the gridArray. -AG
@@ -148,7 +150,8 @@ public class GameBoard {
   }
   
   
-  //Returns the number displayed on the Tile in the specified position of the left side of the holding area. -AG
+  //Returns the number displayed on the Tile in the specified position
+  //of the left side of the holding area. -AG
   public Image getTileInLeft(int pos)
   {
     if (sideArray[pos] != null)
@@ -157,7 +160,8 @@ public class GameBoard {
   }
   
   
-  //Returns the number displayed on the Tile in the specified position of the right side of the holding area. -AG
+  //Returns the number displayed on the Tile in the
+  //specified position of the right side of the holding area. -AG
   public Image getTileInRight(int pos)
   {
     if (sideArray[pos+8] != null)
@@ -165,7 +169,8 @@ public class GameBoard {
     return null;
   }
   
-  //Returns the number displayed on the Tile in the specified position of the grid. -AG
+  //Returns the number displayed on the Tile in the
+  //specified position of the grid. -AG
   public Image getTileInGrid(int x, int y)
   {
     if (gridArray[y*4+x] != null)
@@ -202,7 +207,8 @@ public class GameBoard {
     //t.setScreenLoc(250+size*gridX, 300+size*gridY);
   }
   
-  //Resets the game by moving every tile to their original position and making the grid empty. -AG
+  //Resets the game by moving every tile to their
+  //original position and making the grid empty. -AG
   public void resetGame()
   {
     for (int i=0; i<16; i++)

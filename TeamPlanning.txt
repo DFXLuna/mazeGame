@@ -7,6 +7,9 @@ Auston Larson - Back End
 
 Planning:
 
+All small issues are addressed via issue tickets in the main Github repo.
+Planning and big picture stuff takes place in in-person meetings
+
 Meeting 1:
     -Roles assigned 
     -Base design established
@@ -30,5 +33,7 @@ Meeting 2
   
   -Decide onscreen tile position by position in array
   
-All small issues are addressed via issue tickets in the main Github repo.
-Planning and big picture stuff takes place in in-person meetings
+
+
+Meeting 3
+  -Brief discussion of reading mze file, most of responsiblity lies in back end

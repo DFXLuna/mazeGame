@@ -7,7 +7,7 @@
 
 /**
  * A simple enum to represent the left/right sides of the board.
- * Used by FrontEndSideHolder. -AC
+ * Used by VisualTileHolderSide. -AC
  */
 public enum BoardSide {
   LEFT, RIGHT

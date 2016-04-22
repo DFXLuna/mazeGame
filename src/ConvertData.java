@@ -1,6 +1,19 @@
+/**
+ * @author Group L
+ * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
+ * COSC 3011 Program 01
+ * ConvertData.java
+ */
+
+/**
+ * Utility class for converting to and from byte arrays
+ */
 import java.nio.ByteBuffer;
 
 public class ConvertData {
+  
+  //Converting from data types to Byte Array
+  //Auxiliary methods for convertToByteArray
   public static byte[] convertToByteArray(char value) {
     byte[] bytes = new byte[2];
     ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
@@ -62,6 +75,8 @@ public static byte convertToByte(byte[] array) {
 
 }
 
+//Converting from byte[] to data types
+//Auxiliary methods for convertToValue
 public static int convertToInt(byte[] array) {
     ByteBuffer buffer = ByteBuffer.wrap(array);
     return buffer.getInt();
@@ -82,7 +97,27 @@ public static String convertToString(byte[] array) {
     return value;
 }
 
-public static Object convertToValue(Class aClass, byte[] inputArray) throws Exception {
+public static boolean convertToBoolean(byte[] array) {
+    return (array[0] > 0 ? true : false );
+}
+
+public static char convertToCharacter(byte[] array) {
+    ByteBuffer buffer = ByteBuffer.wrap(array);
+    return buffer.getChar();
+}
+
+public static double convertToDouble(byte[] array) {
+    ByteBuffer buffer = ByteBuffer.wrap(array);
+    return buffer.getDouble();
+}
+
+public static float convertToFloat(byte[] array) {
+    ByteBuffer buffer = ByteBuffer.wrap(array);
+    return buffer.getFloat();
+}
+
+public static Object convertToValue(Class aClass, byte[] inputArray) 
+    throws Exception {
 
     Object returnValue = null;
     String className = aClass.getName();
@@ -151,24 +186,5 @@ public static byte[] convertToByteArray(Object object) throws Exception {
     }
 
     return returnArray;
-}
-
-public static boolean convertToBoolean(byte[] array) {
-    return (array[0] > 0 ? true : false );
-}
-
-public static char convertToCharacter(byte[] array) {
-    ByteBuffer buffer = ByteBuffer.wrap(array);
-    return buffer.getChar();
-}
-
-public static double convertToDouble(byte[] array) {
-    ByteBuffer buffer = ByteBuffer.wrap(array);
-    return buffer.getDouble();
-}
-
-public static float convertToFloat(byte[] array) {
-    ByteBuffer buffer = ByteBuffer.wrap(array);
-    return buffer.getFloat();
 }
 }
