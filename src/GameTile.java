@@ -12,7 +12,7 @@ public class GameTile
   private int correctArrayPos;
   private Image image;
   private int rotation;
-  private int origRotation;
+  public int origRotation;
   
   //Initializing GameTile. currentArrayPos was only needed if we are going to
   //manipulate the array past initialization. -AG

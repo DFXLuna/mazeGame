@@ -355,15 +355,18 @@ public class GameBoard {
   }
   
   public void doRotateInGrid(int x, int y) {
-    gridArray[y*4+x].rotateTile();
+    if(gridArray[y*4+x] != null)
+      gridArray[y*4+x].rotateTile();
   }
 
   public void doRotateInLeft(int y) {
-    sideArray[y].rotateTile();
+    if(sideArray[y] != null)
+      sideArray[y].rotateTile();
   }
 
   public void doRotateInRight(int y) {
-    sideArray[y+8].rotateTile();
+    if(sideArray[y+8] != null)
+      sideArray[y+8].rotateTile();
   }
   
 
@@ -453,6 +456,7 @@ public class GameBoard {
     for (int i=0; i<16; i++)
     {
       sideArray[i] = getTileByIndex(i);
+      sideArray[i].setRotation(getTileByIndex(i).origRotation);
     }
     for (int i=0; i<16; i++)
     {
