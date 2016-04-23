@@ -68,9 +68,11 @@ public class GameBoard {
     while (k < 16)
     {
       int random = (int )(Math.random() * 3 + 1);
-      if(tiles[j].getRotation() != 0)
+
+      if(tiles[k].getRotation() != 0)
       {
-        tiles[j].setRotation(random);
+        tiles[k].setRotation(random);
+
         if (random == 1)
         {
           rot1 = true;
@@ -127,7 +129,6 @@ public class GameBoard {
         }
       }
     }
-    
   }
   
   public void setScreenLoc(int x, int y) {
@@ -142,23 +143,39 @@ public class GameBoard {
     return tiles[i];
   }
   
-  /*@Override
-  public void draw(Graphics g) {
-    
-    int size = GameTile.SIZE;
-    
-    // Currently we draw the empty GameBoard with
-    // a grey checkerboard pattern. -AC
-    for (int x=0; x<4; x++) {
-      for (int y=0;y<4; y++) {
-        if ((x+y)%2==0)
-          g.setColor(Color.WHITE);
-        else
-          g.setColor(new Color(200,200,200));
-        g.fillRect(locX+x*size, locY+y*size, size, size);
-      }
-    }
-  }*/
+  
+  public int getTileRotationInGrid(int x, int y) {
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInLeft(int y) {
+    if (sideArray[y] != null)
+      return sideArray[y].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInRight(int y) {
+    if (sideArray[y+8] != null)
+      return sideArray[y+8].getRotation();
+    return -1;
+  }
+  
+  public void doRotateInGrid(int x, int y) {
+    if(gridArray[y*4+x] != null)
+      gridArray[y*4+x].rotateTile();
+  }
+
+  public void doRotateInLeft(int y) {
+    if(sideArray[y] != null)
+      sideArray[y].rotateTile();
+  }
+
+  public void doRotateInRight(int y) {
+    if(sideArray[y+8] != null)
+      sideArray[y+8].rotateTile();
+  }
   
   //Moves the tile to a specified location. sideArray is 0-15,
   //gridArray 16-31. -AG
@@ -238,7 +255,73 @@ public class GameBoard {
     }
   }
   
-  //Makes a new game by creating a new set of Tiles and setting the old Tiles equal to them.
+  
+  //Returns the number displayed on the Tile in the specified position
+  //of the left side of the holding area. -AG
+  public Image getTileInLeft(int pos)
+  {
+    if (sideArray[pos] != null)
+      return sideArray[pos].getImage();
+    return null;
+  }
+  
+  
+  //Returns the number displayed on the Tile in the
+  //specified position of the right side of the holding area. -AG
+  public Image getTileInRight(int pos)
+  {
+    if (sideArray[pos+8] != null)
+      return sideArray[pos+8].getImage();
+    return null;
+  }
+  
+  //Returns the number displayed on the Tile in the
+  //specified position of the grid. -AG
+  public Image getTileInGrid(int x, int y)
+  {
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getImage();
+    return null;
+  }
+  
+  
+  
+  //Checks if each tile is in the correct position, returns true only if all
+  //tiles are in the correct position. -AG
+  //May be needed in future. -AL
+  /*
+  private boolean checkHasWon()
+  {
+    boolean victory = true;
+    for (int i = 0; i<16; i++)
+    {
+      if (tiles[i].correctPosition() == false)
+      {
+        victory = false;
+      }
+    }
+    return victory;
+  }
+  */
+  
+  //Resets the game by moving every tile to their
+  //original position and making the grid empty. -AG
+  public void resetGame()
+  {
+    for (int i=0; i<16; i++)
+    {
+      sideArray[i] = getTileByIndex(i);
+
+      sideArray[i].setRotation(tiles[i].getOrigRotation());
+    }
+    for (int i=0; i<16; i++)
+    {
+      gridArray[i] = null;
+    }
+  }
+  
+  //cMakes a new game by creating a new set of Tiles and setting the old Tiles
+  // equal to them.
   public void newGame()
   {
     GameTile[] newTiles = new GameTile[16];
@@ -275,9 +358,9 @@ public class GameBoard {
     while (k < 16)
     {
       int random = (int )(Math.random() * 3 + 1);
-      if(newTiles[j].getRotation() != 0)
+      if(newTiles[k].getRotation() != 0)
       {
-        newTiles[j].setRotation(random);
+        newTiles[k].setRotation(random);
         if (random == 1)
         {
           rot1 = true;
@@ -342,134 +425,4 @@ public class GameBoard {
     }
 
   }
-  
-  
-  public int getTileRotationInGrid(int x, int y) {
-    if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getRotation();
-    return -1;
-  }
-  
-  public int getTileRotationInLeft(int y) {
-    if (sideArray[y] != null)
-      return sideArray[y].getRotation();
-    return -1;
-  }
-  
-  public int getTileRotationInRight(int y) {
-    if (sideArray[y+8] != null)
-      return sideArray[y+8].getRotation();
-    return -1;
-  }
-  
-  public void doRotateInGrid(int x, int y) {
-    if(gridArray[y*4+x] != null)
-      gridArray[y*4+x].rotateTile();
-  }
-
-  public void doRotateInLeft(int y) {
-    if(sideArray[y] != null)
-      sideArray[y].rotateTile();
-  }
-
-  public void doRotateInRight(int y) {
-    if(sideArray[y+8] != null)
-      sideArray[y+8].rotateTile();
-  }
-  
-
-  
-  /*@Override
-  public void draw(Graphics g) {
-    
-    int size = GameTile.SIZE;
-    
-    // Currently we draw the empty GameBoard with
-    // a grey checkerboard pattern. -AC
-    for (int x=0; x<4; x++) {
-      for (int y=0;y<4; y++) {
-        if ((x+y)%2==0)
-          g.setColor(Color.WHITE);
-        else
-          g.setColor(new Color(200,200,200));
-        g.fillRect(locX+x*size, locY+y*size, size, size);
-      }
-    }
-  }*/
-  
-  
-  
-  
-  //Returns the number displayed on the Tile in the specified position
-  //of the left side of the holding area. -AG
-  public Image getTileInLeft(int pos)
-  {
-    if (sideArray[pos] != null)
-      return sideArray[pos].getImage();
-    return null;
-  }
-  
-  
-  //Returns the number displayed on the Tile in the
-  //specified position of the right side of the holding area. -AG
-  public Image getTileInRight(int pos)
-  {
-    if (sideArray[pos+8] != null)
-      return sideArray[pos+8].getImage();
-    return null;
-  }
-  
-  //Returns the number displayed on the Tile in the
-  //specified position of the grid. -AG
-  public Image getTileInGrid(int x, int y)
-  {
-    if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getImage();
-    return null;
-  }
-  
-  
-  
-  //Checks if each tile is in the correct position, returns true only if all
-  //tiles are in the correct position. -AG
-  //May be needed in future. -AL
-  /*
-  private boolean checkHasWon()
-  {
-    boolean victory = true;
-    for (int i = 0; i<16; i++)
-    {
-      if (tiles[i].correctPosition() == false)
-      {
-        victory = false;
-      }
-    }
-    return victory;
-  }
-  */
-  
-  //Assuming the grid starts at 0,0 being 250 pixels, 300 pixels. Limited
-  //functionality - does not check to see whether
-  //or not a tile is already at that position in the grid. -AG
-  public void setTileInGrid(GameTile t, int gridX, int gridY)
-  {
-    //int size = GameTile.SIZE;
-    //t.setScreenLoc(250+size*gridX, 300+size*gridY);
-  }
-  
-  //Resets the game by moving every tile to their
-  //original position and making the grid empty. -AG
-  public void resetGame()
-  {
-    for (int i=0; i<16; i++)
-    {
-      sideArray[i] = getTileByIndex(i);
-      sideArray[i].setRotation(getTileByIndex(i).origRotation);
-    }
-    for (int i=0; i<16; i++)
-    {
-      gridArray[i] = null;
-    }
-  }
-   
 }

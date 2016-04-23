@@ -1,4 +1,4 @@
-Team:
+Group L Team:
 Matt Grant - Testing and cleanup
 Jared Frank - Front End
 Adam Coggeshall - Front End

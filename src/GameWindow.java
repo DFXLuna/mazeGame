@@ -253,7 +253,6 @@ public class GameWindow extends JFrame
                   public void run() {
                     TileDrawer.setFlash(blockingTileImg, false);
                     repaint();
-                    //theWindow.repaint();
                   }
                 };
                 
