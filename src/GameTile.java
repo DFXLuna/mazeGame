@@ -27,6 +27,14 @@ public class GameTile
       rotation = -999;
     }
     
+    public void rotateTile()
+      {
+        if(rotation == 3)
+          rotation = 0;
+        else
+          rotation++;
+      }
+    
   
   // Changed to getImage() -- should now return the image on the tile!
   public Image getImage()
@@ -45,10 +53,16 @@ public class GameTile
   {
     if (rotation == -999)
     {
-      origRotation = rot;
+      setOrigRotation(rot);
     }
     rotation = rot;
     //System.out.println("Rotation set to " + rot);
+  }
+  
+  //Sets tile's original rotation (0-3) -AG
+  public void setOrigRotation(int rot)
+  {
+    origRotation = rot;
   }
   
   // Returns the Tile's rotation (0-3) -AG
@@ -56,6 +70,12 @@ public class GameTile
   {
     //System.out.println(rotation + " returned.");
     return rotation;
+  }
+  
+  // Returns the Tile's original rotation (0-3) -AG
+  public int getOrigRotation()
+  {
+    return origRotation;
   }
   
  

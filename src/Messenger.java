@@ -94,30 +94,27 @@ public class Messenger
   }
   
   public int getTileRotationInGrid(int x, int y) {
-    // TODO Auto-generated method stub
-    return 0;
+    return board.getTileRotationInGrid(x, y);
   }
   
   public int getTileRotationInLeft(int y) {
-    // TODO Auto-generated method stub
-    return 0;
+    return board.getTileRotationInLeft(y);
   }
   
   public int getTileRotationInRight(int y) {
-    // TODO Auto-generated method stub
-    return 0;
+    return board.getTileRotationInRight(y);
   }
   
   public void doRotateInGrid(int x, int y) {
-    // TODO Auto-generated method stub
+    board.doRotateInGrid(x, y);
   }
 
   public void doRotateInLeft(int y) {
-    // TODO Auto-generated method stub
+    board.doRotateInLeft(y);
   }
 
   public void doRotateInRight(int y) {
-    // TODO Auto-generated method stub
+    board.doRotateInRight(y);
   }
   
   

@@ -68,9 +68,9 @@ public class GameBoard {
     while (k < 16)
     {
       int random = (int )(Math.random() * 3 + 1);
-      if(tiles[j].getRotation() != 0)
+      if(tiles[k].getRotation() != 0)
       {
-        tiles[j].setRotation(random);
+        tiles[k].setRotation(random);
         if (random == 1)
         {
           rot1 = true;
@@ -140,6 +140,40 @@ public class GameBoard {
   public GameTile getTileByIndex(int i) 
   {
     return tiles[i];
+  }
+  
+  
+  public int getTileRotationInGrid(int x, int y) {
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInLeft(int y) {
+    if (sideArray[y] != null)
+      return sideArray[y].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInRight(int y) {
+    if (sideArray[y+8] != null)
+      return sideArray[y+8].getRotation();
+    return -1;
+  }
+  
+  public void doRotateInGrid(int x, int y) {
+    if(gridArray[y*4+x] != null)
+      gridArray[y*4+x].rotateTile();
+  }
+
+  public void doRotateInLeft(int y) {
+    if(sideArray[y] != null)
+      sideArray[y].rotateTile();
+  }
+
+  public void doRotateInRight(int y) {
+    if(sideArray[y+8] != null)
+      sideArray[y+8].rotateTile();
   }
   
   /*@Override
@@ -295,6 +329,7 @@ public class GameBoard {
     for (int i=0; i<16; i++)
     {
       sideArray[i] = getTileByIndex(i);
+      sideArray[i].setRotation(tiles[i].getOrigRotation());
     }
     for (int i=0; i<16; i++)
     {
@@ -339,9 +374,9 @@ public class GameBoard {
     while (k < 16)
     {
       int random = (int )(Math.random() * 3 + 1);
-      if(newTiles[j].getRotation() != 0)
+      if(newTiles[k].getRotation() != 0)
       {
-        newTiles[j].setRotation(random);
+        newTiles[k].setRotation(random);
         if (random == 1)
         {
           rot1 = true;
