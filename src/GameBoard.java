@@ -25,16 +25,109 @@ public class GameBoard {
   private GameTile[] tiles = new GameTile[16];
   private GameTile[] sideArray = new GameTile[16];
   private GameTile[] gridArray = new GameTile[16];
+  private FileReader filereader;
+  
   
   public GameBoard(FileReader fr) 
   {
-    for (int i=0; i<16; i++) 
+    filereader = fr;
+    randomizeTiles(fr);
+  }
+  
+  public void randomizeTiles(FileReader fr)
+  {
+    //Randomizing tile placements. -AG
+    int i = 0;
+    while ( i < 16)
     {
-      tiles[i] = new GameTile(i);
-      tiles[i].setImage(fr.getImageAtIndex(i)); 
-      sideArray[i] = tiles[i];
-      gridArray[i] = null;
+      int random = (int )(Math.random() * 16);
+      if(tiles[random] == null)
+      {
+        tiles[random] = new GameTile(i);
+        tiles[random].setImage(fr.getImageAtIndex(i)); 
+        sideArray[random] = tiles[random];
+        gridArray[i] = null;
+        i++;
+      }
     }
+    //Setting 4 random tiles to 0 rotation. -AG
+    int j = 0;
+    while (j < 4)
+    {
+      int random = (int )(Math.random() * 16);
+      tiles[random].setRotation(0);
+      j++;
+    }
+    
+    //Booleans checking whether every rotation has been used. -AG
+    boolean rot1 = false;
+    boolean rot2 = false;
+    boolean rot3 = false;
+    int k = 0;
+    //Randomizing rotations. -AG
+    while (k < 16)
+    {
+      int random = (int )(Math.random() * 3 + 1);
+      if(tiles[j].getRotation() != 0)
+      {
+        tiles[j].setRotation(random);
+        if (random == 1)
+        {
+          rot1 = true;
+        }
+        if (random == 2)
+        {
+          rot2 = true;
+        }
+        if (random == 1)
+        {
+          rot3 = true;
+        }
+      }
+      k++;
+    }
+    
+    //If one of the rotations is not used, find a random nonzero rotation and change it to specified rotation. -AG
+    if(rot1 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(tiles[random].getRotation() != 0)
+        {
+          tiles[random].setRotation(1);
+          zero = false;
+        }
+      }
+    }
+    if(rot2 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(tiles[random].getRotation() != 0)
+        {
+          tiles[random].setRotation(2);
+          zero = false;
+        }
+      }
+    }
+    if(rot3 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(tiles[random].getRotation() != 0)
+        {
+          tiles[random].setRotation(3);
+          zero = false;
+        }
+      }
+    }
+    
   }
   
   public void setScreenLoc(int x, int y) {
@@ -83,12 +176,9 @@ public class GameBoard {
           gridArray[to-16]=gridArray[from-16];
           gridArray[from-16] = null;
         }
-        //Swaps tiles if there is already a tile in "to" position. -AG
+        //Tile goes back to its place if there is already a tile in "to" position. -AG
         else
         {
-          GameTile placeholder = gridArray[to-16];
-          gridArray[to-16]=gridArray[from-16];
-          gridArray[from-16] = placeholder;
         }
       }
       //If "from" is in the sideArray. -AG
@@ -100,12 +190,9 @@ public class GameBoard {
             gridArray[to-16] = sideArray[from];
             sideArray[from] = null;
           }
-          //Swaps tiles if there is already a tile in "to" position. -AG
+          //Tile goes back to its place if there is already a tile in "to" position. -AG
           else
           {
-            GameTile placeholder = gridArray[to-16];
-            gridArray[to-16] = sideArray[from];
-            sideArray[from] = placeholder;
           }
       }
     }
@@ -121,12 +208,9 @@ public class GameBoard {
           sideArray[to]=gridArray[from-16];
           gridArray[from-16] = null;
         }
-        //Swaps tiles if there is already a tile in "to" position. -AG
+        //Tile goes back to its place if there is already a tile in "to" position. -AG
         else
         {
-          GameTile placeholder = sideArray[to];
-          sideArray[to]=gridArray[from-16];
-          gridArray[from-16] = placeholder;
         }
       }
       //If "from" is in the sideArray. -AG
@@ -138,16 +222,171 @@ public class GameBoard {
             sideArray[to] = sideArray[from];
             sideArray[from] = null;
           }
-          //Swaps tiles if there is already a tile in "to" position. -AG
+          //Tile goes back to its place if there is already a tile in "to" position. -AG
           else
           {
-            GameTile placeholder = sideArray[to];
-            sideArray[to] = sideArray[from];
-            sideArray[from] = placeholder;
           }
       }
     }
   }
+  
+  //Makes a new game by creating a new set of Tiles and setting the old Tiles equal to them.
+  public void newGame()
+  {
+    GameTile[] newTiles = new GameTile[16];
+    
+    int i = 0;
+    while ( i < 16)
+    {
+      int random = (int )(Math.random() * 16);
+      if(newTiles[random] == null)
+      {
+        newTiles[random] = new GameTile(i);
+        newTiles[random].setImage(filereader.getImageAtIndex(i)); 
+        sideArray[random] = newTiles[random];
+        gridArray[i] = null;
+        i++;
+      }
+    }
+    
+    //Setting 4 random tiles to 0 rotation. -AG
+    int j = 0;
+    while (j < 4)
+    {
+      int random = (int )(Math.random() * 16);
+      newTiles[random].setRotation(0);
+      j++;
+    }
+    
+    //Booleans checking whether every rotation has been used. -AG
+    boolean rot1 = false;
+    boolean rot2 = false;
+    boolean rot3 = false;
+    int k = 0;
+    //Randomizing rotations. -AG
+    while (k < 16)
+    {
+      int random = (int )(Math.random() * 3 + 1);
+      if(newTiles[j].getRotation() != 0)
+      {
+        newTiles[j].setRotation(random);
+        if (random == 1)
+        {
+          rot1 = true;
+        }
+        if (random == 2)
+        {
+          rot2 = true;
+        }
+        if (random == 1)
+        {
+          rot3 = true;
+        }
+      }
+      k++;
+    }
+    
+    //If one of the rotations is not used, find a random nonzero rotation and change it to specified rotation. -AG
+    if(rot1 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(newTiles[random].getRotation() != 0)
+        {
+          newTiles[random].setRotation(1);
+          zero = false;
+        }
+      }
+    }
+    if(rot2 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(newTiles[random].getRotation() != 0)
+        {
+          newTiles[random].setRotation(2);
+          zero = false;
+        }
+      }
+    }
+    if(rot3 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(newTiles[random].getRotation() != 0)
+        {
+          newTiles[random].setRotation(3);
+          zero = false;
+        }
+      }
+    }
+    
+    //Setting the tiles equal to the new tileset we created. -AG
+    for(int l = 0; l<16; l++)
+    {
+      tiles[l] = newTiles[l];
+    }
+
+  }
+  
+  
+  public int getTileRotationInGrid(int x, int y) {
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInLeft(int y) {
+    if (sideArray[y] != null)
+      return sideArray[y].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInRight(int y) {
+    if (sideArray[y+8] != null)
+      return sideArray[y+8].getRotation();
+    return -1;
+  }
+  
+  public void doRotateInGrid(int x, int y) {
+    gridArray[y*4+x].rotateTile();
+  }
+
+  public void doRotateInLeft(int y) {
+    sideArray[y].rotateTile();
+  }
+
+  public void doRotateInRight(int y) {
+    sideArray[y+8].rotateTile();
+  }
+  
+
+  
+  /*@Override
+  public void draw(Graphics g) {
+    
+    int size = GameTile.SIZE;
+    
+    // Currently we draw the empty GameBoard with
+    // a grey checkerboard pattern. -AC
+    for (int x=0; x<4; x++) {
+      for (int y=0;y<4; y++) {
+        if ((x+y)%2==0)
+          g.setColor(Color.WHITE);
+        else
+          g.setColor(new Color(200,200,200));
+        g.fillRect(locX+x*size, locY+y*size, size, size);
+      }
+    }
+  }*/
+  
+  
   
   
   //Returns the number displayed on the Tile in the specified position
@@ -220,19 +459,5 @@ public class GameBoard {
       gridArray[i] = null;
     }
   }
-  
-  
-  //Testing our moveTile method. -AG
-  public void testBoard()
-  {
-    moveTile(3, 6);
-    System.out.println("sideArray[3] is now " + sideArray[3].getImage() +
-        "  and sideArray[6] is now " + sideArray[6].getImage());
-    
-    moveTile(1, 18);
-    System.out.println("sideArray[1] is now " + sideArray[1]
-        + "  and gridArray[2] is now " + gridArray[2].getImage());
-  }
-  
-  
+   
 }

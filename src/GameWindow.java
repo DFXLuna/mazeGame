@@ -210,6 +210,7 @@ public class GameWindow extends JFrame
         for (VisualTileHolder holder : tileHolders) {
           holder.rotateTileFromClick(e);
         }
+        this.repaint();
       }
     }
 
