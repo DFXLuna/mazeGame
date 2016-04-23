@@ -162,7 +162,7 @@ public class GameBoard {
   
   //Moves the tile to a specified location. sideArray is 0-15,
   //gridArray 16-31. -AG
-  public void moveTile(int from, int to)
+  public boolean moveTile(int from, int to)
   {
     //If "to" is in the gridArray. -AG
     if (to > 15)
@@ -175,10 +175,12 @@ public class GameBoard {
         {
           gridArray[to-16]=gridArray[from-16];
           gridArray[from-16] = null;
+          return true;
         }
-        //Tile goes back to its place if there is already a tile in "to" position. -AG
+        //Return false if the space is occupied. -AC
         else
         {
+          return false;
         }
       }
       //If "from" is in the sideArray. -AG
@@ -189,10 +191,12 @@ public class GameBoard {
           {
             gridArray[to-16] = sideArray[from];
             sideArray[from] = null;
+            return true;
           }
-          //Tile goes back to its place if there is already a tile in "to" position. -AG
+          //Return false if the space is occupied. -AC
           else
           {
+            return false;
           }
       }
     }
@@ -207,10 +211,12 @@ public class GameBoard {
         {
           sideArray[to]=gridArray[from-16];
           gridArray[from-16] = null;
+          return true;
         }
-        //Tile goes back to its place if there is already a tile in "to" position. -AG
+        //Return false if the space is occupied. -AC
         else
         {
+          return false;
         }
       }
       //If "from" is in the sideArray. -AG
@@ -221,10 +227,12 @@ public class GameBoard {
           {
             sideArray[to] = sideArray[from];
             sideArray[from] = null;
+            return true;
           }
-          //Tile goes back to its place if there is already a tile in "to" position. -AG
+          //Return false if the space is occupied. -AC
           else
           {
+            return false;
           }
       }
     }

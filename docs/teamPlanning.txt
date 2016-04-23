@@ -21,7 +21,7 @@ Meeting 1:
     -Made sure everyone would be able to do work independantly
         in their two man teams.
 
-Meeting 2
+Meeting 2:
   -Figure out what the front end needs from the back end to draw and move tiles
     -Tile positions
   
@@ -35,5 +35,23 @@ Meeting 2
   
 
 
-Meeting 3
+Meeting 3:
   -Brief discussion of reading mze file, most of responsiblity lies in back end
+
+Meeting 4:
+  
+  As usual Adam and Jared worked on the front end, while Auston and Alex
+  did the back end. Matt helped with planning and logistics.
+  
+  -Figured out how the front end and back end would need to pass new data:
+    -Front end retrieves tile rotations as integers from the messenger class.
+    -Front end requests a rotation by calling functions in the messenger.
+    -Front end requests reset/new game by calling functions in the messenger.
+  
+  -Fixed issues:
+    -Renamed the tile holders so they would be easier to tell apart.
+    -Cleaned up the GameTile class. Other classes were cleaned up later.
+    -Modified tile moving method to return false upon failure to move a tile.
+    
+  Additional issues were handled after the meeting by communicating via Github
+  and text messages.
