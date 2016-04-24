@@ -5,7 +5,15 @@
  * GameWindow.java
  */
 
-import javax.swing.*;
+// CONTAINS AN ANONYMOUS CLASS IN THE mouseReleased METHOD!
+// This anonymous class encapsulates a single action and is used for a timer
+// task. -AC
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.JFrame;
+
 import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -210,6 +218,7 @@ public class GameWindow extends JFrame
         for (VisualTileHolder holder : tileHolders) {
           holder.rotateTileFromClick(e);
         }
+        this.repaint();
       }
     }
 
@@ -221,8 +230,36 @@ public class GameWindow extends JFrame
           int destinationSlot = holder.getSlotFromClick(e);
           // If we have a destination slot, do a swap. -AC
           if (destinationSlot >= 0) {
-            messenger.movetile( messenger.getDragSourceSlot(),
-                destinationSlot);
+            boolean success = messenger.moveTile(
+                messenger.getDragSourceSlot(), destinationSlot);
+            // If we couldn't move the tile, make the destination tile flash.
+            if (!success) {
+              // Make this image final because I'm paranoid about the
+              // anonymous class. Java 8 should be fine with an
+              // "effectively" final variable, but I'll explicitly make it
+              // final just in case. -AC
+              final Image blockingTileImg = holder.getTileImageFromClick(e);
+              
+              // We don't flash if we're placing the tile back where we
+              // got it from. -AC
+              if (blockingTileImg != messenger.getDraggedTileImage()) {
+                TileDrawer.setFlash(blockingTileImg, true);
+                
+                // Anonymous class here. It contains the task to disable the
+                // flash after a specified amount of time. It also enjoys
+                // pretending to be a closure. -AC
+                TimerTask unflashTask = new TimerTask() {
+                  @Override
+                  public void run() {
+                    TileDrawer.setFlash(blockingTileImg, false);
+                    repaint();
+                  }
+                };
+                
+                Timer unflashTimer = new Timer();
+                unflashTimer.schedule(unflashTask, 500);
+              }
+            }
             break;
           }
         }
