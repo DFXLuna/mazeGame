@@ -68,9 +68,11 @@ public class GameBoard {
     while (k < 16)
     {
       int random = (int )(Math.random() * 3 + 1);
+
       if(tiles[k].getRotation() != 0)
       {
         tiles[k].setRotation(random);
+
         if (random == 1)
         {
           rot1 = true;
@@ -127,7 +129,6 @@ public class GameBoard {
         }
       }
     }
-    
   }
   
   public void setScreenLoc(int x, int y) {
@@ -176,27 +177,9 @@ public class GameBoard {
       sideArray[y+8].rotateTile();
   }
   
-  /*@Override
-  public void draw(Graphics g) {
-    
-    int size = GameTile.SIZE;
-    
-    // Currently we draw the empty GameBoard with
-    // a grey checkerboard pattern. -AC
-    for (int x=0; x<4; x++) {
-      for (int y=0;y<4; y++) {
-        if ((x+y)%2==0)
-          g.setColor(Color.WHITE);
-        else
-          g.setColor(new Color(200,200,200));
-        g.fillRect(locX+x*size, locY+y*size, size, size);
-      }
-    }
-  }*/
-  
   //Moves the tile to a specified location. sideArray is 0-15,
   //gridArray 16-31. -AG
-  public void moveTile(int from, int to)
+  public boolean moveTile(int from, int to)
   {
     //If "to" is in the gridArray. -AG
     if (to > 15)
@@ -209,10 +192,12 @@ public class GameBoard {
         {
           gridArray[to-16]=gridArray[from-16];
           gridArray[from-16] = null;
+          return true;
         }
-        //Tile goes back to its place if there is already a tile in "to" position. -AG
+        //Return false if the space is occupied. -AC
         else
         {
+          return false;
         }
       }
       //If "from" is in the sideArray. -AG
@@ -223,10 +208,12 @@ public class GameBoard {
           {
             gridArray[to-16] = sideArray[from];
             sideArray[from] = null;
+            return true;
           }
-          //Tile goes back to its place if there is already a tile in "to" position. -AG
+          //Return false if the space is occupied. -AC
           else
           {
+            return false;
           }
       }
     }
@@ -241,10 +228,12 @@ public class GameBoard {
         {
           sideArray[to]=gridArray[from-16];
           gridArray[from-16] = null;
+          return true;
         }
-        //Tile goes back to its place if there is already a tile in "to" position. -AG
+        //Return false if the space is occupied. -AC
         else
         {
+          return false;
         }
       }
       //If "from" is in the sideArray. -AG
@@ -255,10 +244,12 @@ public class GameBoard {
           {
             sideArray[to] = sideArray[from];
             sideArray[from] = null;
+            return true;
           }
-          //Tile goes back to its place if there is already a tile in "to" position. -AG
+          //Return false if the space is occupied. -AC
           else
           {
+            return false;
           }
       }
     }
@@ -313,15 +304,6 @@ public class GameBoard {
   }
   */
   
-  //Assuming the grid starts at 0,0 being 250 pixels, 300 pixels. Limited
-  //functionality - does not check to see whether
-  //or not a tile is already at that position in the grid. -AG
-  public void setTileInGrid(GameTile t, int gridX, int gridY)
-  {
-    //int size = GameTile.SIZE;
-    //t.setScreenLoc(250+size*gridX, 300+size*gridY);
-  }
-  
   //Resets the game by moving every tile to their
   //original position and making the grid empty. -AG
   public void resetGame()
@@ -329,6 +311,7 @@ public class GameBoard {
     for (int i=0; i<16; i++)
     {
       sideArray[i] = getTileByIndex(i);
+
       sideArray[i].setRotation(tiles[i].getOrigRotation());
     }
     for (int i=0; i<16; i++)
@@ -337,7 +320,8 @@ public class GameBoard {
     }
   }
   
-  //Makes a new game by creating a new set of Tiles and setting the old Tiles equal to them.
+  //cMakes a new game by creating a new set of Tiles and setting the old Tiles
+  // equal to them.
   public void newGame()
   {
     GameTile[] newTiles = new GameTile[16];
@@ -441,19 +425,4 @@ public class GameBoard {
     }
 
   }
-  
-  
-  //Testing our moveTile method. -AG
-  public void testBoard()
-  {
-    moveTile(3, 6);
-    System.out.println("sideArray[3] is now " + sideArray[3].getImage() +
-        "  and sideArray[6] is now " + sideArray[6].getImage());
-    
-    moveTile(1, 18);
-    System.out.println("sideArray[1] is now " + sideArray[1]
-        + "  and gridArray[2] is now " + gridArray[2].getImage());
-  }
-  
-  
 }

@@ -27,7 +27,6 @@ public class Messenger
   public void resetGame()
   {
     board.resetGame();
-    //System.out.println("RESET!!!");
   }
   
   public void newGame()
@@ -57,10 +56,12 @@ public class Messenger
   }
   
   // Calls back-end method which moves the tile from a given position to a
-  // given position, swapping tiles if need be. -AG
-  public void movetile(int from, int to)
+  // given position. -AG
+  
+  // No longer swaps tiles, now returns false on failure to move tiles. -AC
+  public boolean moveTile(int from, int to)
   {
-    board.moveTile(from, to);
+    return board.moveTile(from, to);
   }
   
   // The Messenger holds drag information. It includes the source slot, dragged
@@ -92,6 +93,8 @@ public class Messenger
   public int getDragRotation() {
     return dragRotation;
   }
+  
+  
   
   public int getTileRotationInGrid(int x, int y) {
     return board.getTileRotationInGrid(x, y);

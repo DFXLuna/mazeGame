@@ -8,34 +8,28 @@
 import java.awt.Image;
 
 public class GameTile 
-{
+{ 
+  private int correctArrayPos;
+  private Image image;
+  private int rotation;
+  private int origRotation;
   
+  //Initializing GameTile. currentArrayPos was only needed if we are going to
+  //manipulate the array past initialization. -AG
+  public GameTile(int arrayPos)
+  {
+    correctArrayPos = arrayPos;
+    rotation = -999;
+  }
   
-  
+  public void rotateTile()
+  {
+    if(rotation == 3)
+      rotation = 0;
+    else
+      rotation++;
+  }
     
-    private int correctArrayPos;
-    private Image image;
-    private int rotation;
-    private int origRotation;
-    //private int currentArrayPos;
-    
-    //Initializing GameTile. currentArrayPos was only needed if we are going to
-    //manipulate the array past initialization. -AG
-    public GameTile(int arrayPos)
-    {
-      correctArrayPos = arrayPos;
-      rotation = -999;
-    }
-    
-    public void rotateTile()
-      {
-        if(rotation == 3)
-          rotation = 0;
-        else
-          rotation++;
-      }
-    
-  
   // Changed to getImage() -- should now return the image on the tile!
   public Image getImage()
   {
