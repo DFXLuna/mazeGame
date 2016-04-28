@@ -5,7 +5,15 @@
  * GameWindow.java
  */
 
-import javax.swing.*;
+// CONTAINS AN ANONYMOUS CLASS IN THE mouseReleased METHOD!
+// This anonymous class encapsulates a single action and is used for a timer
+// task. -AC
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.JFrame;
+
 import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,8 +32,8 @@ public class GameWindow extends JFrame
      */
     public static final long serialVersionUID=1;
     
-    private ArrayList<FrontEndTileHolder> tileHolders = 
-        new ArrayList<FrontEndTileHolder>();
+    private ArrayList<VisualTileHolder> tileHolders = 
+        new ArrayList<VisualTileHolder>();
     
     private Messenger messenger;
     
@@ -49,8 +57,8 @@ public class GameWindow extends JFrame
       
       this.messenger = messenger;
       
-      setupUI();
       setupGame();
+      setupUI();
     }
 
     /**
@@ -66,7 +74,7 @@ public class GameWindow extends JFrame
       setSize(windowSize);
       setResizable(false);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      getContentPane().setBackground(Color.cyan);
+      getContentPane().setBackground(new Color(150,150,150));
       
       // Set up out backbuffer. -AC
       backBuffer = new BufferedImage(
@@ -87,14 +95,14 @@ public class GameWindow extends JFrame
      * Sets up the visual representation of tile containers.
      */
     public void setupGame() {
-      FrontEndGameBoard board =
-          new FrontEndGameBoard(messenger, 290, 300);
+      VisualTileHolderCenter board =
+          new VisualTileHolderCenter(messenger, 250, 250);
       
-      FrontEndSideHolder leftSide =
-          new FrontEndSideHolder(messenger, BoardSide.LEFT, 50, 80);
+      VisualTileHolderSide leftSide =
+          new VisualTileHolderSide(messenger, BoardSide.LEFT, 50, 80);
       
-      FrontEndSideHolder rightSide = 
-          new FrontEndSideHolder(messenger, BoardSide.RIGHT, 770, 80);
+      VisualTileHolderSide rightSide = 
+          new VisualTileHolderSide(messenger, BoardSide.RIGHT, 750, 80);
       
       tileHolders.add( board );
       tileHolders.add( leftSide );
@@ -135,7 +143,8 @@ public class GameWindow extends JFrame
     public void actionPerformed(ActionEvent e) {
       switch (e.getActionCommand()) {
       case "new":
-        System.out.println("New Game");
+        messenger.newGame();
+        this.repaint();
         break;
       case "reset":
         messenger.resetGame();
@@ -157,14 +166,14 @@ public class GameWindow extends JFrame
     @Override
     public void paint(Graphics windowGraphics) {
       // Use our backbuffer for all the drawing. -AC
-      Graphics g = backBuffer.getGraphics();
+      Graphics2D g = backBuffer.createGraphics();
       
       // Call the super paint method. Seems to clear the window to the
       // background color. -AC
       super.paint(g);
       
       // Draw tileholders and their contained tiles. -AC
-      for (FrontEndTileHolder holder : tileHolders) {
+      for (VisualTileHolder holder : tileHolders) {
         holder.draw(g);
       }
       
@@ -178,7 +187,8 @@ public class GameWindow extends JFrame
         // more sense. -AC
         int draggedX = lastMouseEvent.getX() - TileDrawer.TILE_SIZE/2;
         int draggedY = lastMouseEvent.getY() - TileDrawer.TILE_SIZE/2;
-        TileDrawer.drawTile(g, draggedX, draggedY, draggedTileImage);
+        int dragRot = messenger.getDragRotation();
+        TileDrawer.drawTile(g, draggedX, draggedY, draggedTileImage, dragRot);
       }
       
       windowGraphics.drawImage(backBuffer, 0, 0, null);
@@ -189,18 +199,26 @@ public class GameWindow extends JFrame
 
     @Override
     public void mousePressed(MouseEvent e) {
-      for (FrontEndTileHolder holder : tileHolders) {
-        Image tileImage = holder.getTileImageFromClick(e);
-        // If there is a tile present, then we can start the drag! -AC
-        if (tileImage != null) {
-          int slot = holder.getSlotFromClick(e);
-          
-          messenger.setDragInfo(slot, tileImage);
-          lastMouseEvent = e;
-          this.repaint();
-          
-          break;
+      if (e.getButton() == MouseEvent.BUTTON1) {
+        for (VisualTileHolder holder : tileHolders) {
+          Image tileImage = holder.getTileImageFromClick(e);
+          // If there is a tile present, then we can start the drag! -AC
+          if (tileImage != null) {
+            int slot = holder.getSlotFromClick(e);
+            int rot = holder.getRotationFromClick(e);
+            
+            messenger.setDragInfo(slot, tileImage, rot);
+            lastMouseEvent = e;
+            this.repaint();
+            
+            break;
+          }
         }
+      } else if (e.getButton() == MouseEvent.BUTTON3) {
+        for (VisualTileHolder holder : tileHolders) {
+          holder.rotateTileFromClick(e);
+        }
+        this.repaint();
       }
     }
 
@@ -208,12 +226,40 @@ public class GameWindow extends JFrame
     public void mouseReleased(MouseEvent e) {
       // We only have to handle a drop if we are currently dragging. -AC
       if (messenger.getDraggedTileImage() != null) {
-        for (FrontEndTileHolder holder : tileHolders) {
+        for (VisualTileHolder holder : tileHolders) {
           int destinationSlot = holder.getSlotFromClick(e);
           // If we have a destination slot, do a swap. -AC
           if (destinationSlot >= 0) {
-            messenger.movetile( messenger.getDragSourceSlot(),
-                destinationSlot);
+            boolean success = messenger.moveTile(
+                messenger.getDragSourceSlot(), destinationSlot);
+            // If we couldn't move the tile, make the destination tile flash.
+            if (!success) {
+              // Make this image final because I'm paranoid about the
+              // anonymous class. Java 8 should be fine with an
+              // "effectively" final variable, but I'll explicitly make it
+              // final just in case. -AC
+              final Image blockingTileImg = holder.getTileImageFromClick(e);
+              
+              // We don't flash if we're placing the tile back where we
+              // got it from. -AC
+              if (blockingTileImg != messenger.getDraggedTileImage()) {
+                TileDrawer.setFlash(blockingTileImg, true);
+                
+                // Anonymous class here. It contains the task to disable the
+                // flash after a specified amount of time. It also enjoys
+                // pretending to be a closure. -AC
+                TimerTask unflashTask = new TimerTask() {
+                  @Override
+                  public void run() {
+                    TileDrawer.setFlash(blockingTileImg, false);
+                    repaint();
+                  }
+                };
+                
+                Timer unflashTimer = new Timer();
+                unflashTimer.schedule(unflashTask, 500);
+              }
+            }
             break;
           }
         }

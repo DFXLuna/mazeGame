@@ -25,15 +25,109 @@ public class GameBoard {
   private GameTile[] tiles = new GameTile[16];
   private GameTile[] sideArray = new GameTile[16];
   private GameTile[] gridArray = new GameTile[16];
+  private FileReader filereader;
+  
   
   public GameBoard(FileReader fr) 
   {
-    for (int i=0; i<16; i++) 
+    filereader = fr;
+    randomizeTiles(fr);
+  }
+  
+  public void randomizeTiles(FileReader fr)
+  {
+    //Randomizing tile placements. -AG
+    int i = 0;
+    while ( i < 16)
     {
-      tiles[i] = new GameTile(i);
-      tiles[i].setImage(fr.getImageAtIndex(i)); 
-      sideArray[i] = tiles[i];
-      gridArray[i] = null;
+      int random = (int )(Math.random() * 16);
+      if(tiles[random] == null)
+      {
+        tiles[random] = new GameTile(i);
+        tiles[random].setImage(fr.getImageAtIndex(i)); 
+        sideArray[random] = tiles[random];
+        gridArray[i] = null;
+        i++;
+      }
+    }
+    //Setting 4 random tiles to 0 rotation. -AG
+    int j = 0;
+    while (j < 4)
+    {
+      int random = (int )(Math.random() * 16);
+      tiles[random].setRotation(0);
+      j++;
+    }
+    
+    //Booleans checking whether every rotation has been used. -AG
+    boolean rot1 = false;
+    boolean rot2 = false;
+    boolean rot3 = false;
+    int k = 0;
+    //Randomizing rotations. -AG
+    while (k < 16)
+    {
+      int random = (int )(Math.random() * 3 + 1);
+
+      if(tiles[k].getRotation() != 0)
+      {
+        tiles[k].setRotation(random);
+
+        if (random == 1)
+        {
+          rot1 = true;
+        }
+        if (random == 2)
+        {
+          rot2 = true;
+        }
+        if (random == 1)
+        {
+          rot3 = true;
+        }
+      }
+      k++;
+    }
+    
+    //If one of the rotations is not used, find a random nonzero rotation and change it to specified rotation. -AG
+    if(rot1 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(tiles[random].getRotation() != 0)
+        {
+          tiles[random].setRotation(1);
+          zero = false;
+        }
+      }
+    }
+    if(rot2 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(tiles[random].getRotation() != 0)
+        {
+          tiles[random].setRotation(2);
+          zero = false;
+        }
+      }
+    }
+    if(rot3 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(tiles[random].getRotation() != 0)
+        {
+          tiles[random].setRotation(3);
+          zero = false;
+        }
+      }
     }
   }
   
@@ -49,27 +143,43 @@ public class GameBoard {
     return tiles[i];
   }
   
-  /*@Override
-  public void draw(Graphics g) {
-    
-    int size = GameTile.SIZE;
-    
-    // Currently we draw the empty GameBoard with
-    // a grey checkerboard pattern. -AC
-    for (int x=0; x<4; x++) {
-      for (int y=0;y<4; y++) {
-        if ((x+y)%2==0)
-          g.setColor(Color.WHITE);
-        else
-          g.setColor(new Color(200,200,200));
-        g.fillRect(locX+x*size, locY+y*size, size, size);
-      }
-    }
-  }*/
+  
+  public int getTileRotationInGrid(int x, int y) {
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInLeft(int y) {
+    if (sideArray[y] != null)
+      return sideArray[y].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInRight(int y) {
+    if (sideArray[y+8] != null)
+      return sideArray[y+8].getRotation();
+    return -1;
+  }
+  
+  public void doRotateInGrid(int x, int y) {
+    if(gridArray[y*4+x] != null)
+      gridArray[y*4+x].rotateTile();
+  }
+
+  public void doRotateInLeft(int y) {
+    if(sideArray[y] != null)
+      sideArray[y].rotateTile();
+  }
+
+  public void doRotateInRight(int y) {
+    if(sideArray[y+8] != null)
+      sideArray[y+8].rotateTile();
+  }
   
   //Moves the tile to a specified location. sideArray is 0-15,
   //gridArray 16-31. -AG
-  public void moveTile(int from, int to)
+  public boolean moveTile(int from, int to)
   {
     //If "to" is in the gridArray. -AG
     if (to > 15)
@@ -82,13 +192,12 @@ public class GameBoard {
         {
           gridArray[to-16]=gridArray[from-16];
           gridArray[from-16] = null;
+          return true;
         }
-        //Swaps tiles if there is already a tile in "to" position. -AG
+        //Return false if the space is occupied. -AC
         else
         {
-          GameTile placeholder = gridArray[to-16];
-          gridArray[to-16]=gridArray[from-16];
-          gridArray[from-16] = placeholder;
+          return false;
         }
       }
       //If "from" is in the sideArray. -AG
@@ -99,13 +208,12 @@ public class GameBoard {
           {
             gridArray[to-16] = sideArray[from];
             sideArray[from] = null;
+            return true;
           }
-          //Swaps tiles if there is already a tile in "to" position. -AG
+          //Return false if the space is occupied. -AC
           else
           {
-            GameTile placeholder = gridArray[to-16];
-            gridArray[to-16] = sideArray[from];
-            sideArray[from] = placeholder;
+            return false;
           }
       }
     }
@@ -120,13 +228,12 @@ public class GameBoard {
         {
           sideArray[to]=gridArray[from-16];
           gridArray[from-16] = null;
+          return true;
         }
-        //Swaps tiles if there is already a tile in "to" position. -AG
+        //Return false if the space is occupied. -AC
         else
         {
-          GameTile placeholder = sideArray[to];
-          sideArray[to]=gridArray[from-16];
-          gridArray[from-16] = placeholder;
+          return false;
         }
       }
       //If "from" is in the sideArray. -AG
@@ -137,13 +244,12 @@ public class GameBoard {
           {
             sideArray[to] = sideArray[from];
             sideArray[from] = null;
+            return true;
           }
-          //Swaps tiles if there is already a tile in "to" position. -AG
+          //Return false if the space is occupied. -AC
           else
           {
-            GameTile placeholder = sideArray[to];
-            sideArray[to] = sideArray[from];
-            sideArray[from] = placeholder;
+            return false;
           }
       }
     }
@@ -198,15 +304,6 @@ public class GameBoard {
   }
   */
   
-  //Assuming the grid starts at 0,0 being 250 pixels, 300 pixels. Limited
-  //functionality - does not check to see whether
-  //or not a tile is already at that position in the grid. -AG
-  public void setTileInGrid(GameTile t, int gridX, int gridY)
-  {
-    //int size = GameTile.SIZE;
-    //t.setScreenLoc(250+size*gridX, 300+size*gridY);
-  }
-  
   //Resets the game by moving every tile to their
   //original position and making the grid empty. -AG
   public void resetGame()
@@ -214,6 +311,8 @@ public class GameBoard {
     for (int i=0; i<16; i++)
     {
       sideArray[i] = getTileByIndex(i);
+
+      sideArray[i].setRotation(tiles[i].getOrigRotation());
     }
     for (int i=0; i<16; i++)
     {
@@ -221,18 +320,109 @@ public class GameBoard {
     }
   }
   
-  
-  //Testing our moveTile method. -AG
-  public void testBoard()
+  //cMakes a new game by creating a new set of Tiles and setting the old Tiles
+  // equal to them.
+  public void newGame()
   {
-    moveTile(3, 6);
-    System.out.println("sideArray[3] is now " + sideArray[3].getImage() +
-        "  and sideArray[6] is now " + sideArray[6].getImage());
+    GameTile[] newTiles = new GameTile[16];
     
-    moveTile(1, 18);
-    System.out.println("sideArray[1] is now " + sideArray[1]
-        + "  and gridArray[2] is now " + gridArray[2].getImage());
+    int i = 0;
+    while ( i < 16)
+    {
+      int random = (int )(Math.random() * 16);
+      if(newTiles[random] == null)
+      {
+        newTiles[random] = new GameTile(i);
+        newTiles[random].setImage(filereader.getImageAtIndex(i)); 
+        sideArray[random] = newTiles[random];
+        gridArray[i] = null;
+        i++;
+      }
+    }
+    
+    //Setting 4 random tiles to 0 rotation. -AG
+    int j = 0;
+    while (j < 4)
+    {
+      int random = (int )(Math.random() * 16);
+      newTiles[random].setRotation(0);
+      j++;
+    }
+    
+    //Booleans checking whether every rotation has been used. -AG
+    boolean rot1 = false;
+    boolean rot2 = false;
+    boolean rot3 = false;
+    int k = 0;
+    //Randomizing rotations. -AG
+    while (k < 16)
+    {
+      int random = (int )(Math.random() * 3 + 1);
+      if(newTiles[k].getRotation() != 0)
+      {
+        newTiles[k].setRotation(random);
+        if (random == 1)
+        {
+          rot1 = true;
+        }
+        if (random == 2)
+        {
+          rot2 = true;
+        }
+        if (random == 1)
+        {
+          rot3 = true;
+        }
+      }
+      k++;
+    }
+    
+    //If one of the rotations is not used, find a random nonzero rotation and change it to specified rotation. -AG
+    if(rot1 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(newTiles[random].getRotation() != 0)
+        {
+          newTiles[random].setRotation(1);
+          zero = false;
+        }
+      }
+    }
+    if(rot2 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(newTiles[random].getRotation() != 0)
+        {
+          newTiles[random].setRotation(2);
+          zero = false;
+        }
+      }
+    }
+    if(rot3 == false)
+    {
+      boolean zero = true;
+      while (zero)
+      {
+        int random = (int )(Math.random() * 16);
+        if(newTiles[random].getRotation() != 0)
+        {
+          newTiles[random].setRotation(3);
+          zero = false;
+        }
+      }
+    }
+    
+    //Setting the tiles equal to the new tileset we created. -AG
+    for(int l = 0; l<16; l++)
+    {
+      tiles[l] = newTiles[l];
+    }
+
   }
-  
-  
 }
