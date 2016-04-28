@@ -31,7 +31,37 @@ public class GameBoard {
   public GameBoard(FileReader fr) 
   {
     filereader = fr;
-    randomizeTiles(fr);
+    
+    if (!filereader.played())
+    {
+      randomizeTiles(fr);
+    }
+    else
+    {
+      for (int i = 0; i<32; i++)
+      {
+        if (i < 16)
+        {
+          tiles[i] = new GameTile(i);
+          tiles[i].setImage(fr.getImageAtIndex(i)); 
+          tiles[i].setRotation(fr.getRotation(i));
+          sideArray[i] = tiles[i];
+        }
+        else
+        {
+          int unused = 0;
+          while (tiles[unused] != null)
+          {
+            unused++;
+          }
+          tiles[unused] = new GameTile(unused);
+          tiles[unused].setImage(fr.getImageAtIndex(i));
+          tiles[unused].setRotation(fr.getRotation(i));
+          gridArray[i-16] = tiles[unused];
+        }
+      }
+    }
+   
   }
   
   public void randomizeTiles(FileReader fr)

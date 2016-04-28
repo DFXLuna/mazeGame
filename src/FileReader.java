@@ -23,22 +23,46 @@ public class FileReader extends FileInputStream
   private byte[] byteArray = new byte[4];
   private int totalTileNum;
   
+  private int orig = 0Xcafebeef;
+  private int played = 0Xcafedeed;
+  private boolean beenPlayed = false;
+  
   // Values that correspond to file format. -AL
   private int tileNum;
   private int lineNum;
+  private int[] rotations = {0};
   
       
   public FileReader(String fileName) throws IOException 
   {
     super(fileName);
     this.fileName = fileName;
+    int compare = readInt();
     totalTileNum = readInt();
-    for(int i = 0; i < 16; i++)
+    if (compare == played)
+    {
+      beenPlayed = true;
+    }
+    
+    for(int i = 0; i < totalTileNum; i++)
     {
       tileNum = readInt();
+      //rotations[i] = readInt();
       lineNum = readInt();
       tileImages[tileNum] = makeImage(lineNum);
     }
+
+
+  }
+  
+  public int getRotation(int index)
+  {
+    return rotations[index];
+  }
+  
+  public boolean played()
+  {
+    return beenPlayed;
   }
   
   /** 
