@@ -5,26 +5,39 @@
  * GameWindow.java
  */
 
-// CONTAINS AN ANONYMOUS CLASS IN THE mouseReleased METHOD!
-// This anonymous class encapsulates a single action and is used for a timer
-// task. -AC
+// CONTAINS ANONYMOUS CLASSES IN mouseReleased, openFileMenu, and!
+// These anonymous classes generally encapsulates single action and are used
+// for event handlers. -AC
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import java.util.ArrayList;
 import java.awt.*;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
 
 public class GameWindow extends JFrame
-  implements ActionListener, MouseListener, MouseMotionListener
+  implements MouseListener, MouseMotionListener
   {
     /**
      * because it is a serializable object, need this or javac
@@ -59,6 +72,8 @@ public class GameWindow extends JFrame
       
       setupGame();
       setupUI();
+      
+      tryLoadMaze(new File("default.mze"),true);
     }
 
     /**
@@ -66,7 +81,7 @@ public class GameWindow extends JFrame
      *  Registers event listeners. -AC
      */
 
-    public void setupUI()
+    private void setupUI()
     {
       Dimension windowSize = new Dimension(900, 1000);
       
@@ -94,7 +109,7 @@ public class GameWindow extends JFrame
     /**
      * Sets up the visual representation of tile containers.
      */
-    public void setupGame() {
+    private void setupGame() {
       VisualTileHolderCenter board =
           new VisualTileHolderCenter(messenger, 250, 250);
       
@@ -113,7 +128,7 @@ public class GameWindow extends JFrame
     /**
      * Used by setupUI() to create and configure the buttons. -AC
      */
-    public void addButtons(){
+    private void addButtons(){
       
       // We decided to create the layout here, and use a FlowLayout.
       // It handles buttons much more naturally than a GridLayout.
@@ -122,40 +137,182 @@ public class GameWindow extends JFrame
       FlowLayout button_layout = new FlowLayout(FlowLayout.LEFT, 5, 5);
       this.setLayout(button_layout);
       
-      Button btn_new = new Button("New Game");
-      btn_new.setActionCommand("new");
-      btn_new.addActionListener(this);
-      this.add(btn_new);
+      Button btn_file = new Button("File");
+      btn_file.addActionListener(new ActionListener() {
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          openFileMenu();
+        }
+      });
+      this.add(btn_file);
       
       Button btn_reset = new Button("Reset");
-      btn_reset.setActionCommand("reset");
-      btn_reset.addActionListener(this);
+      btn_reset.addActionListener(new ActionListener() {
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          messenger.resetGame();
+          repaint();
+        }
+      });
       this.add(btn_reset);
       
       Button btn_quit = new Button("Quit");
-      btn_quit.setActionCommand("quit");
-      btn_quit.addActionListener(this);
+      btn_quit.addActionListener(new ActionListener() {
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          if (promptSaveIfChanged())
+            System.exit(0);
+        }
+      });
       this.add(btn_quit);
     }
+
+    private void openFileMenu() {
+      JPopupMenu j = new JPopupMenu();
+      
+      JMenuItem loadItem = new JMenuItem("Load");
+      loadItem.addActionListener(new ActionListener() {
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          openLoadMenu();
+        }
+      });
+      
+      j.add(loadItem);
+      
+      
+      JMenuItem saveItem = new JMenuItem("Save");
+      saveItem.addActionListener(new ActionListener() {
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          openSaveMenu();
+        }
+      });
+      
+      j.add(saveItem);
+      
+      // We need to repaint the window if the popup menu dissapears -AC
+      j.addPopupMenuListener(new PopupMenuListener() {
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0) {
+          repaint();
+        }
+        
+        public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {}
+        public void popupMenuCanceled(PopupMenuEvent arg0) {}
+      });
+      
+      j.show(this, 6, 54);
+    }
     
-    // Here we handle events generated by the buttons. -AC
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      switch (e.getActionCommand()) {
-      case "new":
-        messenger.newGame();
-        this.repaint();
-        break;
-      case "reset":
-        messenger.resetGame();
-        this.repaint();
-        break;
-      case "quit":
-        System.exit(0);
-        break;
+    private void openLoadMenu() {
+      // Bail out of the function if they hit the cancel button. -AC
+      if (!promptSaveIfChanged())
+        return;
+      
+      FileDialog dialog =
+          new FileDialog(this, "Load a Maze!", FileDialog.LOAD);
+      dialog.setVisible(true);
+      
+      // This seems like the most sane way to get a file from a
+      // file dialog. getFile and getDirectory look terrible. -AC
+      File[] files = dialog.getFiles();
+      if (files.length == 1) {
+        tryLoadMaze(files[0],false);
       }
     }
     
+    private void openSaveMenu() {
+      FileDialog dialog =
+          new FileDialog(this, "Save the Maze!", FileDialog.SAVE);
+      dialog.setVisible(true);
+      
+      // This seems like the most sane way to get a file from a
+      // file dialog. getFile and getDirectory look terrible. -AC
+      File[] files = dialog.getFiles();
+      if (files.length == 1) {
+        File saveFile = files[0];
+        if (!saveFile.canWrite()) {
+          JOptionPane.showMessageDialog(
+              this,
+              "Failed to save to \"" + saveFile + "\". \n"+
+              "The file can not be written to.",
+              "Error",
+              JOptionPane.ERROR_MESSAGE);
+          openSaveMenu();
+        }
+        else if (saveFile.exists()) {
+          int res = JOptionPane.showConfirmDialog(
+              this,
+              "The file \""+saveFile+"\" already exists. Overwrite? \n" +
+              "(Selecting \"No\" will return you to the save dialog.)",
+              "Prompt",
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.QUESTION_MESSAGE);
+          
+          if (res==0) { //YES
+            messenger.saveMaze(saveFile);
+          } else { //NO
+            openSaveMenu();
+          }
+        }
+        else {
+          messenger.saveMaze(saveFile);
+        }
+      }
+    }
+    
+    /**
+     * Attempts to open a file. Displays a dialog if unsuccessful.
+     * If retry is true, open the load menu instead. -AC
+     */
+    private void tryLoadMaze(File file,boolean retry) {
+      if (!file.canRead() || !messenger.loadMaze(file)) {
+        if (retry) {
+          JOptionPane.showMessageDialog(
+              this,
+              "Couldn't open the default maze file. \nPlease select a file.",
+              "Notification",
+              JOptionPane.INFORMATION_MESSAGE);
+          openLoadMenu();
+        } else {
+          JOptionPane.showMessageDialog(
+              this,
+              "Failed to open the file \"" + file + "\". \n"+
+              "It may not exist, or may not be a valid maze file.",
+              "Error",
+              JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    }
+    
+    /**
+     * Ask the user if they would like to save, if and only if the maze has
+     * been modified. Return false if the Cancel button is pressed. -AC
+     */
+    public boolean promptSaveIfChanged() {
+      if (messenger.gameHasChanged()) {
+        int res = JOptionPane.showConfirmDialog(
+            this,
+            "The maze has been modified. \nWould you like to save?",
+            "Prompt",
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+        switch (res) {
+        case 0: // Yes
+          openSaveMenu();
+          break;
+        case 2: // Cancel
+          return false;
+        }
+      }
+      return true;
+    }
     
     /**
      * We decided to draw the game board and tiles ourselves, rather than

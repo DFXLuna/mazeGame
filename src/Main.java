@@ -13,13 +13,6 @@ public class Main
   
   public static void main(String[] args) throws IOException
   {
-    // Testing FileReader
-    FileReader fr = new FileReader("default.mze");
-    // Create game window and board.
-    // Most of the game logic is handled by these two classes. -AC
-    GameBoard board = new GameBoard(fr);
-    Messenger messenger = new Messenger(board);
-    GameWindow window = new GameWindow(messenger);
     
     // I am still not sure how we should be handling these.
     // The current LookAndFeel seems to work on both Windows and Linux. -AC
@@ -47,6 +40,17 @@ public class Main
     catch (IllegalAccessException e) {
      // handle possible exception
     }
+    
+    // Moved after the look and feel setup, otherwise the look and feel will
+    // change mid-startup. -AC
+    
+    // Testing FileReader
+    FileReader fr = new FileReader("default.mze");
+    // Create game window and board.
+    // Most of the game logic is handled by these two classes. -AC
+    GameBoard board = new GameBoard(fr);
+    Messenger messenger = new Messenger(board);
+    GameWindow window = new GameWindow(messenger);
   
   }
   
