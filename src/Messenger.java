@@ -6,7 +6,6 @@
  */
 import java.awt.Image;
 import java.io.File;
-import java.io.IOException;
 
 
 /**
@@ -39,10 +38,10 @@ public class Messenger
   }
   
   /**
-   * Save the maze.
+   * Attempt to save the maze. Return false on failure. -AC
    */
-  public void saveMaze(File file) {
-    
+  public boolean saveMaze(File file) {
+    return false;
   }
   
   /** Check if the game has changed since last load/save. -AC */
