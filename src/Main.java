@@ -6,39 +6,22 @@
  */
 import javax.swing.*;
 import java.io.IOException;
-import java.awt.*;
 
 public class Main 
 {
   
   public static void main(String[] args) throws IOException
   {
-    
-    // I am still not sure how we should be handling these.
-    // The current LookAndFeel seems to work on both Windows and Linux. -AC
-    try {
-      // The 4 that installed on Linux here
-      // May have to test on Windows boxes to see what is there.
+    try {   
       UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-      //This is the "Java" or CrossPlatform version and the default
-      //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-      //Linux only
-      //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-      // really old style Motif 
-      //UIManager.setLookAndFeel
-      //("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+      
+      // This is the default.
+      // UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
     } 
-    catch (UnsupportedLookAndFeelException e) {
-     // handle possible exception
-    }
-    catch (ClassNotFoundException e) {
-     // handle possible exception
-    }
-    catch (InstantiationException e) {
-     // handle possible exception
-    }
-    catch (IllegalAccessException e) {
-     // handle possible exception
+    catch (Exception e) {
+      // We seem to have no intention of actually dealing with these, so
+      // we may as well just do a catch-all. If the look and feel fails to
+      // get selected, the default seems to work fine as well. -AC
     }
     
     // Moved after the look and feel setup, otherwise the look and feel will
@@ -46,12 +29,11 @@ public class Main
     
     // Testing FileReader
     FileReader fr = new FileReader("default.mze");
-    // Create game window and board.
-    // Most of the game logic is handled by these two classes. -AC
+    
+    // Create game window and board. -AC
     GameBoard board = new GameBoard(fr);
     Messenger messenger = new Messenger(board);
-    GameWindow window = new GameWindow(messenger);
-  
+    new GameWindow(messenger);
   }
   
 };

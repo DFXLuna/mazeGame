@@ -6,7 +6,6 @@
  */
 
 import java.awt.Image;
-import java.io.IOException;
 
 
 /**
@@ -15,10 +14,6 @@ import java.io.IOException;
  * where tiles are in the grid. -AC
  */
 public class GameBoard {
-  // These represent the position of the upper left corner of the GameBoard
-  // on the screen. -AC
-  private int locX;
-  private int locY;
   
   // This stores all our tiles.
   // Not sure if the ordering in the array is important yet. -AC
@@ -159,11 +154,6 @@ public class GameBoard {
         }
       }
     }
-  }
-  
-  public void setScreenLoc(int x, int y) {
-    locX = x;
-    locY = y;
   }
   
   // The GameWindow needs to be able to get tiles, but it should not be able

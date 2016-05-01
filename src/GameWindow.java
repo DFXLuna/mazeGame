@@ -12,8 +12,8 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -22,18 +22,12 @@ import javax.swing.event.PopupMenuListener;
 
 import java.util.ArrayList;
 import java.awt.*;
-import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 
 public class GameWindow extends JFrame
@@ -215,56 +209,59 @@ public class GameWindow extends JFrame
       if (!promptSaveIfChanged())
         return;
       
-      FileDialog dialog =
-          new FileDialog(this, "Load a Maze!", FileDialog.LOAD);
-      dialog.setVisible(true);
+      JFileChooser filePicker = 
+          new JFileChooser(System.getProperty("user.dir"));
+      int result = filePicker.showOpenDialog(this);
       
-      // This seems like the most sane way to get a file from a
-      // file dialog. getFile and getDirectory look terrible. -AC
-      File[] files = dialog.getFiles();
-      if (files.length == 1) {
-        tryLoadMaze(files[0],false);
+      File loadFile = filePicker.getSelectedFile();
+      if (result == JFileChooser.APPROVE_OPTION && loadFile != null) {
+        tryLoadMaze(loadFile,false);
       }
     }
     
-    private void openSaveMenu() {
-      FileDialog dialog =
-          new FileDialog(this, "Save the Maze!", FileDialog.SAVE);
-      dialog.setVisible(true);
+    /**
+     * Opens the save menu, returns true if the file was saved.
+     */
+    private boolean openSaveMenu() {
+      JFileChooser filePicker = 
+          new JFileChooser(System.getProperty("user.dir"));
+      int result = filePicker.showSaveDialog(this);
       
-      // This seems like the most sane way to get a file from a
-      // file dialog. getFile and getDirectory look terrible. -AC
-      File[] files = dialog.getFiles();
-      if (files.length == 1) {
-        File saveFile = files[0];
-        if (!saveFile.canWrite()) {
-          JOptionPane.showMessageDialog(
-              this,
-              "Failed to save to \"" + saveFile + "\". \n"+
-              "The file can not be written to.",
-              "Error",
-              JOptionPane.ERROR_MESSAGE);
-          openSaveMenu();
-        }
-        else if (saveFile.exists()) {
+      File saveFile = filePicker.getSelectedFile();
+      if (result == JFileChooser.APPROVE_OPTION && saveFile != null) {
+        if (saveFile.exists()) {
           int res = JOptionPane.showConfirmDialog(
               this,
               "The file \""+saveFile+"\" already exists. Overwrite? \n" +
               "(Selecting \"No\" will return you to the save dialog.)",
               "Prompt",
-              JOptionPane.YES_NO_OPTION,
+              JOptionPane.YES_NO_CANCEL_OPTION,
               JOptionPane.QUESTION_MESSAGE);
           
-          if (res==0) { //YES
-            messenger.saveMaze(saveFile);
-          } else { //NO
-            openSaveMenu();
+          if (res==1) { //NO
+            return openSaveMenu();
+          } else if (res==2) { //CANCEL
+            return false;
           }
         }
-        else {
-          messenger.saveMaze(saveFile);
+        
+        if (messenger.saveMaze(saveFile)) {
+          return true;
+        } else {
+          JOptionPane.showMessageDialog(
+              this,
+              "There was an problem saving to \"" + saveFile + "\". \n"+
+              "You might not have permission to write here.",
+              "Error",
+              JOptionPane.ERROR_MESSAGE);
+          // I wasn't sure if we should retry the save here, but I figured
+          // it would be best to stay consistent between failing on a load
+          // and a save. Returning false here ensures the caller won't go
+          // through with any actions if a save was expected. -AC
+          return false;
         }
       }
+      return false;
     }
     
     /**
@@ -284,7 +281,8 @@ public class GameWindow extends JFrame
           JOptionPane.showMessageDialog(
               this,
               "Failed to open the file \"" + file + "\". \n"+
-              "It may not exist, or may not be a valid maze file.",
+              "It may not exist, you may not have permission to read it, \n"+
+              "or it may not be a valid maze file.",
               "Error",
               JOptionPane.ERROR_MESSAGE);
         }
@@ -293,9 +291,10 @@ public class GameWindow extends JFrame
     
     /**
      * Ask the user if they would like to save, if and only if the maze has
-     * been modified. Return false if the Cancel button is pressed. -AC
+     * been modified. Return false if the Cancel button is pressed, or if the
+     * user agreed to save the file and never followed through. -AC
      */
-    public boolean promptSaveIfChanged() {
+    private boolean promptSaveIfChanged() {
       if (messenger.gameHasChanged()) {
         int res = JOptionPane.showConfirmDialog(
             this,
@@ -305,8 +304,7 @@ public class GameWindow extends JFrame
             JOptionPane.QUESTION_MESSAGE);
         switch (res) {
         case 0: // Yes
-          openSaveMenu();
-          break;
+          return openSaveMenu();
         case 2: // Cancel
           return false;
         }
