@@ -31,8 +31,7 @@ public class Messenger
   }
   
   /**
-   * Attempt to open a maze. Return false on failure. -AC
-   * @throws Exception 
+   * Attempt to open a maze. Throw exception on failure. -AC
    */
   public void loadMaze(File file) throws Exception
   {
@@ -40,10 +39,10 @@ public class Messenger
   }
   
   /**
-   * Attempt to save the maze. Return false on failure. -AC
+   * Attempt to save the maze. Throw exception on failure. -AC
    */
-  public boolean saveMaze(File file) {
-    return false;
+  public void saveMaze(File file) throws Exception {
+    //return false;
   }
   
   /** Check if the game has changed since last load/save. -AC */
