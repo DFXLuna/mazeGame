@@ -5,7 +5,7 @@
  * Messenger.java
  */
 import java.awt.Image;
-import java.io.IOException;
+import java.io.File;
 
 
 /**
@@ -29,9 +29,31 @@ public class Messenger
     board.resetGame();
   }
   
-  public void newGame()
+  /**
+   * Attempt to open a maze. Return false on failure. -AC
+   */
+  public boolean loadMaze(File file)
   {
-    board.newGame();
+    return false;
+  }
+  
+  /**
+   * Attempt to save the maze. Return false on failure. -AC
+   */
+  public boolean saveMaze(File file) {
+    return false;
+  }
+  
+  /** Check if the game has changed since last load/save. -AC */
+  // Current strange stub behavior forces it to behave on startup.
+  // Please delete this nonsense when you implement it for real. -AC
+  private boolean first = true;
+  public boolean gameHasChanged() {
+    if (first) {
+      first = false;
+      return false;
+    }
+    return true;
   }
   
   //Calls back-end method which returns the number of a tile in a given

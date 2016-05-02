@@ -5,13 +5,10 @@
  * FileReader.java
  */
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class FileReader extends FileInputStream
@@ -30,7 +27,9 @@ public class FileReader extends FileInputStream
   // Values that correspond to file format. -AL
   private int tileNum;
   private int lineNum;
-  private int[] rotations = {0};
+  // No clue if this is correct, just trying to get it in a working state. -AC
+  // FIXME
+  private int[] rotations = new int[32];
   
       
   public FileReader(String fileName) throws IOException 
@@ -47,7 +46,7 @@ public class FileReader extends FileInputStream
     for(int i = 0; i < totalTileNum; i++)
     {
       tileNum = readInt();
-      //rotations[i] = readInt();
+      rotations[i] = readInt();
       lineNum = readInt();
       tileImages[tileNum] = makeImage(lineNum);
     }
