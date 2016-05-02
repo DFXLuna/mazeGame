@@ -6,6 +6,8 @@
  */
 
 import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -340,8 +342,8 @@ public class GameBoard {
     }
   }
   
-  //cMakes a new game by creating a new set of Tiles and setting the old Tiles
-  // equal to them.
+  // Makes a new game by creating a new set of Tiles and setting the old Tiles
+  // equal to them. -AG
   public void newGame()
   {
     GameTile[] newTiles = new GameTile[16];
@@ -445,4 +447,10 @@ public class GameBoard {
     }
 
   }
+  
+  public void loadMaze(File file) throws Exception
+  {
+    filereader.loadMaze(file);
+  }
+  
 }

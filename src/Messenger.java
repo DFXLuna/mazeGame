@@ -6,6 +6,7 @@
  */
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -31,10 +32,11 @@ public class Messenger
   
   /**
    * Attempt to open a maze. Return false on failure. -AC
+   * @throws Exception 
    */
-  public boolean loadMaze(File file)
+  public void loadMaze(File file) throws Exception
   {
-    return false;
+    board.loadMaze(file);
   }
   
   /**

@@ -8,7 +8,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class FileReader extends FileInputStream
@@ -28,13 +30,27 @@ public class FileReader extends FileInputStream
   private int tileNum;
   private int lineNum;
   // No clue if this is correct, just trying to get it in a working state. -AC
-  // FIXME
   private int[] rotations = new int[32];
   
       
   public FileReader(String fileName) throws IOException 
   {
     super(fileName);
+    //loadMaze(fileName);
+  }
+  
+  /*
+  public FileReader (File file) throws Exception
+  {
+    super(file);
+    loadMaze(file);
+
+  }*/
+  
+  /*
+  public void loadMaze(String fileName) throws IOException
+  {
+
     this.fileName = fileName;
     int compare = readInt();
     totalTileNum = readInt();
@@ -50,8 +66,28 @@ public class FileReader extends FileInputStream
       lineNum = readInt();
       tileImages[tileNum] = makeImage(lineNum);
     }
-
-
+  }*/
+  
+  public void loadMaze(File file) throws Exception
+  {
+    //this.fileName = file;
+    int compare = readInt();
+    if (compare == played)
+    {
+      beenPlayed = true;
+    }
+    if(compare != played && compare != orig)
+    {
+       throw new Exception("Not a valid maze file.");
+    }
+    totalTileNum = readInt();
+    for(int i = 0; i < totalTileNum; i++)
+    {
+      tileNum = readInt();
+      rotations[i] = readInt();
+      lineNum = readInt();
+      tileImages[tileNum] = makeImage(lineNum);
+    }
   }
   
   public int getRotation(int index)
