@@ -245,13 +245,14 @@ public class GameWindow extends JFrame
           }
         }
         
-        if (messenger.saveMaze(saveFile)) {
-          return true;
-        } else {
+        try {
+          messenger.saveMaze(saveFile);
+          
+        } catch(Exception e) {
           JOptionPane.showMessageDialog(
               this,
-              "There was an problem saving to \"" + saveFile + "\". \n"+
-              "You might not have permission to write here.",
+              "Failed to save the file \"" + saveFile + "\". \n"+
+              e.getMessage(),
               "Error",
               JOptionPane.ERROR_MESSAGE);
           // I wasn't sure if we should retry the save here, but I figured
@@ -260,6 +261,8 @@ public class GameWindow extends JFrame
           // through with any actions if a save was expected. -AC
           return false;
         }
+        
+        return true;
       }
       return false;
     }
@@ -269,20 +272,35 @@ public class GameWindow extends JFrame
      * If retry is true, open the load menu instead. -AC
      */
     private void tryLoadMaze(File file,boolean retry) {
-      if (!file.canRead() || !messenger.loadMaze(file)) {
+      String errorMsg = null;
+      
+      if (!file.exists())
+        errorMsg = "The file does not seem to exist.";
+      else if (!file.canRead())
+        errorMsg = "Could not read the maze file. \n"+
+        "Do you have permission to open it?";
+      
+      try {
+        messenger.loadMaze(file);
+      } catch (Exception e) {
+        errorMsg = e.getMessage();
+      }
+      
+      if (errorMsg != null) {
         if (retry) {
           JOptionPane.showMessageDialog(
               this,
-              "Couldn't open the default maze file. \nPlease select a file.",
+              "Couldn't load the default maze file. \n" +
+              "( "+errorMsg+" ) \n" +
+              "Please select a file.",
               "Notification",
               JOptionPane.INFORMATION_MESSAGE);
           openLoadMenu();
         } else {
           JOptionPane.showMessageDialog(
               this,
-              "Failed to open the file \"" + file + "\". \n"+
-              "It may not exist, you may not have permission to read it, \n"+
-              "or it may not be a valid maze file.",
+              "Failed to load the file \"" + file + "\". \n"+
+              errorMsg,
               "Error",
               JOptionPane.ERROR_MESSAGE);
         }
