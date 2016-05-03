@@ -18,26 +18,30 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
 
 public class FileReader extends FileInputStream
 {
-  // Contains images generated for tiles. -AL
-  private Image[] tileImages = new Image[32];
-  
-  private String fileName;
-  
-  private byte[][] lineChunks = new byte[32][];
-  
-  private int[] rotations = new int[32];
-
-  private byte[] byteArray = new byte[4];
-  
   private int totalTileNum;
-  private int orig = 0Xcafebeef;
-  private int played = 0Xcafedeed;
   
-  private boolean beenPlayed = false;
+  //Either played or orig will be present at top of .mze file to determine
+  //if the file has been played or not. If no value is present, file is not 
+  //valid. -MG
+  
+  //Value if maze has not been played -MG
+  private int orig = 0Xcafebeef;
+ 
+  //value if maze has been played
+  private int played = 0Xcafedeed;
   
   // Values that correspond to file format. -AL
   private int tileNum;
+  
+  private int[] rotations = new int[32];
+  // Contains images generated for tiles. -AL
+  private Image[] tileImages = new Image[32];
+  
+  private byte[][] lineChunks = new byte[32][];
 
+  private byte[] byteArray = new byte[4];
+  
+  private boolean beenPlayed = false;
 
   
   public FileReader (File file) throws Exception
@@ -50,26 +54,31 @@ public class FileReader extends FileInputStream
     return totalTileNum;
   }
   
-  /*
-  public void loadMaze(String fileName) throws IOException
+  public int getRotation(int index)
   {
-
-    this.fileName = fileName;
-    int compare = readInt();
-    totalTileNum = readInt();
-    if (compare == played)
-    {
-      beenPlayed = true;
-    }
-    
-    for(int i = 0; i < totalTileNum; i++)
-    {
-      tileNum = readInt();
-      rotations[i] = readInt();
-      lineNum = readInt();
-      tileImages[tileNum] = makeImage(lineNum);
-    }
-  }*/
+    return rotations[index];
+  }
+  
+  /** 
+   * Returns tile image from array. -AL
+   */
+  public Image getImageAtIndex(int index)
+  {
+    return tileImages[index];
+  }
+  
+  // Return the chunk that needs to be written back out to a save file, for
+  // a specific tile. -AC
+  public byte[] getLineChunk(int id) {
+    return lineChunks[id];
+  }
+  
+  //Returns whether the maze has been played or not, specified in the file. -AG
+  public boolean played()
+  {
+    return beenPlayed;
+  }
+  
   
   public void loadMaze(File file) throws Exception
   {
@@ -92,17 +101,6 @@ public class FileReader extends FileInputStream
     }
   }
   
-  public int getRotation(int index)
-  {
-    return rotations[index];
-  }
-  
-  //Returns whether the maze has been played or not, specified in the file. -AG
-  public boolean played()
-  {
-    return beenPlayed;
-  }
-  
   /** 
    * Reads in 4 bytes from file and converts to int. -AL
    */
@@ -114,14 +112,14 @@ public class FileReader extends FileInputStream
     return Int;
   }
   
-  private int writeInt() throws IOException
-  {
-    int Int;
-    read(byteArray);
-    Int = ConvertData.convertToInt(byteArray);
-    return Int;
-  }
-  
+//  private int writeInt() throws IOException
+//  {
+//    int Int;
+//    read(byteArray);
+//    Int = ConvertData.convertToInt(byteArray);
+//    return Int;
+//  }
+//  
   /**
    * Reads in 4 bytes from file and converts to float. -AL
    */
@@ -186,20 +184,4 @@ public class FileReader extends FileInputStream
     
     return image;
   }
-  
-  
-  /** 
-   * Returns tile image from array. -AL
-   */
-  public Image getImageAtIndex(int index)
-  {
-    return tileImages[index];
-  }
-  
-  // Return the chunk that needs to be written back out to a save file, for
-  // a specific tile. -AC
-  public byte[] getLineChunk(int id) {
-    return lineChunks[id];
-  }
-  
 }
