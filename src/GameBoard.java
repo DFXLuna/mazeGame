@@ -8,8 +8,6 @@
 import java.awt.Image;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-
 
 /**
  * This is the main component of the back-end
@@ -24,12 +22,6 @@ public class GameBoard {
   private GameTile[] sideArray = new GameTile[16];
   private GameTile[] gridArray = new GameTile[16];
   private FileReader filereader;
-  
-  
-  public GameBoard(FileReader fr) 
-  {
-    filereader = fr;
-  }
   
   public void saveMaze(File file) throws Exception 
   {
@@ -64,7 +56,7 @@ public class GameBoard {
   
   //Sets the tile placements. If the game has not been played, randomizes the tile placements.
   //If it has been played, returns the tiles to original placements. -AG
-  public void setTiles(FileReader fr)
+  private void setTiles(FileReader fr)
   {
     if (!filereader.played())
     {
@@ -383,12 +375,13 @@ public class GameBoard {
   //Gets rid of all tiles in the arrays, used in preparation. -AG
   public void deleteTiles()
   {
+    for (int i = 0; i< 32; i++)
+      tiles[i] = null;
+    
     for (int i = 0; i< 16; i++)
     {
       sideArray[i] = null;
       gridArray[i] = null;
-      tiles[i] = null;
-      tiles[i+16] = null;
     }
   }
   
@@ -400,6 +393,9 @@ public class GameBoard {
     filereader.loadMaze(file);
 
     fr.close();
+    
+    deleteTiles();
+    setTiles(getFileReader());
   }
   
  
