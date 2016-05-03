@@ -31,10 +31,10 @@ public class GameBoard {
    
   }
   
+  //Sets the tile placements. If the game has not been played, randomizes the tile placements.
+  //If it has been played, returns the tiles to original placements. -AG
   public void setTiles(FileReader fr)
   {
-
-    
     if (!filereader.played())
     {
       randomizeTiles(fr);
@@ -57,6 +57,7 @@ public class GameBoard {
       }
     }
   }
+
   
   public void randomizeTiles(FileReader fr)
   {
@@ -343,113 +344,8 @@ public class GameBoard {
       gridArray[i] = null;
     }
   }
-  
-  // Makes a new game by creating a new set of Tiles and setting the old Tiles
-  // equal to them. -AG
-  public void newGame()
-  {
-    GameTile[] newTiles = new GameTile[32];
-    
-    int i = 0;
-    while ( i < 16)
-    {
-      int random = (int )(Math.random() * 16);
-      if(newTiles[random] == null)
-      {
-        newTiles[random] = new GameTile(i);
-        newTiles[random].setImage(filereader.getImageAtIndex(i)); 
-        sideArray[random] = newTiles[random];
-        gridArray[i] = null;
-        i++;
-      }
-    }
-    
-    //Setting 4 random tiles to 0 rotation. -AG
-    int j = 0;
-    while (j < 4)
-    {
-      int random = (int )(Math.random() * 16);
-      newTiles[random].setRotation(0);
-      j++;
-    }
-    
-    //Booleans checking whether every rotation has been used. -AG
-    boolean rot1 = false;
-    boolean rot2 = false;
-    boolean rot3 = false;
-    int k = 0;
-    //Randomizing rotations. -AG
-    while (k < 16)
-    {
-      int random = (int )(Math.random() * 3 + 1);
-      if(newTiles[k].getRotation() != 0)
-      {
-        newTiles[k].setRotation(random);
-        if (random == 1)
-        {
-          rot1 = true;
-        }
-        if (random == 2)
-        {
-          rot2 = true;
-        }
-        if (random == 1)
-        {
-          rot3 = true;
-        }
-      }
-      k++;
-    }
-    
-    //If one of the rotations is not used, find a random nonzero rotation and change it to specified rotation. -AG
-    if(rot1 == false)
-    {
-      boolean zero = true;
-      while (zero)
-      {
-        int random = (int )(Math.random() * 16);
-        if(newTiles[random].getRotation() != 0)
-        {
-          newTiles[random].setRotation(1);
-          zero = false;
-        }
-      }
-    }
-    if(rot2 == false)
-    {
-      boolean zero = true;
-      while (zero)
-      {
-        int random = (int )(Math.random() * 16);
-        if(newTiles[random].getRotation() != 0)
-        {
-          newTiles[random].setRotation(2);
-          zero = false;
-        }
-      }
-    }
-    if(rot3 == false)
-    {
-      boolean zero = true;
-      while (zero)
-      {
-        int random = (int )(Math.random() * 16);
-        if(newTiles[random].getRotation() != 0)
-        {
-          newTiles[random].setRotation(3);
-          zero = false;
-        }
-      }
-    }
-    
-    //Setting the tiles equal to the new tileset we created. -AG
-    for(int l = 0; l<16; l++)
-    {
-      tiles[l] = newTiles[l];
-    }
 
-  }
-  
+  //Gets rid of all tiles in the arrays, used in preparation. -AG
   public void deleteTiles()
   {
     for (int i = 0; i< 16; i++)
@@ -460,6 +356,7 @@ public class GameBoard {
     }
   }
   
+  //Loads the maze specified in the file. -AG
   public void loadMaze(File file) throws Exception
   {
     FileReader fr = new FileReader(file);

@@ -18,7 +18,6 @@ public class FileReader extends FileInputStream
   // Contains images generated for tiles. -AL
   private Image[] tileImages = new Image[32];
   
-  private String fileName;
   //private File file;
   private byte[] byteArray = new byte[4];
   private int totalTileNum;
@@ -30,45 +29,15 @@ public class FileReader extends FileInputStream
   // Values that correspond to file format. -AL
   private int tileNum;
   private int lineNum;
-  // No clue if this is correct, just trying to get it in a working state. -AC
   private int[] rotations = new int[32];
-  
-      /*
-  public FileReader(String fileName) throws IOException 
-  {
-    super(fileName);
-    //loadMaze(fileName);
-  }*/
-  
+
   
   public FileReader (File file) throws Exception
   {
     super(file);
-    //loadMaze(file);
-
   }
   
-  /*
-  public void loadMaze(String fileName) throws IOException
-  {
-
-    this.fileName = fileName;
-    int compare = readInt();
-    totalTileNum = readInt();
-    if (compare == played)
-    {
-      beenPlayed = true;
-    }
-    
-    for(int i = 0; i < totalTileNum; i++)
-    {
-      tileNum = readInt();
-      rotations[i] = readInt();
-      lineNum = readInt();
-      tileImages[tileNum] = makeImage(lineNum);
-    }
-  }*/
-  
+  //Loads the maze specified in the file. If the maze does not have the valid first 4 bytes, throws an exception. -AG
   public void loadMaze(File file) throws Exception
   {
     int compare = readInt();
@@ -96,6 +65,7 @@ public class FileReader extends FileInputStream
     return rotations[index];
   }
   
+  //Returns whether the maze has been played or not, specified in the file. -AG
   public boolean played()
   {
     return beenPlayed;

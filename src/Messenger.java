@@ -27,7 +27,7 @@ public class Messenger
   }
   
 
-  
+  //Resets the game and the game's "changed" state. -AG
   public void resetGame()
   {
     board.resetGame();
@@ -56,9 +56,6 @@ public class Messenger
   }
   
   /** Check if the game has changed since last load/save. -AC */
-  // Current strange stub behavior forces it to behave on startup.
-  // Please delete this nonsense when you implement it for real. -AC
-
   public boolean gameHasChanged() {
     if (changed)
     {

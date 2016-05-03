@@ -29,10 +29,8 @@ public class Main
     // Moved after the look and feel setup, otherwise the look and feel will
     // change mid-startup. -AC
     
-    // Testing FileReader
     File file = new File("default.mze");
     FileReader fr = new FileReader(file);
-    //fr.loadMaze(file);
     
     // Create game window and board. -AC
     GameBoard board = new GameBoard(fr);
