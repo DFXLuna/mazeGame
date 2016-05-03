@@ -7,7 +7,6 @@
 import javax.swing.*;
 
 import java.io.File;
-import java.io.IOException;
 
 public class Main 
 {
@@ -29,11 +28,11 @@ public class Main
     // Moved after the look and feel setup, otherwise the look and feel will
     // change mid-startup. -AC
     
-    File file = new File("default.mze");
-    FileReader fr = new FileReader(file);
+    //File file = new File("default.mze");
+    //FileReader fr = new FileReader(file);
     
     // Create game window and board. -AC
-    GameBoard board = new GameBoard(fr);
+    GameBoard board = new GameBoard();
     Messenger messenger = new Messenger(board);
     new GameWindow(messenger);
   }
