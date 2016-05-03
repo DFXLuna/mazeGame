@@ -54,34 +54,18 @@ public class GameBoard {
     out.close();
   }
   
-  //Sets the tile placements. If the game has not been played, randomizes the tile placements.
-  //If it has been played, returns the tiles to original placements. -AG
-  private void setTiles(FileReader fr)
+  //Loads the maze specified in the file. -AG
+  public void loadMaze(File file) throws Exception
   {
-    if (!filereader.played())
-    {
-      randomizeTiles(fr);
-    }
-    else
-    {
-      for (int i = 0; i<32; i++)
-      {
-        Image tileImg = fr.getImageAtIndex(i);
-        
-        if (tileImg != null) {
-          tiles[i] = new GameTile(i);
-          tiles[i].setImage(tileImg);
-          tiles[i].setRotation(fr.getRotation(i));
-          if (i<16)
-            sideArray[i] = tiles[i];
-          else
-            gridArray[i-16] = tiles[i];
-        }
-      }
-    }
-  }
+    FileReader fr = new FileReader(file);
+    filereader = fr;
+    filereader.loadMaze(file);
 
-  
+    fr.close();
+    
+    deleteTiles();
+    setTiles(getFileReader());
+  }
   public void randomizeTiles(FileReader fr)
   {
     //Randomizing tile placements. -AG
@@ -179,51 +163,6 @@ public class GameBoard {
     }
   }
   
-  public FileReader getFileReader()
-  {
-    return filereader;
-  }
-  
-  // The GameWindow needs to be able to get tiles, but it should not be able
-  // to change the array. -AC
-  public GameTile getTileByIndex(int i) 
-  {
-    return tiles[i];
-  }
-  
-  
-  public int getTileRotationInGrid(int x, int y) {
-    if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getRotation();
-    return -1;
-  }
-  
-  public int getTileRotationInLeft(int y) {
-    if (sideArray[y] != null)
-      return sideArray[y].getRotation();
-    return -1;
-  }
-  
-  public int getTileRotationInRight(int y) {
-    if (sideArray[y+8] != null)
-      return sideArray[y+8].getRotation();
-    return -1;
-  }
-  
-  public void doRotateInGrid(int x, int y) {
-    if(gridArray[y*4+x] != null)
-      gridArray[y*4+x].rotateTile();
-  }
-
-  public void doRotateInLeft(int y) {
-    if(sideArray[y] != null)
-      sideArray[y].rotateTile();
-  }
-
-  public void doRotateInRight(int y) {
-    if(sideArray[y+8] != null)
-      sideArray[y+8].rotateTile();
-  }
   
   //Moves the tile to a specified location. sideArray is 0-15,
   //gridArray 16-31. -AG
@@ -303,55 +242,6 @@ public class GameBoard {
     }
   }
   
-  
-  //Returns the number displayed on the Tile in the specified position
-  //of the left side of the holding area. -AG
-  public Image getTileInLeft(int pos)
-  {
-    if (sideArray[pos] != null)
-      return sideArray[pos].getImage();
-    return null;
-  }
-  
-  
-  //Returns the number displayed on the Tile in the
-  //specified position of the right side of the holding area. -AG
-  public Image getTileInRight(int pos)
-  {
-    if (sideArray[pos+8] != null)
-      return sideArray[pos+8].getImage();
-    return null;
-  }
-  
-  //Returns the number displayed on the Tile in the
-  //specified position of the grid. -AG
-  public Image getTileInGrid(int x, int y)
-  {
-    if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getImage();
-    return null;
-  }
-  
-  
-  
-  //Checks if each tile is in the correct position, returns true only if all
-  //tiles are in the correct position. -AG
-  //May be needed in future. -AL
-  /*
-  private boolean checkHasWon()
-  {
-    boolean victory = true;
-    for (int i = 0; i<16; i++)
-    {
-      if (tiles[i].correctPosition() == false)
-      {
-        victory = false;
-      }
-    }
-    return victory;
-  }
-  */
-  
   //Resets the game by moving every tile to their
   //original position and making the grid empty. -AG
   public void resetGame()
@@ -385,19 +275,127 @@ public class GameBoard {
     }
   }
   
-  //Loads the maze specified in the file. -AG
-  public void loadMaze(File file) throws Exception
+  public FileReader getFileReader()
   {
-    FileReader fr = new FileReader(file);
-    filereader = fr;
-    filereader.loadMaze(file);
-
-    fr.close();
-    
-    deleteTiles();
-    setTiles(getFileReader());
+    return filereader;
   }
   
- 
+  // The GameWindow needs to be able to get tiles, but it should not be able
+  // to change the array. -AC
+  public GameTile getTileByIndex(int i) 
+  {
+    return tiles[i];
+  }
+  
+  
+  public int getTileRotationInGrid(int x, int y) {
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInLeft(int y) {
+    if (sideArray[y] != null)
+      return sideArray[y].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInRight(int y) {
+    if (sideArray[y+8] != null)
+      return sideArray[y+8].getRotation();
+    return -1;
+  }
+  
+
+  //Returns the number displayed on the Tile in the specified position
+  //of the left side of the holding area. -AG
+  public Image getTileInLeft(int pos)
+  {
+    if (sideArray[pos] != null)
+      return sideArray[pos].getImage();
+    return null;
+  }
+  
+  
+  //Returns the number displayed on the Tile in the
+  //specified position of the right side of the holding area. -AG
+  public Image getTileInRight(int pos)
+  {
+    if (sideArray[pos+8] != null)
+      return sideArray[pos+8].getImage();
+    return null;
+  }
+  
+  //Returns the number displayed on the Tile in the
+  //specified position of the grid. -AG
+  public Image getTileInGrid(int x, int y)
+  {
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getImage();
+    return null;
+  }
+  
+  
+  
+  
+  public void doRotateInGrid(int x, int y) {
+    if(gridArray[y*4+x] != null)
+      gridArray[y*4+x].rotateTile();
+  }
+
+  public void doRotateInLeft(int y) {
+    if(sideArray[y] != null)
+      sideArray[y].rotateTile();
+  }
+
+  public void doRotateInRight(int y) {
+    if(sideArray[y+8] != null)
+      sideArray[y+8].rotateTile();
+  }
+  
+  //Checks if each tile is in the correct position, returns true only if all
+  //tiles are in the correct position. -AG
+  //May be needed in future. -AL
+  /*
+  private boolean checkHasWon()
+  {
+    boolean victory = true;
+    for (int i = 0; i<16; i++)
+    {
+      if (tiles[i].correctPosition() == false)
+      {
+        victory = false;
+      }
+    }
+    return victory;
+  }
+  */
+
+  //Sets the tile placements. If the game has not been played, randomizes the tile placements.
+  //If it has been played, returns the tiles to original placements. -AG
+  private void setTiles(FileReader fr)
+  {
+    if (!filereader.played())
+    {
+      randomizeTiles(fr);
+    }
+    else
+    {
+      for (int i = 0; i<32; i++)
+      {
+        Image tileImg = fr.getImageAtIndex(i);
+        
+        if (tileImg != null) {
+          tiles[i] = new GameTile(i);
+          tiles[i].setImage(tileImg);
+          tiles[i].setRotation(fr.getRotation(i));
+          if (i<16)
+            sideArray[i] = tiles[i];
+          else
+            gridArray[i-16] = tiles[i];
+        }
+      }
+    }
+  }
   
 }
