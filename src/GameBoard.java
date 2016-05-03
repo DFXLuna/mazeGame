@@ -458,13 +458,23 @@ public class GameBoard {
 
   }
   
+  public void deleteTiles()
+  {
+    for (int i = 0; i< 16; i++)
+    {
+      sideArray[i] = null;
+      gridArray[i] = null;
+      tiles[i] = null;
+    }
+  }
+  
   public void loadMaze(File file) throws Exception
   {
     FileReader fr = new FileReader(file);
     filereader = fr;
     filereader.loadMaze(file);
 
-    //fr.close();
+    fr.close();
   }
   
 }

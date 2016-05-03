@@ -217,6 +217,7 @@ public class GameWindow extends JFrame
       if (result == JFileChooser.APPROVE_OPTION && loadFile != null) {
         System.out.println("Load menu file: " + loadFile.toString() + " and attempting to load maze");
         tryLoadMaze(loadFile,false);
+        this.repaint();
       }
     }
     
@@ -289,7 +290,9 @@ public class GameWindow extends JFrame
         errorMsg = e.getMessage();
       }
       
-      if (errorMsg != null) {
+      if (errorMsg != null) //&& !errorMsg.equalsIgnoreCase("16")) makes the game load "played.mze" and not display the weird error
+      {
+        System.out.println(errorMsg);
         if (retry) {
           JOptionPane.showMessageDialog(
               this,

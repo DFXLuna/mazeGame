@@ -71,15 +71,14 @@ public class FileReader extends FileInputStream
   
   public void loadMaze(File file) throws Exception
   {
-    //FileReader fr = new FileReader(file);
     int compare = readInt();
     if (compare == played)
     {
+      System.out.println("Played");
       this.beenPlayed = true;
     }
     if(compare != played && compare != orig)
     {
-      //fr.close();
        throw new Exception("Not a valid maze file.");
     }
     totalTileNum = readInt();
@@ -90,8 +89,6 @@ public class FileReader extends FileInputStream
       lineNum = readInt();
       tileImages[tileNum] = makeImage(lineNum);
     }
-    
-    //fr.close();
   }
   
   public int getRotation(int index)
