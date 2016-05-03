@@ -375,12 +375,13 @@ public class GameBoard {
   //Gets rid of all tiles in the arrays, used in preparation. -AG
   public void deleteTiles()
   {
+    for (int i = 0; i< 32; i++)
+      tiles[i] = null;
+    
     for (int i = 0; i< 16; i++)
     {
       sideArray[i] = null;
       gridArray[i] = null;
-      tiles[i] = null;
-      tiles[i+16] = null;
     }
   }
   
