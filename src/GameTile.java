@@ -9,17 +9,21 @@ import java.awt.Image;
 
 public class GameTile 
 { 
-  private int correctArrayPos;
+  private int id;
   private Image image;
   private int rotation;
   private int origRotation;
   
   //Initializing GameTile. currentArrayPos was only needed if we are going to
   //manipulate the array past initialization. -AG
-  public GameTile(int arrayPos)
+  public GameTile(int id)
   {
-    correctArrayPos = arrayPos;
+    this.id = id;
     rotation = -999;
+  }
+  
+  public int getId() {
+    return id;
   }
   
   public void rotateTile()

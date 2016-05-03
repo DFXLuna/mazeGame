@@ -6,6 +6,8 @@
  */
 import java.awt.Image;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 /**
@@ -18,42 +20,51 @@ import java.io.File;
 public class Messenger 
 {
   private GameBoard board;
+  private boolean changed = false;
   
   public Messenger(GameBoard gameboard)
   {
     board = gameboard;
   }
   
+
+  //Resets the game and the game's "changed" state. -AG
   public void resetGame()
   {
     board.resetGame();
+    this.changed = false;
   }
   
   /**
-   * Attempt to open a maze. Return false on failure. -AC
+   * Attempt to open a maze. Throw exception on failure. -AC
    */
-  public boolean loadMaze(File file)
+  public void loadMaze(File file) throws Exception
   {
-    return false;
+    board.loadMaze(file);
+    board.deleteTiles();
+    board.setTiles(board.getFileReader());
+    this.changed = false;
   }
   
   /**
-   * Attempt to save the maze. Return false on failure. -AC
+   * Attempt to save the maze. Throw exception on failure. -AC
    */
-  public boolean saveMaze(File file) {
-    return false;
+  public void saveMaze(File file) throws Exception 
+  {
+    board.saveMaze(file);
+    this.changed = false;
   }
   
   /** Check if the game has changed since last load/save. -AC */
-  // Current strange stub behavior forces it to behave on startup.
-  // Please delete this nonsense when you implement it for real. -AC
-  private boolean first = true;
   public boolean gameHasChanged() {
-    if (first) {
-      first = false;
+    if (changed)
+    {
+      return true;
+    }
+    else
+    {
       return false;
     }
-    return true;
   }
   
   //Calls back-end method which returns the number of a tile in a given
@@ -83,6 +94,7 @@ public class Messenger
   // No longer swaps tiles, now returns false on failure to move tiles. -AC
   public boolean moveTile(int from, int to)
   {
+    changed = true;
     return board.moveTile(from, to);
   }
   
@@ -118,27 +130,36 @@ public class Messenger
   
   
   
-  public int getTileRotationInGrid(int x, int y) {
+  public int getTileRotationInGrid(int x, int y) 
+  {
     return board.getTileRotationInGrid(x, y);
   }
   
-  public int getTileRotationInLeft(int y) {
+  public int getTileRotationInLeft(int y) 
+  {
     return board.getTileRotationInLeft(y);
   }
   
-  public int getTileRotationInRight(int y) {
+  public int getTileRotationInRight(int y) 
+  {
     return board.getTileRotationInRight(y);
   }
   
-  public void doRotateInGrid(int x, int y) {
+  public void doRotateInGrid(int x, int y) 
+  {
+    changed = true;
     board.doRotateInGrid(x, y);
   }
 
-  public void doRotateInLeft(int y) {
+  public void doRotateInLeft(int y) 
+  {
+    changed = true;
     board.doRotateInLeft(y);
   }
 
-  public void doRotateInRight(int y) {
+  public void doRotateInRight(int y) 
+  {
+    changed = true;
     board.doRotateInRight(y);
   }
   
