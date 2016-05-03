@@ -16,7 +16,7 @@ import java.io.IOException;
 public class FileReader extends FileInputStream
 {
   // Contains images generated for tiles. -AL
-  private Image[] tileImages = new Image[16];
+  private Image[] tileImages = new Image[32];
   
   private String fileName;
   //private File file;

@@ -19,7 +19,7 @@ public class GameBoard {
   
   // This stores all our tiles.
   // Not sure if the ordering in the array is important yet. -AC
-  private GameTile[] tiles = new GameTile[16];
+  private GameTile[] tiles = new GameTile[32];
   private GameTile[] sideArray = new GameTile[16];
   private GameTile[] gridArray = new GameTile[16];
   private FileReader filereader;
@@ -43,24 +43,16 @@ public class GameBoard {
     {
       for (int i = 0; i<32; i++)
       {
-        if (i < 16)
-        {
+        Image tileImg = fr.getImageAtIndex(i);
+        
+        if (tileImg != null) {
           tiles[i] = new GameTile(i);
-          tiles[i].setImage(fr.getImageAtIndex(i)); 
+          tiles[i].setImage(tileImg);
           tiles[i].setRotation(fr.getRotation(i));
-          sideArray[i] = tiles[i];
-        }
-        else
-        {
-          int unused = 0;
-          while (tiles[unused] != null)
-          {
-            unused++;
-          }
-          tiles[unused] = new GameTile(unused);
-          tiles[unused].setImage(fr.getImageAtIndex(i));
-          tiles[unused].setRotation(fr.getRotation(i));
-          gridArray[i-16] = tiles[unused];
+          if (i<16)
+            sideArray[i] = tiles[i];
+          else
+            gridArray[i-16] = tiles[i];
         }
       }
     }
@@ -356,7 +348,7 @@ public class GameBoard {
   // equal to them. -AG
   public void newGame()
   {
-    GameTile[] newTiles = new GameTile[16];
+    GameTile[] newTiles = new GameTile[32];
     
     int i = 0;
     while ( i < 16)
