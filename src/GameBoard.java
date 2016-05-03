@@ -36,30 +36,27 @@ public class GameBoard {
     FileOutputStream out = new FileOutputStream(file);
     int played = 0Xcafedeed;
     
-    out.write(played);
-    out.write(filereader.getTotalTileNum());
+    out.write(ConvertData.convertToByteArray(played));
+    out.write(ConvertData.convertToByteArray(filereader.getTotalTileNum()));
     
-    // Saves tiles in left side of sideArray.
-    // VERY INCOMPLETE
-    for(int i = 0; i < 8; i++)
-    {
-      if(sideArray[i] != null)
-      {
+    // Save sides. -AC
+    for (int i=0;i<16;i++) {
+      GameTile tile = sideArray[i];
+      if (tile != null) {
         out.write(ConvertData.convertToByteArray(i));
-        out.write(ConvertData.convertToByteArray(sideArray[i].getRotation()));
+        out.write(ConvertData.convertToByteArray(tile.getRotation()));
+        out.write(filereader.getLineChunk(tile.getId()));
       }
     }
     
-    // Saves tiles in gridArray.
-    for(int i = 0; i < 16; i++)
-    {
-      
-    }
-    
-    // Saves tiles in right side of sideArray.
-    for(int i = 0; i < 8; i++)
-    {
-      
+    // Save grid. -AC
+    for (int i=0;i<16;i++) {
+      GameTile tile = gridArray[i];
+      if (tile != null) {
+        out.write(ConvertData.convertToByteArray(i+16));
+        out.write(ConvertData.convertToByteArray(tile.getRotation()));
+        out.write(filereader.getLineChunk(tile.getId()));
+      }
     }
     
     out.close();
@@ -370,12 +367,16 @@ public class GameBoard {
     for (int i=0; i<16; i++)
     {
       sideArray[i] = getTileByIndex(i);
-
-      sideArray[i].setRotation(tiles[i].getOrigRotation());
+      
+      if (tiles[i] != null)
+        sideArray[i].setRotation(tiles[i].getOrigRotation());
     }
     for (int i=0; i<16; i++)
     {
-      gridArray[i] = null;
+      gridArray[i] = getTileByIndex(i+16);
+      
+      if (tiles[i+16] != null)
+        gridArray[i].setRotation(tiles[i+16].getOrigRotation());
     }
   }
 
@@ -387,6 +388,7 @@ public class GameBoard {
       sideArray[i] = null;
       gridArray[i] = null;
       tiles[i] = null;
+      tiles[i+16] = null;
     }
   }
   

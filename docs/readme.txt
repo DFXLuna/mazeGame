@@ -6,8 +6,9 @@ The goal of the game is to move the tiles to the center and solve the maze
 puzzle.
 
 The "File" menu allows you to load a maze file or save the current maze.
-Pressing the "Reset" button will return tiles totheir original positions
-and rotations from the start of the game. Pressingthe "Quit" button will
+Note that an absolute file path can be entered into both of these dialogs.
+Pressing the "Reset" button will return tiles to their original positions
+and rotations from the start of the game. Pressing the "Quit" button will
 close the window.
 
 Tiles are moved by clicking and dragging with the left mouse button. A tile

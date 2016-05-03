@@ -14,6 +14,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+
 public class FileReader extends FileInputStream
 {
   // Contains images generated for tiles. -AL
@@ -21,9 +23,7 @@ public class FileReader extends FileInputStream
   
   private String fileName;
   
-  private ArrayList<Float> endpoints = new ArrayList<Float>();
-  private ArrayList<Integer> totalLineNums = new ArrayList<Integer>();
-  private ArrayList<Integer> readOrder = new ArrayList<Integer>();
+  private byte[][] lineChunks = new byte[32][];
   
   private int[] rotations = new int[32];
 
@@ -37,28 +37,12 @@ public class FileReader extends FileInputStream
   
   // Values that correspond to file format. -AL
   private int tileNum;
-  private int lineNum;
 
 
   
   public FileReader (File file) throws Exception
   {
     super(file);
-  }
-  
-  public float accessEndPoints(int index)
-  {
-    return endpoints.get(index);
-  }
-  
-  public int accessTotalLineNums(int index)
-  {
-    return totalLineNums.get(index);
-  }
-  
-  public int accessReadOrder(int index)
-  {
-    return readOrder.get(index);
   }
   
   public int getTotalTileNum()
@@ -92,7 +76,6 @@ public class FileReader extends FileInputStream
     int compare = readInt();
     if (compare == played)
     {
-      System.out.println("Played");
       this.beenPlayed = true;
     }
     if(compare != played && compare != orig)
@@ -103,11 +86,9 @@ public class FileReader extends FileInputStream
     for(int i = 0; i < totalTileNum; i++)
     {
       tileNum = readInt();
-      readOrder.add(tileNum);
       rotations[i] = readInt();
-      lineNum = readInt();
-      totalLineNums.add(lineNum);
-      tileImages[tileNum] = makeImage(lineNum);
+      
+      tileImages[tileNum] = makeImage(i);
     }
   }
   
@@ -154,13 +135,27 @@ public class FileReader extends FileInputStream
   
   
   /** 
-   * Reads in data for lines and makes them into an Image. -AL 
+   * Reads in data for lines and makes them into an Image. -AL
+   * Id is the number to save the line chunk under. -AC
    */
-  private Image makeImage(int lineNum) throws IOException
+  private Image makeImage(int id) throws IOException
   {
     // pointsArray stores points for drawing lines. -AL
     // The format: x1 in index 0, y1 in index 1,
     //             x2 in index 2, y2 in index 3.
+    
+    int lineNum = readInt();
+    
+    // I'm sorry. -AC
+    skip(-4);
+    byte[] lineChunk = new byte[4+lineNum*16];
+    read(lineChunk);
+    skip(-lineNum*16);
+    
+    lineChunks[id] = lineChunk;
+    
+    //byte[] lineChunk = 
+    
     Float[] pointsArray = new Float[4];
     
     // Setting up the tile image. -AL
@@ -182,7 +177,6 @@ public class FileReader extends FileInputStream
       for(int point = 0; point < 4; point++)
       {
         temp = readFloat();
-        endpoints.add(temp);
         pointsArray[point] = temp;
       }
       g2d.setColor(Color.BLACK);
@@ -200,6 +194,12 @@ public class FileReader extends FileInputStream
   public Image getImageAtIndex(int index)
   {
     return tileImages[index];
+  }
+  
+  // Return the chunk that needs to be written back out to a save file, for
+  // a specific tile. -AC
+  public byte[] getLineChunk(int id) {
+    return lineChunks[id];
   }
   
 }

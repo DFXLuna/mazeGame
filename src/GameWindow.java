@@ -217,7 +217,7 @@ public class GameWindow extends JFrame
       
       File loadFile = filePicker.getSelectedFile();
       if (result == JFileChooser.APPROVE_OPTION && loadFile != null) {
-        System.out.println("Load menu file: " + loadFile.toString() + " and attempting to load maze");
+        
         tryLoadMaze(loadFile,false);
         this.repaint();
       }
@@ -285,7 +285,6 @@ public class GameWindow extends JFrame
         "Do you have permission to open it?";
       
       try {
-        System.out.println("Maze attempt load");
         messenger.loadMaze(file);
 
       } catch (Exception e) {
