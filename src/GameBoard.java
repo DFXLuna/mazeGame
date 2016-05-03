@@ -7,6 +7,7 @@
 
 import java.awt.Image;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 
@@ -28,7 +29,40 @@ public class GameBoard {
   public GameBoard(FileReader fr) 
   {
     filereader = fr;
-   
+  }
+  
+  public void saveMaze(File file) throws Exception 
+  {
+    FileOutputStream out = new FileOutputStream(file);
+    int played = 0Xcafedeed;
+    
+    out.write(played);
+    out.write(filereader.getTotalTileNum());
+    
+    // Saves tiles in left side of sideArray.
+    // VERY INCOMPLETE
+    for(int i = 0; i < 8; i++)
+    {
+      if(sideArray[i] != null)
+      {
+        out.write(ConvertData.convertToByteArray(i));
+        out.write(ConvertData.convertToByteArray(sideArray[i].getRotation()));
+      }
+    }
+    
+    // Saves tiles in gridArray.
+    for(int i = 0; i < 16; i++)
+    {
+      
+    }
+    
+    // Saves tiles in right side of sideArray.
+    for(int i = 0; i < 8; i++)
+    {
+      
+    }
+    
+    out.close();
   }
   
   //Sets the tile placements. If the game has not been played, randomizes the tile placements.
@@ -365,5 +399,7 @@ public class GameBoard {
 
     fr.close();
   }
+  
+ 
   
 }

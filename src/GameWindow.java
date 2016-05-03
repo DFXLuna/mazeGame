@@ -5,8 +5,8 @@
  * GameWindow.java
  */
 
-// CONTAINS ANONYMOUS CLASSES IN mouseReleased, openFileMenu, and!
-// These anonymous classes generally encapsulates single action and are used
+// CONTAINS ANONYMOUS CLASSES IN mouseReleased, openFileMenu, and addButtons!
+// These anonymous classes generally encapsulate single actions and are used
 // for event handlers. -AC
 
 import java.util.Timer;
@@ -65,9 +65,11 @@ public class GameWindow extends JFrame
       this.messenger = messenger;
       
       setupGame();
-      setupUI();
+      
       File file = new File("default.mze");
       tryLoadMaze(file,true);
+      
+      setupUI();
     }
 
     /**

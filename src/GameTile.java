@@ -14,6 +14,9 @@ public class GameTile
   private int rotation;
   private int origRotation;
   
+  private int totalLines;
+  private float[] endpoints;
+  
   //Initializing GameTile. currentArrayPos was only needed if we are going to
   //manipulate the array past initialization. -AG
   public GameTile(int arrayPos)

@@ -12,24 +12,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class FileReader extends FileInputStream
 {
   // Contains images generated for tiles. -AL
   private Image[] tileImages = new Image[32];
   
-  //private File file;
-  private byte[] byteArray = new byte[4];
-  private int totalTileNum;
+  private String fileName;
   
+  private ArrayList<Float> endpoints = new ArrayList<Float>();
+  private ArrayList<Integer> totalLineNums = new ArrayList<Integer>();
+  private ArrayList<Integer> readOrder = new ArrayList<Integer>();
+  
+  private int[] rotations = new int[32];
+
+  private byte[] byteArray = new byte[4];
+  
+  private int totalTileNum;
   private int orig = 0Xcafebeef;
   private int played = 0Xcafedeed;
+  
   private boolean beenPlayed = false;
   
   // Values that correspond to file format. -AL
   private int tileNum;
   private int lineNum;
-  private int[] rotations = new int[32];
+
 
   
   public FileReader (File file) throws Exception
@@ -37,7 +46,47 @@ public class FileReader extends FileInputStream
     super(file);
   }
   
-  //Loads the maze specified in the file. If the maze does not have the valid first 4 bytes, throws an exception. -AG
+  public float accessEndPoints(int index)
+  {
+    return endpoints.get(index);
+  }
+  
+  public int accessTotalLineNums(int index)
+  {
+    return totalLineNums.get(index);
+  }
+  
+  public int accessReadOrder(int index)
+  {
+    return readOrder.get(index);
+  }
+  
+  public int getTotalTileNum()
+  {
+    return totalTileNum;
+  }
+  
+  /*
+  public void loadMaze(String fileName) throws IOException
+  {
+
+    this.fileName = fileName;
+    int compare = readInt();
+    totalTileNum = readInt();
+    if (compare == played)
+    {
+      beenPlayed = true;
+    }
+    
+    for(int i = 0; i < totalTileNum; i++)
+    {
+      tileNum = readInt();
+      rotations[i] = readInt();
+      lineNum = readInt();
+      tileImages[tileNum] = makeImage(lineNum);
+    }
+  }*/
+  
   public void loadMaze(File file) throws Exception
   {
     int compare = readInt();
@@ -54,8 +103,10 @@ public class FileReader extends FileInputStream
     for(int i = 0; i < totalTileNum; i++)
     {
       tileNum = readInt();
+      readOrder.add(tileNum);
       rotations[i] = readInt();
       lineNum = readInt();
+      totalLineNums.add(lineNum);
       tileImages[tileNum] = makeImage(lineNum);
     }
   }
@@ -75,6 +126,14 @@ public class FileReader extends FileInputStream
    * Reads in 4 bytes from file and converts to int. -AL
    */
   private int readInt() throws IOException
+  {
+    int Int;
+    read(byteArray);
+    Int = ConvertData.convertToInt(byteArray);
+    return Int;
+  }
+  
+  private int writeInt() throws IOException
   {
     int Int;
     read(byteArray);
@@ -115,17 +174,22 @@ public class FileReader extends FileInputStream
     g2d.setBackground(Color.WHITE);
     g2d.fillRect(0, 0, TileDrawer.TILE_SIZE, TileDrawer.TILE_SIZE);
     
+    float temp;
+    
     // Reads in the information for drawing the lines, and draws them. -AL
     for(int lines = 0; lines < lineNum; lines++)
     {
       for(int point = 0; point < 4; point++)
       {
-        pointsArray[point] = readFloat();
+        temp = readFloat();
+        endpoints.add(temp);
+        pointsArray[point] = temp;
       }
       g2d.setColor(Color.BLACK);
       g2d.drawLine(pointsArray[0].intValue(), pointsArray[1].intValue(),
           pointsArray[2].intValue(), pointsArray[3].intValue());
     }
+    
     return image;
   }
   

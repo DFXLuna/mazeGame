@@ -6,6 +6,7 @@
  */
 import java.awt.Image;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 
@@ -50,8 +51,7 @@ public class Messenger
    */
   public void saveMaze(File file) throws Exception 
   {
-
-
+    board.saveMaze(file);
     this.changed = false;
   }
   
