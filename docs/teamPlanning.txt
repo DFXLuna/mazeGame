@@ -11,17 +11,20 @@ All small issues are addressed via issue tickets in the main Github repo.
 Planning and big picture stuff takes place in in-person meetings
 
 Meeting 1:
-    -Roles assigned 
+    
     -Base design established
         -Development broken up into 2 portions
-            front end and back end
-        -Front end handles gui and user interaction
-        -Back end handles game objects and logic
+            -Front end handles gui and user interaction
+            -Back end handles game objects and logic
+    -Roles were assigned: Jared and Adam will handle the front end
+    Alex and Auston will handle the backend. Matt will take care of
+    anything else not directly related to those two.
     -Got everyone using Github, repos forked, cloned, synced
     -Made sure everyone would be able to do work independantly
         in their two man teams.
 
 Meeting 2:
+  
   -Figure out what the front end needs from the back end to draw and move tiles
     -Tile positions
   
@@ -36,7 +39,10 @@ Meeting 2:
 
 
 Meeting 3:
-  -Brief discussion of reading mze file, most of responsiblity lies in back end
+  
+    -Brief discussion of reading mze file, most of responsiblity lies in back end
+    -Backend will pass necessary information to draw tile through the
+    messenger to the front end.
 
 Meeting 4:
   
@@ -55,3 +61,17 @@ Meeting 4:
     
   Additional issues were handled after the meeting by communicating via Github
   and text messages.
+
+Meeting 5:
+
+    -The new specification for the mze filetype was discussed in regards to how
+    the backend file reader needs to be changed. The changes weren't too
+    drastic.
+        -Added code to decide if the maze has been played or not via the magic
+        numbers placed at the top of the file
+        -The specific implementation of the code that places a tile had to be
+        changed to allow the tile to be place in the main game grid
+    -Loading and saving was briefly discussed, the menu was to be handled by
+    the front end team and the actual saving and loading was to be handled by the
+    back end team. The specifics were left to the teams.
+    
