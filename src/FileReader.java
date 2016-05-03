@@ -19,6 +19,7 @@ public class FileReader extends FileInputStream
   private Image[] tileImages = new Image[16];
   
   private String fileName;
+  //private File file;
   private byte[] byteArray = new byte[4];
   private int totalTileNum;
   
@@ -32,20 +33,20 @@ public class FileReader extends FileInputStream
   // No clue if this is correct, just trying to get it in a working state. -AC
   private int[] rotations = new int[32];
   
-      
+      /*
   public FileReader(String fileName) throws IOException 
   {
     super(fileName);
     //loadMaze(fileName);
-  }
+  }*/
   
-  /*
+  
   public FileReader (File file) throws Exception
   {
     super(file);
-    loadMaze(file);
+    //loadMaze(file);
 
-  }*/
+  }
   
   /*
   public void loadMaze(String fileName) throws IOException
@@ -70,14 +71,15 @@ public class FileReader extends FileInputStream
   
   public void loadMaze(File file) throws Exception
   {
-    //this.fileName = file;
+    //FileReader fr = new FileReader(file);
     int compare = readInt();
     if (compare == played)
     {
-      beenPlayed = true;
+      this.beenPlayed = true;
     }
     if(compare != played && compare != orig)
     {
+      //fr.close();
        throw new Exception("Not a valid maze file.");
     }
     totalTileNum = readInt();
@@ -88,6 +90,8 @@ public class FileReader extends FileInputStream
       lineNum = readInt();
       tileImages[tileNum] = makeImage(lineNum);
     }
+    
+    //fr.close();
   }
   
   public int getRotation(int index)

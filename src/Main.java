@@ -5,12 +5,14 @@
  * Main.java
  */
 import javax.swing.*;
+
+import java.io.File;
 import java.io.IOException;
 
 public class Main 
 {
   
-  public static void main(String[] args) throws IOException
+  public static void main(String[] args) throws Exception
   {
     try {   
       UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -28,7 +30,9 @@ public class Main
     // change mid-startup. -AC
     
     // Testing FileReader
-    FileReader fr = new FileReader("default.mze");
+    File file = new File("default.mze");
+    FileReader fr = new FileReader(file);
+    //fr.loadMaze(file);
     
     // Create game window and board. -AC
     GameBoard board = new GameBoard(fr);

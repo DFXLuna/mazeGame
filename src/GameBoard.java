@@ -28,6 +28,12 @@ public class GameBoard {
   public GameBoard(FileReader fr) 
   {
     filereader = fr;
+   
+  }
+  
+  public void setTiles(FileReader fr)
+  {
+
     
     if (!filereader.played())
     {
@@ -58,7 +64,6 @@ public class GameBoard {
         }
       }
     }
-   
   }
   
   public void randomizeTiles(FileReader fr)
@@ -156,6 +161,11 @@ public class GameBoard {
         }
       }
     }
+  }
+  
+  public FileReader getFileReader()
+  {
+    return filereader;
   }
   
   // The GameWindow needs to be able to get tiles, but it should not be able
@@ -450,7 +460,11 @@ public class GameBoard {
   
   public void loadMaze(File file) throws Exception
   {
+    FileReader fr = new FileReader(file);
+    filereader = fr;
     filereader.loadMaze(file);
+
+    //fr.close();
   }
   
 }

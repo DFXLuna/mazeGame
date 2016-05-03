@@ -36,6 +36,7 @@ public class Messenger
   public void loadMaze(File file) throws Exception
   {
     board.loadMaze(file);
+    board.setTiles(board.getFileReader());
   }
   
   /**
