@@ -192,37 +192,40 @@ public class GameBoard {
   }
   
   
-  public int getTileRotationInGrid(int x, int y) {
-    if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getRotation();
+  public int getTileRotation(BoardSide side, int x, int y) {
+    switch (side) {
+    case CENTER:
+      if (gridArray[y*4+x] != null)
+        return gridArray[y*4+x].getRotation();
+      break;
+    case LEFT:
+      if (sideArray[y] != null)
+        return sideArray[y].getRotation();
+      break;
+    case RIGHT:
+      if (sideArray[y+8] != null)
+        return sideArray[y+8].getRotation();
+      break;
+    }
     return -1;
   }
   
-  public int getTileRotationInLeft(int y) {
-    if (sideArray[y] != null)
-      return sideArray[y].getRotation();
+  public Object doRotate(BoardSide side, int x, int y) {
+    switch (side) {
+    case CENTER:
+      if (gridArray[y*4+x] != null)
+        gridArray[y*4+x].rotateTile();
+      break;
+    case LEFT:
+      if (sideArray[y] != null)
+        sideArray[y].rotateTile();
+      break;
+    case RIGHT:
+      if (sideArray[y+8] != null)
+        sideArray[y+8].rotateTile();
+      break;
+    }
     return -1;
-  }
-  
-  public int getTileRotationInRight(int y) {
-    if (sideArray[y+8] != null)
-      return sideArray[y+8].getRotation();
-    return -1;
-  }
-  
-  public void doRotateInGrid(int x, int y) {
-    if(gridArray[y*4+x] != null)
-      gridArray[y*4+x].rotateTile();
-  }
-
-  public void doRotateInLeft(int y) {
-    if(sideArray[y] != null)
-      sideArray[y].rotateTile();
-  }
-
-  public void doRotateInRight(int y) {
-    if(sideArray[y+8] != null)
-      sideArray[y+8].rotateTile();
   }
   
   //Moves the tile to a specified location. sideArray is 0-15,
@@ -306,34 +309,24 @@ public class GameBoard {
   
   //Returns the number displayed on the Tile in the specified position
   //of the left side of the holding area. -AG
-  public Image getTileInLeft(int pos)
+  public Image getTile(BoardSide side, int x, int y)
   {
-    if (sideArray[pos] != null)
-      return sideArray[pos].getImage();
+    switch (side) {
+    case CENTER:
+      if (gridArray[y*4+x] != null)
+        return gridArray[y*4+x].getImage();
+      break;
+    case LEFT:
+      if (sideArray[y] != null)
+        return sideArray[y].getImage();
+      break;
+    case RIGHT:
+      if (sideArray[y+8] != null)
+        return sideArray[y+8].getImage();
+      break;
+    }
     return null;
   }
-  
-  
-  //Returns the number displayed on the Tile in the
-  //specified position of the right side of the holding area. -AG
-  public Image getTileInRight(int pos)
-  {
-    if (sideArray[pos+8] != null)
-      return sideArray[pos+8].getImage();
-    return null;
-  }
-  
-  //Returns the number displayed on the Tile in the
-  //specified position of the grid. -AG
-  public Image getTileInGrid(int x, int y)
-  {
-    if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getImage();
-    return null;
-  }
-  
-  
-  
   //Checks if each tile is in the correct position, returns true only if all
   //tiles are in the correct position. -AG
   //May be needed in future. -AL
