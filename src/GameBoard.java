@@ -54,34 +54,18 @@ public class GameBoard {
     out.close();
   }
   
-  //Sets the tile placements. If the game has not been played, randomizes the tile placements.
-  //If it has been played, returns the tiles to original placements. -AG
-  private void setTiles(FileReader fr)
+  //Loads the maze specified in the file. -AG
+  public void loadMaze(File file) throws Exception
   {
-    if (!filereader.played())
-    {
-      randomizeTiles(fr);
-    }
-    else
-    {
-      for (int i = 0; i<32; i++)
-      {
-        Image tileImg = fr.getImageAtIndex(i);
-        
-        if (tileImg != null) {
-          tiles[i] = new GameTile(i);
-          tiles[i].setImage(tileImg);
-          tiles[i].setRotation(fr.getRotation(i));
-          if (i<16)
-            sideArray[i] = tiles[i];
-          else
-            gridArray[i-16] = tiles[i];
-        }
-      }
-    }
-  }
+    FileReader fr = new FileReader(file);
+    filereader = fr;
+    filereader.loadMaze(file);
 
-  
+    fr.close();
+    
+    deleteTiles();
+    setTiles(getFileReader());
+  }
   public void randomizeTiles(FileReader fr)
   {
     //Randomizing tile placements. -AG
@@ -179,10 +163,6 @@ public class GameBoard {
     }
   }
   
-  public FileReader getFileReader()
-  {
-    return filereader;
-  }
   
   // The GameWindow needs to be able to get tiles, but it should not be able
   // to change the array. -AC
@@ -306,7 +286,71 @@ public class GameBoard {
     }
   }
   
+  //Resets the game by moving every tile to their
+  //original position and making the grid empty. -AG
+  public void resetGame()
+  {
+    for (int i=0; i<16; i++)
+    {
+      sideArray[i] = getTileByIndex(i);
+      
+      if (tiles[i] != null)
+        sideArray[i].setRotation(tiles[i].getOrigRotation());
+    }
+    for (int i=0; i<16; i++)
+    {
+      gridArray[i] = getTileByIndex(i+16);
+      
+      if (tiles[i+16] != null)
+        gridArray[i].setRotation(tiles[i+16].getOrigRotation());
+    }
+  }
+
+  //Gets rid of all tiles in the arrays, used in preparation. -AG
+  public void deleteTiles()
+  {
+    for (int i = 0; i< 32; i++)
+      tiles[i] = null;
+    
+    for (int i = 0; i< 16; i++)
+    {
+      sideArray[i] = null;
+      gridArray[i] = null;
+    }
+  }
   
+  public FileReader getFileReader()
+  {
+    return filereader;
+  }
+  
+  // The GameWindow needs to be able to get tiles, but it should not be able
+  // to change the array. -AC
+  public GameTile getTileByIndex(int i) 
+  {
+    return tiles[i];
+  }
+  
+  
+  public int getTileRotationInGrid(int x, int y) {
+    if (gridArray[y*4+x] != null)
+      return gridArray[y*4+x].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInLeft(int y) {
+    if (sideArray[y] != null)
+      return sideArray[y].getRotation();
+    return -1;
+  }
+  
+  public int getTileRotationInRight(int y) {
+    if (sideArray[y+8] != null)
+      return sideArray[y+8].getRotation();
+    return -1;
+  }
+  
+
   //Returns the number displayed on the Tile in the specified position
   //of the left side of the holding area. -AG
   public Image getTile(BoardSide side, int x, int y)
@@ -344,53 +388,32 @@ public class GameBoard {
     return victory;
   }
   */
-  
-  //Resets the game by moving every tile to their
-  //original position and making the grid empty. -AG
-  public void resetGame()
-  {
-    for (int i=0; i<16; i++)
-    {
-      sideArray[i] = getTileByIndex(i);
-      
-      if (tiles[i] != null)
-        sideArray[i].setRotation(tiles[i].getOrigRotation());
-    }
-    for (int i=0; i<16; i++)
-    {
-      gridArray[i] = getTileByIndex(i+16);
-      
-      if (tiles[i+16] != null)
-        gridArray[i].setRotation(tiles[i+16].getOrigRotation());
-    }
-  }
 
-  //Gets rid of all tiles in the arrays, used in preparation. -AG
-  public void deleteTiles()
+  //Sets the tile placements. If the game has not been played, randomizes the tile placements.
+  //If it has been played, returns the tiles to original placements. -AG
+  private void setTiles(FileReader fr)
   {
-    for (int i = 0; i< 32; i++)
-      tiles[i] = null;
-    
-    for (int i = 0; i< 16; i++)
+    if (!filereader.played())
     {
-      sideArray[i] = null;
-      gridArray[i] = null;
+      randomizeTiles(fr);
+    }
+    else
+    {
+      for (int i = 0; i<32; i++)
+      {
+        Image tileImg = fr.getImageAtIndex(i);
+        
+        if (tileImg != null) {
+          tiles[i] = new GameTile(i);
+          tiles[i].setImage(tileImg);
+          tiles[i].setRotation(fr.getRotation(i));
+          if (i<16)
+            sideArray[i] = tiles[i];
+          else
+            gridArray[i-16] = tiles[i];
+        }
+      }
     }
   }
-  
-  //Loads the maze specified in the file. -AG
-  public void loadMaze(File file) throws Exception
-  {
-    FileReader fr = new FileReader(file);
-    filereader = fr;
-    filereader.loadMaze(file);
-
-    fr.close();
-    
-    deleteTiles();
-    setTiles(getFileReader());
-  }
-  
- 
   
 }
