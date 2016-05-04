@@ -57,14 +57,13 @@ public class GameBoard {
   //Loads the maze specified in the file. -AG
   public void loadMaze(File file) throws Exception
   {
-    FileReader fr = new FileReader(file);
-    filereader = fr;
+    filereader = new FileReader(file);
     filereader.loadMaze(file);
 
-    fr.close();
+    filereader.close();
     
     deleteTiles();
-    setTiles(getFileReader());
+    setTiles(filereader);
   }
   public void randomizeTiles(FileReader fr)
   {
@@ -318,19 +317,6 @@ public class GameBoard {
       gridArray[i] = null;
     }
   }
-  
-  public FileReader getFileReader()
-  {
-    return filereader;
-  }
-  
-  // The GameWindow needs to be able to get tiles, but it should not be able
-  // to change the array. -AC
-  public GameTile getTileByIndex(int i) 
-  {
-    return tiles[i];
-  }
-  
   
   public int getTileRotationInGrid(int x, int y) {
     if (gridArray[y*4+x] != null)
