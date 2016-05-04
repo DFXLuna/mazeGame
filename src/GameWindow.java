@@ -475,6 +475,6 @@ public class GameWindow extends JFrame
 
     @Override
     public void mouseMoved(MouseEvent arg0) {
-      // Do nothing. We only listen for the drag event.
+      // Do nothing. We only listen for the drag event. -AC
     }
   };

@@ -28,7 +28,7 @@ public class Main
     // change mid-startup. -AC
     
     //File file = new File("default.mze");
-    //FileReader fr = new FileReader(file);
+    //MazeReader fr = new MazeReader(file);
     
     // Create game window and board. -AC
     GameBoard board = new GameBoard();

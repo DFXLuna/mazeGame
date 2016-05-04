@@ -2,7 +2,7 @@
  * @author Group L
  * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
  * COSC 3011 Program 01
- * FileReader.java
+ * MazeReader.java
  */
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class FileReader extends FileInputStream
+public class MazeReader extends FileInputStream
 {
   private int totalTileNum;
   
@@ -32,17 +32,21 @@ public class FileReader extends FileInputStream
   private int[] rotations = new int[32];
   // Contains images generated for tiles. -AL
   private Image[] tileImages = new Image[32];
-  
   private byte[][] lineChunks = new byte[32][];
 
   private byte[] byteArray = new byte[4];
   
   private boolean beenPlayed = false;
-
   
-  public FileReader (File file) throws Exception
+  /**
+   * MazeReader constructor. Reads a maze file, storing all the relevant
+   * information in a hopefully accessible way. -AC
+   */
+  public MazeReader (File file) throws Exception
   {
     super(file);
+    loadMaze();
+    close();
   }
   
   public int getTotalTileNum()
@@ -70,13 +74,13 @@ public class FileReader extends FileInputStream
   }
   
   //Returns whether the maze has been played or not, specified in the file. -AG
-  public boolean played()
+  /*public boolean played()
   {
     return beenPlayed;
-  }
+  }*/
   
   
-  public void loadMaze(File file) throws Exception
+  private void loadMaze() throws Exception
   {
     int compare = readInt();
     if (compare == played)
@@ -92,8 +96,35 @@ public class FileReader extends FileInputStream
     {
       tileNum = readInt();
       rotations[i] = readInt();
-      
       tileImages[tileNum] = makeImage(i);
+    }
+    
+    if (!beenPlayed) {
+      randomize();
+    }
+  }
+  
+  private void randomize() {
+    // Set an even distribution of rotations. -AC
+    rotations = new int[] {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3};
+    
+    for (int i=0;i<16;i++) {
+      
+      // Randomize rotations. -AC
+      int j = (int)(Math.random() * 16);
+      int rot = rotations[i];
+      rotations[i] = rotations[j];
+      rotations[j] = rot;
+      
+      // Randomize tiles. -AC
+      int j2 = (int)(Math.random() * 16);
+      Image img = tileImages[i];
+      tileImages[i] = tileImages[j2];
+      tileImages[j2] = img;
+      
+      byte[] chunk = lineChunks[i];
+      lineChunks[i] = lineChunks[j2];
+      lineChunks[j2] = chunk;
     }
   }
   
@@ -108,14 +139,6 @@ public class FileReader extends FileInputStream
     return Int;
   }
   
-//  private int writeInt() throws IOException
-//  {
-//    int Int;
-//    read(byteArray);
-//    Int = ConvertData.convertToInt(byteArray);
-//    return Int;
-//  }
-//  
   /**
    * Reads in 4 bytes from file and converts to float. -AL
    */

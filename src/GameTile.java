@@ -7,6 +7,8 @@
 
 import java.awt.Image;
 
+import javax.management.modelmbean.InvalidTargetObjectTypeException;
+
 public class GameTile 
 { 
   private int id;
@@ -16,10 +18,12 @@ public class GameTile
   
   //Initializing GameTile. currentArrayPos was only needed if we are going to
   //manipulate the array past initialization. -AG
-  public GameTile(int id)
+  public GameTile(int id, int startRotation, Image img)
   {
     this.id = id;
-    rotation = -999;
+    rotation = startRotation;
+    origRotation = startRotation;
+    image = img;
   }
   
   public int getId() {
@@ -41,13 +45,13 @@ public class GameTile
   }
   
   // Sets the Tile's image -AL
-  public void setImage(Image img)
+  /*public void setImage(Image img)
   {
     image = img;
-  }
+  }*/
   
   // Sets the Tile's rotation (0-3) -AG
-  public void setRotation(int rot)
+  /*public void setRotation(int rot)
   {
     if (rotation == -999)
     {
@@ -55,13 +59,13 @@ public class GameTile
     }
     rotation = rot;
     //System.out.println("Rotation set to " + rot);
-  }
+  }*/
   
   //Sets tile's original rotation (0-3) -AG
-  public void setOrigRotation(int rot)
+  /*public void setOrigRotation(int rot)
   {
     origRotation = rot;
-  }
+  }*/
   
   // Returns the Tile's rotation (0-3) -AG
   public int getRotation()
@@ -70,11 +74,14 @@ public class GameTile
     return rotation;
   }
   
-  // Returns the Tile's original rotation (0-3) -AG
-  public int getOrigRotation()
-  {
-    return origRotation;
+  public void resetRotation() {
+    rotation = origRotation;
   }
   
- 
+  // Returns the Tile's original rotation (0-3) -AG
+  /*public int getOrigRotation()
+  {
+    return origRotation;
+  }*/
+  
 }

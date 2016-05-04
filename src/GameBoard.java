@@ -8,6 +8,7 @@
 import java.awt.Image;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 /**
  * This is the main component of the back-end
@@ -18,10 +19,12 @@ public class GameBoard {
   
   // This stores all our tiles.
   // Not sure if the ordering in the array is important yet. -AC
-  private GameTile[] tiles = new GameTile[32];
+  //private GameTile[] tiles = new GameTile[32];
+  
   private GameTile[] sideArray = new GameTile[16];
   private GameTile[] gridArray = new GameTile[16];
-  private FileReader filereader;
+  
+  private MazeReader filereader;
   
   public void saveMaze(File file) throws Exception 
   {
@@ -57,119 +60,9 @@ public class GameBoard {
   //Loads the maze specified in the file. -AG
   public void loadMaze(File file) throws Exception
   {
-    filereader = new FileReader(file);
-    filereader.loadMaze(file);
-
-    filereader.close();
-    
-    deleteTiles();
-    setTiles(filereader);
+    filereader = new MazeReader(file);
+    setTilesFromReader();
   }
-  public void randomizeTiles(FileReader fr)
-  {
-    //Randomizing tile placements. -AG
-    int i = 0;
-    while ( i < 16)
-    {
-      int random = (int )(Math.random() * 16);
-      if(tiles[random] == null)
-      {
-        tiles[random] = new GameTile(i);
-        tiles[random].setImage(fr.getImageAtIndex(i)); 
-        sideArray[random] = tiles[random];
-        gridArray[i] = null;
-        i++;
-      }
-    }
-    //Setting 4 random tiles to 0 rotation. -AG
-    int j = 0;
-    while (j < 4)
-    {
-      int random = (int )(Math.random() * 16);
-      tiles[random].setRotation(0);
-      j++;
-    }
-    
-    //Booleans checking whether every rotation has been used. -AG
-    boolean rot1 = false;
-    boolean rot2 = false;
-    boolean rot3 = false;
-    int k = 0;
-    //Randomizing rotations. -AG
-    while (k < 16)
-    {
-      int random = (int )(Math.random() * 3 + 1);
-
-      if(tiles[k].getRotation() != 0)
-      {
-        tiles[k].setRotation(random);
-
-        if (random == 1)
-        {
-          rot1 = true;
-        }
-        if (random == 2)
-        {
-          rot2 = true;
-        }
-        if (random == 1)
-        {
-          rot3 = true;
-        }
-      }
-      k++;
-    }
-    
-    //If one of the rotations is not used, find a random nonzero rotation and change it to specified rotation. -AG
-    if(rot1 == false)
-    {
-      boolean zero = true;
-      while (zero)
-      {
-        int random = (int )(Math.random() * 16);
-        if(tiles[random].getRotation() != 0)
-        {
-          tiles[random].setRotation(1);
-          zero = false;
-        }
-      }
-    }
-    if(rot2 == false)
-    {
-      boolean zero = true;
-      while (zero)
-      {
-        int random = (int )(Math.random() * 16);
-        if(tiles[random].getRotation() != 0)
-        {
-          tiles[random].setRotation(2);
-          zero = false;
-        }
-      }
-    }
-    if(rot3 == false)
-    {
-      boolean zero = true;
-      while (zero)
-      {
-        int random = (int )(Math.random() * 16);
-        if(tiles[random].getRotation() != 0)
-        {
-          tiles[random].setRotation(3);
-          zero = false;
-        }
-      }
-    }
-  }
-  
-  
-  // The GameWindow needs to be able to get tiles, but it should not be able
-  // to change the array. -AC
-  public GameTile getTileByIndex(int i) 
-  {
-    return tiles[i];
-  }
-  
   
   public int getTileRotation(BoardSide side, int x, int y) {
     switch (side) {
@@ -285,58 +178,20 @@ public class GameBoard {
     }
   }
   
-  //Resets the game by moving every tile to their
-  //original position and making the grid empty. -AG
+  /**
+   * Resets the game by moving every tile to their
+   * original position and making the grid empty. -AG
+   */
   public void resetGame()
   {
-    for (int i=0; i<16; i++)
-    {
-      sideArray[i] = getTileByIndex(i);
-      
-      if (tiles[i] != null)
-        sideArray[i].setRotation(tiles[i].getOrigRotation());
-    }
-    for (int i=0; i<16; i++)
-    {
-      gridArray[i] = getTileByIndex(i+16);
-      
-      if (tiles[i+16] != null)
-        gridArray[i].setRotation(tiles[i+16].getOrigRotation());
-    }
-  }
-
-  //Gets rid of all tiles in the arrays, used in preparation. -AG
-  public void deleteTiles()
-  {
-    for (int i = 0; i< 32; i++)
-      tiles[i] = null;
-    
-    for (int i = 0; i< 16; i++)
-    {
-      sideArray[i] = null;
-      gridArray[i] = null;
-    }
+    // Note that this was originally more complex. It now serves as a wrapper
+    // for setTilesFromReader(), but we're keeping it this way since
+    // resetGame() is a more descriptive name for anything external of the
+    // board that needs to use it, while setTilesFromReader() is a better
+    // description of what's going on internally. -AC
+    setTilesFromReader();
   }
   
-  public int getTileRotationInGrid(int x, int y) {
-    if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getRotation();
-    return -1;
-  }
-  
-  public int getTileRotationInLeft(int y) {
-    if (sideArray[y] != null)
-      return sideArray[y].getRotation();
-    return -1;
-  }
-  
-  public int getTileRotationInRight(int y) {
-    if (sideArray[y+8] != null)
-      return sideArray[y+8].getRotation();
-    return -1;
-  }
-  
-
   //Returns the number displayed on the Tile in the specified position
   //of the left side of the holding area. -AG
   public Image getTile(BoardSide side, int x, int y)
@@ -375,31 +230,25 @@ public class GameBoard {
   }
   */
 
-  //Sets the tile placements. If the game has not been played, randomizes the tile placements.
-  //If it has been played, returns the tiles to original placements. -AG
-  private void setTiles(FileReader fr)
+  /**
+   * Loads tiles from the file reader. This is used on the initial load, and
+   * on resets.
+   */
+  private void setTilesFromReader()
   {
-    if (!filereader.played())
+    for (int i = 0; i<32; i++)
     {
-      randomizeTiles(fr);
-    }
-    else
-    {
-      for (int i = 0; i<32; i++)
-      {
-        Image tileImg = fr.getImageAtIndex(i);
-        
-        if (tileImg != null) {
-          tiles[i] = new GameTile(i);
-          tiles[i].setImage(tileImg);
-          tiles[i].setRotation(fr.getRotation(i));
-          if (i<16)
-            sideArray[i] = tiles[i];
-          else
-            gridArray[i-16] = tiles[i];
-        }
+      Image tileImg = filereader.getImageAtIndex(i);
+      
+      GameTile tile = null;
+      if (tileImg != null) {
+        tile = new GameTile(i,filereader.getRotation(i),tileImg);
       }
+      
+      if (i<16)
+        sideArray[i] = tile;
+      else
+        gridArray[i-16] = tile;
     }
   }
-  
 }
