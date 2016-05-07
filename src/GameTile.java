@@ -1,7 +1,8 @@
 /**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * Gametile.java
  */
 
@@ -20,8 +21,13 @@ public class GameTile
   
   private Image image;
   
-  //Initializing GameTile. currentArrayPos was only needed if we are going to
-  //manipulate the array past initialization. -AG
+  /**
+   * Initializing GameTile. currentArrayPos was only needed if we are going to
+   * manipulate the array past initialization. -AG
+   * @param startPosition
+   * @param startRotation
+   * @param points Array of floats for drawing image
+   */
   public GameTile(int startPosition, int startRotation, float[] points)
   {
     this.startPosition = startPosition;
@@ -43,32 +49,45 @@ public class GameTile
       rotation++;
   }
     
-  // Changed to getImage() -- should now return the image on the tile!
+  /**
+   * 
+   * @return Gametile's Image
+   */
   public Image getImage()
   {
     return image;
   }
   
-  // Returns the Tile's rotation (0-3) -AG
+  /**
+   * 
+   * @return GameTile's rotation as number of clockwise 90 degree rotations
+   */
   public int getRotation()
   {
     //System.out.println(rotation + " returned.");
     return rotation;
   }
   
-  // Returns the point array. (Actually returns a copy so the caller can't
-  // edit it!) -AC
+  /**
+   * Clones points[] and returns the copy. -AC, MG
+   * @return Copy of points[]
+   */
   public float[] getPoints() {
     return linePoints.clone();
   }
   
+  /**
+   * Returns the tiles rotation to it's original rotation since last save. -MG
+   */
   public void resetRotation() {
     rotation = origRotation;
   }
   
   /** 
    * Reads in data for lines and makes them into an Image. -AL
-   * Originally in the MazeReader, slightly modified for GameTile. -AC
+   * Originally in the MazeReader, slightly modified for GameTile. -AC, MG
+   * @param points list of floats describing end points of lines to be drawn. 
+   * @return Image Image made from points.
    */
   private static Image makeImage(float[] points)
   {
@@ -100,6 +119,5 @@ public class GameTile
     }
     
     return image;
-  }
-  
+  }  
 }

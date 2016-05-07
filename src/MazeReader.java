@@ -1,7 +1,8 @@
 /**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * MazeReader.java
  */
 import java.awt.Color;
@@ -23,17 +24,17 @@ public class MazeReader extends FileInputStream
   //Value if maze has not been played -MG
   private int orig = 0Xcafebeef;
  
-  //value if maze has been played
+  //value if maze has been played -MG
   private int played = 0Xcafedeed;
   
   // Positions, rotations, and point arrays, stored in solved order.
-  // These are initialized when the maze is loaded.
+  // These are initialized when the maze is loaded. -AC
   private int[] tilePositions;
   private int[] tileRotations;
   private float[][] tilePoints;
   
   // Similar to above, stores tiles in solved order. This is the only of the
-  // arrays that external classes will have access to.
+  // arrays that external classes will have access to. -AC
   private GameTile[] tiles;
 
   private byte[] byteArray = new byte[4];
@@ -58,12 +59,16 @@ public class MazeReader extends FileInputStream
   
   /**
    * Gets a tile. Index is based on the SOLVED ORDER! -AC
+   * @return GameTile
    */
   public GameTile getTile(int index) {
     return tiles[index];
   }
   
-  
+  /**
+   * Reads file into GameTileObjects -MG
+   * @throws Exception
+   */
   private void loadMaze() throws Exception
   {
     int compare = readInt();
@@ -100,6 +105,9 @@ public class MazeReader extends FileInputStream
     }
   }
   
+  /**
+   * Randomizes GameTile positions and rotations -MG
+   */
   private void randomize() {
     // Set an even distribution of rotations. -AC
     tileRotations = new int[] {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3};
@@ -121,7 +129,9 @@ public class MazeReader extends FileInputStream
   }
   
   /** 
-   * Reads in 4 bytes from file and converts to int. -AL
+   * Reads in 4 bytes from file and converts to int. -AL, MG
+   * @return int
+   * @throws IOException
    */
   private int readInt() throws IOException
   {
@@ -132,7 +142,9 @@ public class MazeReader extends FileInputStream
   }
   
   /**
-   * Reads in 4 bytes from file and converts to float. -AL
+   * Reads in 4 bytes from file and converts to float. -AL, MG
+   * @return float
+   * @throws IOException
    */
   private float readFloat() throws IOException
   {
@@ -145,7 +157,9 @@ public class MazeReader extends FileInputStream
   /**
    * Read the point count and all the points, returning an array of floats.
    * This way we can both create the image and keep this array for saving. 
-   * The returned array is guaranteed to be valid for tile creation. -AC
+   * The returned array is guaranteed to be valid for tile creation. -AC, MG
+   * @return float[]
+   * @throws IOException
    */
   private float[] readPoints() throws IOException {
     int lineNum = readInt();

@@ -1,7 +1,8 @@
 /**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * GameBoard.java
  */
 
@@ -29,6 +30,12 @@ public class GameBoard {
   
   private MazeReader filereader;
   
+  /**
+   * Takes current maze orientation and writes it to file. Tiles are saved
+   * in order of correct tile position. -MG
+   * @param file output File
+   * @throws Exception
+   */
   public void saveMaze(File file) throws Exception 
   {
     // Calculate the byte length of the save file. -AC
@@ -67,27 +74,23 @@ public class GameBoard {
   }
   
   /**
-   * Givem a tile, return the current position of the tile.
-   * Really only used for saving. Given a chance to use it you should
-   * probably not, as it has to check all the tiles. -AC
+   * Loads the maze specified in the file. -AG, MG
+   * @param file output File
+   * @throws Exception
    */
-  private int findCurrentTilePosition(GameTile tile) {
-    for (int i = 0; i<16; i++) {
-      if (sideArray[i] == tile)
-        return i;
-      else if (gridArray[i] == tile)
-        return i + 16;
-    }
-    return -1;
-  }
-  
-  //Loads the maze specified in the file. -AG
   public void loadMaze(File file) throws Exception
   {
     filereader = new MazeReader(file);
     setTilesFromReader();
   }
   
+  /**
+   * Returns GameTile's rotation in clockwise 90 degree rotations -MG
+   * @param side Enum for which holder GameTile is contained in
+   * @param x X coordinate of GameTile
+   * @param y Y coordinate of GameTile
+   * @return  GameTile's rotation in clockwise 90 degree rotations
+   */
   public int getTileRotation(BoardSide side, int x, int y) {
     switch (side) {
     case CENTER:
@@ -105,7 +108,13 @@ public class GameBoard {
     }
     return -1;
   }
-  
+  /**
+   * Rotates tile 90 degree clockwise. Returns -1 -MG
+   * @param side Enum for which holder GameTile is contained in
+   * @param x X coordinate of GameTile
+   * @param y Y coordinate of GameTile
+   * @return -1
+   */
   public Object doRotate(BoardSide side, int x, int y) {
     switch (side) {
     case CENTER:
@@ -124,8 +133,13 @@ public class GameBoard {
     return -1;
   }
   
-  //Moves the tile to a specified location. sideArray is 0-15,
-  //gridArray 16-31. -AG
+  /**
+   * Moves the tile to a specified location. sideArray is 0-15,
+   * gridArray 16-31. -AG, MG
+   * @param from
+   * @param to
+   * @return true if move was successful
+   */
   public boolean moveTile(int from, int to)
   {
     //If "to" is in the gridArray. -AG
@@ -216,8 +230,14 @@ public class GameBoard {
     setTilesFromReader();
   }
   
-  //Returns the number displayed on the Tile in the specified position
-  //of the left side of the holding area. -AG
+  /**
+   * Returns the number displayed on the Tile in the specified position
+   * of the left side of the holding area. -AG, MG
+   * @param side Enum for which holder GameTile is contained in
+   * @param x X coordinate of GameTile
+   * @param y Y coordinate of GameTile
+   * @return GameTile's Image
+   */
   public Image getTile(BoardSide side, int x, int y)
   {
     switch (side) {
@@ -236,27 +256,10 @@ public class GameBoard {
     }
     return null;
   }
-  //Checks if each tile is in the correct position, returns true only if all
-  //tiles are in the correct position. -AG
-  //May be needed in future. -AL
-  /*
-  private boolean checkHasWon()
-  {
-    boolean victory = true;
-    for (int i = 0; i<16; i++)
-    {
-      if (tiles[i].correctPosition() == false)
-      {
-        victory = false;
-      }
-    }
-    return victory;
-  }
-  */
 
   /**
    * Loads tiles from the file reader. This is used on the initial load, and
-   * on resets.
+   * on resets. -AC
    */
   private void setTilesFromReader()
   {
@@ -280,4 +283,39 @@ public class GameBoard {
         gridArray[tileStartPos-16] = tile;
     }
   }
+
+/**
+ * Given a tile, return the current position of the tile.
+ * Really only used for saving. Given a chance to use it you should
+ * probably not, as it has to check all the tiles. -AC, MG
+ * @param tile GameTile to find
+ * @return Integer position of GameTile
+ */
+private int findCurrentTilePosition(GameTile tile) {
+  for (int i = 0; i<16; i++) {
+    if (sideArray[i] == tile)
+      return i;
+    else if (gridArray[i] == tile)
+      return i + 16;
+  }
+  return -1;
+}
+
+//Checks if each tile is in the correct position, returns true only if all
+//tiles are in the correct position. -AG
+//May be needed in future. -AL
+/*
+private boolean checkHasWon()
+{
+  boolean victory = true;
+  for (int i = 0; i<16; i++)
+  {
+    if (tiles[i].correctPosition() == false)
+    {
+      victory = false;
+    }
+  }
+  return victory;
+}
+*/
 }

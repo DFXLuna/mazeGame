@@ -1,7 +1,8 @@
 /**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * TileDrawer.java
  */
 import java.awt.Color;
@@ -16,10 +17,15 @@ import java.util.HashSet;
 /**
  * This static class is used to draw tiles.
  * It also controls the size of the tiles.
- * 
+ * <p>
  * We use a separate class for this since FrontEndTileHolders need to draw
  * tiles, but we may also need to draw tiles directly from the window when
  * click / dragging. -AC
+ * <p>
+ * Includes flashingTiles and setFlash which are used to warn user 
+ * when they try to put it in an occupied slot. -MG
+ * @see flashingTiles
+ * @see setFlash
  */
 public class TileDrawer {
   /** 
@@ -33,7 +39,13 @@ public class TileDrawer {
   
   /**
    * Draws a tile to a graphics object at a specified position with a specified
-   * image -- Basically a wrapper for drawImage now. -AC
+   * image -- Basically a wrapper for drawImage now. -AC, MG
+   * @param g Graphics2D object
+   * @param x Integer x position of tile
+   * @param y Integer y position of tile
+   * @param img Image of tile
+   * @param rot rotation of Tile represented in 90 degree clockwise rotations
+   * @see GameTile
    */
   public static void drawTile(Graphics2D g, int x, int y, Image img, int rot) {
     
@@ -61,6 +73,11 @@ public class TileDrawer {
    */
   private static HashSet<Image> flashingTiles = new HashSet<Image>();
   
+  /**
+   * Sets the flash property of a GameTile's image according to enable. -MG
+   * @param img Image of tile to set flash property
+   * @param enable Boolean to toggle/detoggle
+   */
   public static void setFlash(Image img, boolean enable) {
     if (enable)
       flashingTiles.add(img);

@@ -1,13 +1,19 @@
- /**
+/**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * GameWindow.java
  */
 
-// CONTAINS ANONYMOUS CLASSES IN mouseReleased, openFileMenu, and addButtons!
-// These anonymous classes generally encapsulate single actions and are used
-// for event handlers. -AC
+/**
+* CONTAINS ANONYMOUS CLASSES IN mouseReleased, openFileMenu, and addButtons!
+* These anonymous classes generally encapsulate single actions and are used
+* for event handlers. -AC, MG
+* @see mouseReleased
+* @see openFileMenu
+* @see addButtons
+*/
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,19 +50,25 @@ public class GameWindow extends JFrame
     
     private Messenger messenger;
     
-    // We store the most recent mouse event so we can access the mouse's
-    // position in our paint method. -AC
+    /** 
+    * We store the most recent mouse event so we can access the mouse's
+    * position in our paint method. -AC
+    */
     private MouseEvent lastMouseEvent;
     
-    // We use this to implement double buffering. Everything is drawn to this
-    // buffer, then the buffer is drawn to the screen in one go.
-    // This prevents screen flickering. It seems that some components will do
-    // this automatically, but JFrame is not one of them. -AC
+    /**
+    *  We use this to implement double buffering. Everything is drawn to this
+    * buffer, then the buffer is drawn to the screen in one go.
+    * This prevents screen flickering. It seems that some components will do
+    * this automatically, but JFrame is not one of them. -AC
+    */
     private BufferedImage backBuffer;
     
     /**
      * The constructor sets up the UI.
      * We pass it a reference to the backend GameBoard. -AC
+     * @param messenger
+     * @see Messenger
      */
     public GameWindow(Messenger messenger)
     {
@@ -103,7 +115,7 @@ public class GameWindow extends JFrame
     }
     
     /**
-     * Sets up the visual representation of tile containers.
+     * Sets up the visual representation of tile containers. -AC
      */
     private void setupGame() {
       VisualTileHolder board =
@@ -165,7 +177,10 @@ public class GameWindow extends JFrame
       });
       this.add(btn_quit);
     }
-
+    
+    /**
+     * Function to handle File menu -MG
+     */
     private void openFileMenu() {
       JPopupMenu j = new JPopupMenu();
       
@@ -206,6 +221,9 @@ public class GameWindow extends JFrame
       j.show(this, 6, 54);
     }
     
+    /**
+     * Function to handle load Menu -MG
+     */
     private void openLoadMenu() {
       // Bail out of the function if they hit the cancel button. -AC
       if (!promptSaveIfChanged())
@@ -273,7 +291,9 @@ public class GameWindow extends JFrame
     
     /**
      * Attempts to open a file. Displays a dialog if unsuccessful.
-     * If retry is true, open the load menu instead. -AC
+     * If retry is true, open the load menu instead. -AC, MG
+     * @param file file to open
+     * @param retry if true, reopen load menu
      */
     private void tryLoadMaze(File file,boolean retry) {
       String errorMsg = null;
@@ -342,6 +362,7 @@ public class GameWindow extends JFrame
      * extending UI components. This now calls the draw method of each
      * tile holder. The tile holders are responsible for drawing their
      * tiles. We draw the currently dragged tile ourselves. -AC
+     * @param windowGraphics
      */
     @Override
     public void paint(Graphics windowGraphics) {
@@ -373,10 +394,14 @@ public class GameWindow extends JFrame
       
       windowGraphics.drawImage(backBuffer, 0, 0, null);
     }
+     
+    //Here we handle mouse input. We end up with some empty methods since
+    //we have to implement everything in the MouseListener interface. -AC
     
-    // Here we handle mouse input. We end up with some empty methods since
-    // we have to implement everything in the MouseListener interface. -AC
-
+    /** 
+    * Handle mouse click
+    * @param e MouseEvent
+    */
     @Override
     public void mousePressed(MouseEvent e) {
       if (e.getButton() == MouseEvent.BUTTON1) {
@@ -401,7 +426,10 @@ public class GameWindow extends JFrame
         this.repaint();
       }
     }
-
+    /** 
+    * Handle mouse release
+    * @param e MouseEvent
+    */
     @Override
     public void mouseReleased(MouseEvent e) {
       // We only have to handle a drop if we are currently dragging. -AC
@@ -447,7 +475,10 @@ public class GameWindow extends JFrame
         this.repaint();
       }
     }
-    
+    /** 
+    * Handle mouse drag
+    * @param e MouseEvent
+    */
     @Override
     public void mouseDragged(MouseEvent e) {
       // Store the mouse's position by saving the event, and repaint the window

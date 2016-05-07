@@ -1,7 +1,8 @@
- /**
+/**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * Main.java
  */
 import javax.swing.*;
@@ -9,7 +10,11 @@ import javax.swing.*;
 
 public class Main 
 {
-  
+  /**
+   * 
+   * @param args Unused
+   * @throws Exception
+   */
   public static void main(String[] args) throws Exception
   {
     try {   
