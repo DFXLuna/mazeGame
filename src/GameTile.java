@@ -1,25 +1,44 @@
 /**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * Gametile.java
  */
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 public class GameTile 
 { 
-  private int correctArrayPos;
-  private Image image;
+  private int startPosition;
   private int rotation;
   private int origRotation;
   
-  //Initializing GameTile. currentArrayPos was only needed if we are going to
-  //manipulate the array past initialization. -AG
-  public GameTile(int arrayPos)
+  private float[] linePoints;
+  
+  private Image image;
+  
+  /**
+   * Initializing GameTile. currentArrayPos was only needed if we are going to
+   * manipulate the array past initialization. -AG
+   * @param startPosition
+   * @param startRotation
+   * @param points Array of floats for drawing image
+   */
+  public GameTile(int startPosition, int startRotation, float[] points)
   {
-    correctArrayPos = arrayPos;
-    rotation = -999;
+    this.startPosition = startPosition;
+    rotation = startRotation;
+    origRotation = startRotation;
+    linePoints = points;
+    image = makeImage(points);
+  }
+  
+  public int getStartPosition() {
+    return startPosition;
   }
   
   public void rotateTile()
@@ -30,47 +49,75 @@ public class GameTile
       rotation++;
   }
     
-  // Changed to getImage() -- should now return the image on the tile!
+  /**
+   * 
+   * @return Gametile's Image
+   */
   public Image getImage()
   {
     return image;
   }
   
-  // Sets the Tile's image -AL
-  public void setImage(Image img)
-  {
-    image = img;
-  }
-  
-  // Sets the Tile's rotation (0-3) -AG
-  public void setRotation(int rot)
-  {
-    if (rotation == -999)
-    {
-      setOrigRotation(rot);
-    }
-    rotation = rot;
-    //System.out.println("Rotation set to " + rot);
-  }
-  
-  //Sets tile's original rotation (0-3) -AG
-  public void setOrigRotation(int rot)
-  {
-    origRotation = rot;
-  }
-  
-  // Returns the Tile's rotation (0-3) -AG
+  /**
+   * 
+   * @return GameTile's rotation as number of clockwise 90 degree rotations
+   */
   public int getRotation()
   {
     //System.out.println(rotation + " returned.");
     return rotation;
   }
   
-  // Returns the Tile's original rotation (0-3) -AG
-  public int getOrigRotation()
-  {
-    return origRotation;
+  /**
+   * Clones points[] and returns the copy. -AC, MG
+   * @return Copy of points[]
+   */
+  public float[] getPoints() {
+    return linePoints.clone();
   }
   
- 
+  /**
+   * Returns the tiles rotation to it's original rotation since last save. -MG
+   */
+  public void resetRotation() {
+    rotation = origRotation;
+  }
+  
+  /** 
+   * Reads in data for lines and makes them into an Image. -AL
+   * Originally in the MazeReader, slightly modified for GameTile. -AC, MG
+   * @param points list of floats describing end points of lines to be drawn. 
+   * @return Image Image made from points.
+   */
+  private static Image makeImage(float[] points)
+  {
+    // pointsArray stores points for drawing lines. -AL
+    // The format: x1 in index 0, y1 in index 1,
+    //             x2 in index 2, y2 in index 3.
+    
+    // Setting up the tile image. -AL
+    BufferedImage image = new BufferedImage(
+        TileDrawer.TILE_SIZE,
+        TileDrawer.TILE_SIZE,
+        BufferedImage.TYPE_INT_RGB );
+    
+    // Makes the background of each tile image white. -AL
+    Graphics2D g2d = image.createGraphics();
+    g2d.setBackground(Color.WHITE);
+    g2d.fillRect(0, 0, TileDrawer.TILE_SIZE, TileDrawer.TILE_SIZE);
+    
+    // Reads in the information for drawing the lines, and draws them. -AL
+    for(int i = 0; i < points.length; i+=4)
+    {
+      g2d.setColor(Color.BLACK);
+      g2d.drawLine(
+          (int)points[i],
+          (int)points[i+1],
+          (int)points[i+2],
+          (int)points[i+3]
+      );
+    }
+    
+    return image;
+  }  
 }

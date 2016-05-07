@@ -1,7 +1,8 @@
 /**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * VisualTileHolder.java
  */
 
@@ -18,11 +19,12 @@ import java.awt.event.MouseEvent;
  * It should also translate mouse coordinates to slot IDs... -AC
  */
 
-public abstract class VisualTileHolder {
+public class VisualTileHolder {
   
   // Screen position of the holder (Upper left corner!) -AC
   private int posX;
   private int posY;
+  
   // Size of the container in tiles. -AC
   private int width;
   private int height;
@@ -30,19 +32,37 @@ public abstract class VisualTileHolder {
   // Our sub-classes generally require a reference to a messenger. -AC
   private Messenger messenger;
   
-  protected VisualTileHolder(Messenger msgr, int x, int y, int w, int h) {
+  // We need to know what side we are so we can query the messenger for the
+  // correct information. -AC
+  private BoardSide side;
+  
+  protected VisualTileHolder(
+      Messenger msgr,
+      BoardSide side,
+      int x, int y,
+      int w, int h
+  ) {
     messenger = msgr;
     posX = x;
     posY = y;
     width = w;
     height = h;
+    this.side = side;
   }
   
-  // Use a protected getter rather than a field. -AC
+  /**
+   * Returns current messenger -MG
+   * @return the current messenger
+   * @see Messenger
+   */
   protected Messenger getMessenger() {
     return messenger;
   }
   
+  /**
+   * Draws all tiles to screen. -MG
+   * @param g Graphics2D object
+   */
   public void draw(Graphics2D g) {
     
     int size = TileDrawer.TILE_SIZE;
@@ -52,8 +72,8 @@ public abstract class VisualTileHolder {
     for (int x=0; x<width; x++) {
       for (int y=0;y<height; y++) {
         Point loc = new Point(x, y);
-        Image tileImg = getTileImageAt(loc);
-        int tileRot = getTileRotationAt(loc);
+        Image tileImg = getMessenger().getTile(side, loc.x, loc.y);
+        int tileRot = getMessenger().getTileRotation(side, loc.x, loc.y);
         
         // We only draw the tile if it exists and is not being dragged. -AC
         if (tileImg != null && messenger.getDraggedTileImage() != tileImg)
@@ -70,8 +90,62 @@ public abstract class VisualTileHolder {
   }
   
   /**
-   * Gets the x/y location of a slot in the container from a mouse click.
-   * Returns null if there is no slot at that position.
+   * Get the slot ID from a mouse click. We need the slot ID to perform
+   * swaps between slots when drags are successful. -AC
+   */
+  public int getSlotFromClick(MouseEvent e) {
+    Point position = getLocationFromClick(e);
+    if (position != null) {
+      switch (side) {
+      case CENTER:
+        return 16+position.x+position.y*4;
+      case LEFT:
+        return position.y;
+      case RIGHT:
+        return position.y+8;
+      }
+    }
+    return -1;
+  }
+  
+  /**
+   * Returns the image from tile at location specified by MouseEvent -MG
+   * @param e MouseEvent
+   * @return Image of tile at location in e or null if no tile present
+   */
+  public Image getTileImageFromClick(MouseEvent e) {
+    Point position = getLocationFromClick(e);
+    if (position != null)
+      return getMessenger().getTile(side, position.x, position.y);
+    return null;
+  }
+  
+  /**
+   * Returns the rotation of tile at location specified by MouseEvent -MG
+   * @param e MouseEvent
+   * @return Rotation of tile represented as number of 90 degree clockwise rotations or -1 if no tile present
+   */
+  public int getRotationFromClick(MouseEvent e) {
+    Point position = getLocationFromClick(e);
+    if (position != null) {
+      return getMessenger().getTileRotation(side, position.x, position.y);
+    }
+    return -1;
+  }
+  
+  /**
+   * Rotates tile 90 degrees clockwise -MG
+   * @param e MouseEvent
+   */
+  public void rotateTileFromClick(MouseEvent e) {
+    Point position = getLocationFromClick(e);
+    if (position != null)
+      getMessenger().doRotate(side, position.x, position.y);
+  }
+  
+  /**
+   * Gets the x/y location of a slot in the container from a mouse click. -MG
+   * @return Point object containing location of tile or null if no tile present
    */
   private Point getLocationFromClick(MouseEvent e) {
     int x = e.getX();
@@ -90,57 +164,4 @@ public abstract class VisualTileHolder {
     
     return new Point(tileX,tileY);
   }
-  
-  /**
-   * Get the slot ID from a mouse click. We need the slot ID to perform
-   * swaps between slots when drags are successful. -AC
-   */
-  public int getSlotFromClick(MouseEvent e) {
-    Point position = getLocationFromClick(e);
-    if (position != null)
-      return getSlotIdAt(position);
-    return -1;
-  }
-  
-  public Image getTileImageFromClick(MouseEvent e) {
-    Point position = getLocationFromClick(e);
-    if (position != null)
-      return getTileImageAt(position);
-    return null;
-  }
-  
-  public int getRotationFromClick(MouseEvent e) {
-    Point position = getLocationFromClick(e);
-    if (position != null) {
-      return getTileRotationAt(position);
-    }
-    return -1;
-  }
-  
-  public void rotateTileFromClick(MouseEvent e) {
-    Point position = getLocationFromClick(e);
-    if (position != null)
-      doRotateAt(position);
-  }
-  
-  /**
-   * Get the tile number at a tile position. Sub-classes must implement this.
-   * A negative number indicates that there is no tile present. -AC
-   */
-  protected abstract Image getTileImageAt(Point loc);
-  
-  /**
-   * Same, for slot IDs. -AC
-   */
-  protected abstract int getSlotIdAt(Point loc);
-  
-  /**
-   * Same, for rotation. -AC
-   */
-  protected abstract int getTileRotationAt(Point loc);
-  
-  /**
-   * Same, for PERFORMING rotations. -AC
-   */ 
-  protected abstract void doRotateAt(Point loc);
 }

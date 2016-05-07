@@ -1,17 +1,20 @@
- /**
+/**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * Main.java
  */
 import javax.swing.*;
 
-import java.io.File;
-import java.io.IOException;
 
 public class Main 
 {
-  
+  /**
+   * 
+   * @param args Unused
+   * @throws Exception
+   */
   public static void main(String[] args) throws Exception
   {
     try {   
@@ -29,11 +32,11 @@ public class Main
     // Moved after the look and feel setup, otherwise the look and feel will
     // change mid-startup. -AC
     
-    File file = new File("default.mze");
-    FileReader fr = new FileReader(file);
+    //File file = new File("default.mze");
+    //MazeReader fr = new MazeReader(file);
     
     // Create game window and board. -AC
-    GameBoard board = new GameBoard(fr);
+    GameBoard board = new GameBoard();
     Messenger messenger = new Messenger(board);
     new GameWindow(messenger);
   }

@@ -1,14 +1,18 @@
 /**
  * @author Group L
- * Matt Grant, Adam Coggeshall, Jared Frank, Alex Germann, Auston Larson
- * COSC 3011 Program 01
+ * @author Matt Grant, Adam Coggeshall, Jared Frank 
+ * @author Alex Germann, Auston Larson
+ * COSC 3011
  * GameBoard.java
  */
 
 import java.awt.Image;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
-
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 /**
  * This is the main component of the back-end
@@ -19,191 +23,123 @@ public class GameBoard {
   
   // This stores all our tiles.
   // Not sure if the ordering in the array is important yet. -AC
-  private GameTile[] tiles = new GameTile[32];
+  //private GameTile[] tiles = new GameTile[32];
+  
   private GameTile[] sideArray = new GameTile[16];
   private GameTile[] gridArray = new GameTile[16];
-  private FileReader filereader;
   
+  private MazeReader filereader;
   
-  public GameBoard(FileReader fr) 
+  /**
+   * Takes current maze orientation and writes it to file. Tiles are saved
+   * in order of correct tile position. -MG
+   * @param file output File
+   * @throws Exception
+   */
+  public void saveMaze(File file) throws Exception 
   {
-    filereader = fr;
-   
-  }
-  
-  //Sets the tile placements. If the game has not been played, randomizes the tile placements.
-  //If it has been played, returns the tiles to original placements. -AG
-  public void setTiles(FileReader fr)
-  {
-    if (!filereader.played())
-    {
-      randomizeTiles(fr);
-    }
-    else
-    {
-      for (int i = 0; i<32; i++)
-      {
-        Image tileImg = fr.getImageAtIndex(i);
-        
-        if (tileImg != null) {
-          tiles[i] = new GameTile(i);
-          tiles[i].setImage(tileImg);
-          tiles[i].setRotation(fr.getRotation(i));
-          if (i<16)
-            sideArray[i] = tiles[i];
-          else
-            gridArray[i-16] = tiles[i];
-        }
-      }
-    }
-  }
-
-  
-  public void randomizeTiles(FileReader fr)
-  {
-    //Randomizing tile placements. -AG
-    int i = 0;
-    while ( i < 16)
-    {
-      int random = (int )(Math.random() * 16);
-      if(tiles[random] == null)
-      {
-        tiles[random] = new GameTile(i);
-        tiles[random].setImage(fr.getImageAtIndex(i)); 
-        sideArray[random] = tiles[random];
-        gridArray[i] = null;
-        i++;
-      }
-    }
-    //Setting 4 random tiles to 0 rotation. -AG
-    int j = 0;
-    while (j < 4)
-    {
-      int random = (int )(Math.random() * 16);
-      tiles[random].setRotation(0);
-      j++;
+    // Calculate the byte length of the save file. -AC
+    // Header(4), tile count(4)
+    int fileSize = 8;
+    
+    for (int i = 0; i < filereader.getTotalTileNum(); i++) {
+      // Position(4), rotation(4), line count(4), lines.
+      fileSize += 12 + filereader.getTile(i).getPoints().length*4;
     }
     
-    //Booleans checking whether every rotation has been used. -AG
-    boolean rot1 = false;
-    boolean rot2 = false;
-    boolean rot3 = false;
-    int k = 0;
-    //Randomizing rotations. -AG
-    while (k < 16)
-    {
-      int random = (int )(Math.random() * 3 + 1);
-
-      if(tiles[k].getRotation() != 0)
-      {
-        tiles[k].setRotation(random);
-
-        if (random == 1)
-        {
-          rot1 = true;
-        }
-        if (random == 2)
-        {
-          rot2 = true;
-        }
-        if (random == 1)
-        {
-          rot3 = true;
-        }
-      }
-      k++;
+    // Make a bytebuffer, backed by an array we know about. -AC
+    byte[] saveArray = new byte[fileSize];
+    
+    ByteBuffer saveWriter = ByteBuffer.wrap(saveArray);
+    
+    // Write data. -AC
+    saveWriter.putInt(0Xcafedeed);
+    saveWriter.putInt(filereader.getTotalTileNum());
+    
+    for (int i=0;i<filereader.getTotalTileNum();i++) {
+      GameTile tile = filereader.getTile(i);
+      float[] points = tile.getPoints();
+      
+      saveWriter.putInt(findCurrentTilePosition(tile));
+      saveWriter.putInt(tile.getRotation());
+      saveWriter.putInt(points.length/4);
+      for (int j=0;j< points.length; j++)
+        saveWriter.putFloat(points[j]);
     }
     
-    //If one of the rotations is not used, find a random nonzero rotation and change it to specified rotation. -AG
-    if(rot1 == false)
-    {
-      boolean zero = true;
-      while (zero)
-      {
-        int random = (int )(Math.random() * 16);
-        if(tiles[random].getRotation() != 0)
-        {
-          tiles[random].setRotation(1);
-          zero = false;
-        }
-      }
-    }
-    if(rot2 == false)
-    {
-      boolean zero = true;
-      while (zero)
-      {
-        int random = (int )(Math.random() * 16);
-        if(tiles[random].getRotation() != 0)
-        {
-          tiles[random].setRotation(2);
-          zero = false;
-        }
-      }
-    }
-    if(rot3 == false)
-    {
-      boolean zero = true;
-      while (zero)
-      {
-        int random = (int )(Math.random() * 16);
-        if(tiles[random].getRotation() != 0)
-        {
-          tiles[random].setRotation(3);
-          zero = false;
-        }
-      }
-    }
+    // Actually save our data. -AC
+    FileOutputStream saveStream = new FileOutputStream(file);
+    saveStream.write(saveArray);
+    saveStream.close();
   }
   
-  public FileReader getFileReader()
+  /**
+   * Loads the maze specified in the file. -AG, MG
+   * @param file output File
+   * @throws Exception
+   */
+  public void loadMaze(File file) throws Exception
   {
-    return filereader;
+    filereader = new MazeReader(file);
+    setTilesFromReader();
   }
   
-  // The GameWindow needs to be able to get tiles, but it should not be able
-  // to change the array. -AC
-  public GameTile getTileByIndex(int i) 
-  {
-    return tiles[i];
+  /**
+   * Returns GameTile's rotation in clockwise 90 degree rotations -MG
+   * @param side Enum for which holder GameTile is contained in
+   * @param x X coordinate of GameTile
+   * @param y Y coordinate of GameTile
+   * @return  GameTile's rotation in clockwise 90 degree rotations
+   */
+  public int getTileRotation(BoardSide side, int x, int y) {
+    switch (side) {
+    case CENTER:
+      if (gridArray[y*4+x] != null)
+        return gridArray[y*4+x].getRotation();
+      break;
+    case LEFT:
+      if (sideArray[y] != null)
+        return sideArray[y].getRotation();
+      break;
+    case RIGHT:
+      if (sideArray[y+8] != null)
+        return sideArray[y+8].getRotation();
+      break;
+    }
+    return -1;
   }
-  
-  
-  public int getTileRotationInGrid(int x, int y) {
-    if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getRotation();
+  /**
+   * Rotates tile 90 degree clockwise. Returns -1 -MG
+   * @param side Enum for which holder GameTile is contained in
+   * @param x X coordinate of GameTile
+   * @param y Y coordinate of GameTile
+   * @return -1
+   */
+  public Object doRotate(BoardSide side, int x, int y) {
+    switch (side) {
+    case CENTER:
+      if (gridArray[y*4+x] != null)
+        gridArray[y*4+x].rotateTile();
+      break;
+    case LEFT:
+      if (sideArray[y] != null)
+        sideArray[y].rotateTile();
+      break;
+    case RIGHT:
+      if (sideArray[y+8] != null)
+        sideArray[y+8].rotateTile();
+      break;
+    }
     return -1;
   }
   
-  public int getTileRotationInLeft(int y) {
-    if (sideArray[y] != null)
-      return sideArray[y].getRotation();
-    return -1;
-  }
-  
-  public int getTileRotationInRight(int y) {
-    if (sideArray[y+8] != null)
-      return sideArray[y+8].getRotation();
-    return -1;
-  }
-  
-  public void doRotateInGrid(int x, int y) {
-    if(gridArray[y*4+x] != null)
-      gridArray[y*4+x].rotateTile();
-  }
-
-  public void doRotateInLeft(int y) {
-    if(sideArray[y] != null)
-      sideArray[y].rotateTile();
-  }
-
-  public void doRotateInRight(int y) {
-    if(sideArray[y+8] != null)
-      sideArray[y+8].rotateTile();
-  }
-  
-  //Moves the tile to a specified location. sideArray is 0-15,
-  //gridArray 16-31. -AG
+  /**
+   * Moves the tile to a specified location. sideArray is 0-15,
+   * gridArray 16-31. -AG, MG
+   * @param from
+   * @param to
+   * @return true if move was successful
+   */
   public boolean moveTile(int from, int to)
   {
     //If "to" is in the gridArray. -AG
@@ -280,90 +216,106 @@ public class GameBoard {
     }
   }
   
-  
-  //Returns the number displayed on the Tile in the specified position
-  //of the left side of the holding area. -AG
-  public Image getTileInLeft(int pos)
-  {
-    if (sideArray[pos] != null)
-      return sideArray[pos].getImage();
-    return null;
-  }
-  
-  
-  //Returns the number displayed on the Tile in the
-  //specified position of the right side of the holding area. -AG
-  public Image getTileInRight(int pos)
-  {
-    if (sideArray[pos+8] != null)
-      return sideArray[pos+8].getImage();
-    return null;
-  }
-  
-  //Returns the number displayed on the Tile in the
-  //specified position of the grid. -AG
-  public Image getTileInGrid(int x, int y)
-  {
-    if (gridArray[y*4+x] != null)
-      return gridArray[y*4+x].getImage();
-    return null;
-  }
-  
-  
-  
-  //Checks if each tile is in the correct position, returns true only if all
-  //tiles are in the correct position. -AG
-  //May be needed in future. -AL
-  /*
-  private boolean checkHasWon()
-  {
-    boolean victory = true;
-    for (int i = 0; i<16; i++)
-    {
-      if (tiles[i].correctPosition() == false)
-      {
-        victory = false;
-      }
-    }
-    return victory;
-  }
-  */
-  
-  //Resets the game by moving every tile to their
-  //original position and making the grid empty. -AG
+  /**
+   * Resets the game by moving every tile to their
+   * original position and making the grid empty. -AG
+   */
   public void resetGame()
   {
-    for (int i=0; i<16; i++)
-    {
-      sideArray[i] = getTileByIndex(i);
-
-      sideArray[i].setRotation(tiles[i].getOrigRotation());
+    // Note that this was originally more complex. It now serves as a wrapper
+    // for setTilesFromReader(), but we're keeping it this way since
+    // resetGame() is a more descriptive name for anything external of the
+    // board that needs to use it, while setTilesFromReader() is a better
+    // description of what's going on internally. -AC
+    setTilesFromReader();
+  }
+  
+  /**
+   * Returns the number displayed on the Tile in the specified position
+   * of the left side of the holding area. -AG, MG
+   * @param side Enum for which holder GameTile is contained in
+   * @param x X coordinate of GameTile
+   * @param y Y coordinate of GameTile
+   * @return GameTile's Image
+   */
+  public Image getTile(BoardSide side, int x, int y)
+  {
+    switch (side) {
+    case CENTER:
+      if (gridArray[y*4+x] != null)
+        return gridArray[y*4+x].getImage();
+      break;
+    case LEFT:
+      if (sideArray[y] != null)
+        return sideArray[y].getImage();
+      break;
+    case RIGHT:
+      if (sideArray[y+8] != null)
+        return sideArray[y+8].getImage();
+      break;
     }
-    for (int i=0; i<16; i++)
-    {
-      gridArray[i] = null;
-    }
+    return null;
   }
 
-  //Gets rid of all tiles in the arrays, used in preparation. -AG
-  public void deleteTiles()
+  /**
+   * Loads tiles from the file reader. This is used on the initial load, and
+   * on resets. -AC
+   */
+  private void setTilesFromReader()
   {
-    for (int i = 0; i< 16; i++)
-    {
+    // Clear the board. -AC
+    for (int i = 0; i<16; i++) {
+      gridArray[i] = null;
       sideArray[i] = null;
-      gridArray[i] = null;
-      tiles[i] = null;
+    }
+    
+    // Fill from the reader. -AC
+    for (int i = 0; i<16; i++)
+    {
+      GameTile tile = filereader.getTile(i);
+      tile.resetRotation();
+      
+      int tileStartPos = tile.getStartPosition();
+      
+      if (tileStartPos<16)
+        sideArray[tileStartPos] = tile;
+      else
+        gridArray[tileStartPos-16] = tile;
     }
   }
-  
-  //Loads the maze specified in the file. -AG
-  public void loadMaze(File file) throws Exception
-  {
-    FileReader fr = new FileReader(file);
-    filereader = fr;
-    filereader.loadMaze(file);
 
-    fr.close();
+/**
+ * Given a tile, return the current position of the tile.
+ * Really only used for saving. Given a chance to use it you should
+ * probably not, as it has to check all the tiles. -AC, MG
+ * @param tile GameTile to find
+ * @return Integer position of GameTile
+ */
+private int findCurrentTilePosition(GameTile tile) {
+  for (int i = 0; i<16; i++) {
+    if (sideArray[i] == tile)
+      return i;
+    else if (gridArray[i] == tile)
+      return i + 16;
   }
-  
+  return -1;
+}
+
+//Checks if each tile is in the correct position, returns true only if all
+//tiles are in the correct position. -AG
+//May be needed in future. -AL
+/*
+private boolean checkHasWon()
+{
+  boolean victory = true;
+  for (int i = 0; i<16; i++)
+  {
+    if (tiles[i].correctPosition() == false)
+    {
+      victory = false;
+    }
+  }
+  return victory;
+}
+*/
 }
