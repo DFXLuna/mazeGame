@@ -6,8 +6,6 @@
  */
 import java.awt.Image;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 
 /**
@@ -65,27 +63,6 @@ public class Messenger
     }
   }
   
-  //Calls back-end method which returns the number of a tile in a given
-  //position in the left side array. -AG
-  public Image getTileInLeft(int pos)
-  {
-    return board.getTileInLeft(pos);
-  }
-  
-  // Calls back-end method which returns the number of a tile in a given
-  // position in the right side array. -AG
-  public Image getTileInRight(int pos)
-  {
-    return board.getTileInRight(pos);
-  }
-  
-  // Calls back-end method which returns the number of a tile in a given
-  // position in the grid. -AG
-  public Image getTileInGrid(int x, int y)
-  {
-    return board.getTileInGrid(x, y);
-  }
-  
   // Calls back-end method which moves the tile from a given position to a
   // given position. -AG
   
@@ -94,6 +71,24 @@ public class Messenger
   {
     changed = true;
     return board.moveTile(from, to);
+  }
+  
+  // Calls back-end method which returns the number of a tile in a given
+  // position in the grid. -AG
+  public Image getTile(BoardSide side, int x, int y)
+  {
+    return board.getTile(side, x, y);
+  }
+  
+  public void doRotate(BoardSide side, int x, int y) 
+  {
+    changed = true;
+    board.doRotate(side, x, y);
+  }
+  
+  public int getTileRotation(BoardSide side, int x, int y) 
+  {
+    return board.getTileRotation(side, x, y);
   }
   
   // The Messenger holds drag information. It includes the source slot, dragged
@@ -125,41 +120,4 @@ public class Messenger
   public int getDragRotation() {
     return dragRotation;
   }
-  
-  
-  
-  public int getTileRotationInGrid(int x, int y) 
-  {
-    return board.getTileRotationInGrid(x, y);
-  }
-  
-  public int getTileRotationInLeft(int y) 
-  {
-    return board.getTileRotationInLeft(y);
-  }
-  
-  public int getTileRotationInRight(int y) 
-  {
-    return board.getTileRotationInRight(y);
-  }
-  
-  public void doRotateInGrid(int x, int y) 
-  {
-    changed = true;
-    board.doRotateInGrid(x, y);
-  }
-
-  public void doRotateInLeft(int y) 
-  {
-    changed = true;
-    board.doRotateInLeft(y);
-  }
-
-  public void doRotateInRight(int y) 
-  {
-    changed = true;
-    board.doRotateInRight(y);
-  }
-  
-  
 }

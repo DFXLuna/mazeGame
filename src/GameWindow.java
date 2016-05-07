@@ -106,14 +106,14 @@ public class GameWindow extends JFrame
      * Sets up the visual representation of tile containers.
      */
     private void setupGame() {
-      VisualTileHolderCenter board =
-          new VisualTileHolderCenter(messenger, 250, 250);
+      VisualTileHolder board =
+          new VisualTileHolder(messenger, BoardSide.CENTER, 250, 250, 4, 4);
       
-      VisualTileHolderSide leftSide =
-          new VisualTileHolderSide(messenger, BoardSide.LEFT, 50, 80);
+      VisualTileHolder leftSide =
+          new VisualTileHolder(messenger, BoardSide.LEFT, 50, 80, 1, 8);
       
-      VisualTileHolderSide rightSide = 
-          new VisualTileHolderSide(messenger, BoardSide.RIGHT, 750, 80);
+      VisualTileHolder rightSide = 
+          new VisualTileHolder(messenger, BoardSide.RIGHT, 750, 80, 1, 8);
       
       tileHolders.add( board );
       tileHolders.add( leftSide );
@@ -256,7 +256,7 @@ public class GameWindow extends JFrame
           JOptionPane.showMessageDialog(
               this,
               "Failed to save the file \"" + saveFile + "\". \n"+
-              e.getMessage(),
+              e,
               "Error",
               JOptionPane.ERROR_MESSAGE);
           // I wasn't sure if we should retry the save here, but I figured
@@ -475,6 +475,6 @@ public class GameWindow extends JFrame
 
     @Override
     public void mouseMoved(MouseEvent arg0) {
-      // Do nothing. We only listen for the drag event.
+      // Do nothing. We only listen for the drag event. -AC
     }
   };

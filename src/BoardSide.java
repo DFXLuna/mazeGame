@@ -10,5 +10,5 @@
  * Used by VisualTileHolderSide. -AC
  */
 public enum BoardSide {
-  LEFT, RIGHT
+  LEFT, RIGHT, CENTER
 }
