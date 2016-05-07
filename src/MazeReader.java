@@ -26,13 +26,15 @@ public class MazeReader extends FileInputStream
   //value if maze has been played
   private int played = 0Xcafedeed;
   
-  // Values that correspond to file format. -AL
-  private int tileNum;
+  // Positions, rotations, and point arrays, stored in solved order.
+  // These are initialized when the maze is loaded.
+  private int[] tilePositions;
+  private int[] tileRotations;
+  private float[][] tilePoints;
   
-  private int[] rotations = new int[32];
-  // Contains images generated for tiles. -AL
-  private Image[] tileImages = new Image[32];
-  private byte[][] lineChunks = new byte[32][];
+  // Similar to above, stores tiles in solved order. This is the only of the
+  // arrays that external classes will have access to.
+  private GameTile[] tiles;
 
   private byte[] byteArray = new byte[4];
   
@@ -54,30 +56,12 @@ public class MazeReader extends FileInputStream
     return totalTileNum;
   }
   
-  public int getRotation(int index)
-  {
-    return rotations[index];
-  }
-  
-  /** 
-   * Returns tile image from array. -AL
+  /**
+   * Gets a tile. Index is based on the SOLVED ORDER! -AC
    */
-  public Image getImageAtIndex(int index)
-  {
-    return tileImages[index];
+  public GameTile getTile(int index) {
+    return tiles[index];
   }
-  
-  // Return the chunk that needs to be written back out to a save file, for
-  // a specific tile. -AC
-  public byte[] getLineChunk(int id) {
-    return lineChunks[id];
-  }
-  
-  //Returns whether the maze has been played or not, specified in the file. -AG
-  /*public boolean played()
-  {
-    return beenPlayed;
-  }*/
   
   
   private void loadMaze() throws Exception
@@ -92,39 +76,47 @@ public class MazeReader extends FileInputStream
        throw new Exception("Not a valid maze file.");
     }
     totalTileNum = readInt();
+    
+    tilePositions = new int[totalTileNum];
+    tileRotations = new int[totalTileNum];
+    tilePoints = new float[totalTileNum][];
+    
+    tiles = new GameTile[totalTileNum];
+    
     for(int i = 0; i < totalTileNum; i++)
     {
-      tileNum = readInt();
-      rotations[i] = readInt();
-      tileImages[tileNum] = makeImage(i);
+      tilePositions[i] = readInt();
+      tileRotations[i] = readInt();
+      tilePoints[i] = readPoints();
     }
     
     if (!beenPlayed) {
       randomize();
     }
+    
+    for(int i = 0; i < totalTileNum; i++) {
+      tiles[i] = 
+          new GameTile(tilePositions[i], tileRotations[i], tilePoints[i]);
+    }
   }
   
   private void randomize() {
     // Set an even distribution of rotations. -AC
-    rotations = new int[] {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3};
+    tileRotations = new int[] {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3};
     
     for (int i=0;i<16;i++) {
       
+      // Randomize positions. -AC
+      int j2 = (int)(Math.random() * 16);
+      int pos = tilePositions[i];
+      tilePositions[i] = tilePositions[j2];
+      tilePositions[j2] = pos;
+      
       // Randomize rotations. -AC
       int j = (int)(Math.random() * 16);
-      int rot = rotations[i];
-      rotations[i] = rotations[j];
-      rotations[j] = rot;
-      
-      // Randomize tiles. -AC
-      int j2 = (int)(Math.random() * 16);
-      Image img = tileImages[i];
-      tileImages[i] = tileImages[j2];
-      tileImages[j2] = img;
-      
-      byte[] chunk = lineChunks[i];
-      lineChunks[i] = lineChunks[j2];
-      lineChunks[j2] = chunk;
+      int rot = tileRotations[i];
+      tileRotations[i] = tileRotations[j];
+      tileRotations[j] = rot;
     }
   }
   
@@ -150,57 +142,20 @@ public class MazeReader extends FileInputStream
     return Float;
   }
   
-  
-  /** 
-   * Reads in data for lines and makes them into an Image. -AL
-   * Id is the number to save the line chunk under. -AC
+  /**
+   * Read the point count and all the points, returning an array of floats.
+   * This way we can both create the image and keep this array for saving. 
+   * The returned array is guaranteed to be valid for tile creation. -AC
    */
-  private Image makeImage(int id) throws IOException
-  {
-    // pointsArray stores points for drawing lines. -AL
-    // The format: x1 in index 0, y1 in index 1,
-    //             x2 in index 2, y2 in index 3.
-    
+  private float[] readPoints() throws IOException {
     int lineNum = readInt();
     
-    // I'm sorry. -AC
-    skip(-4);
-    byte[] lineChunk = new byte[4+lineNum*16];
-    read(lineChunk);
-    skip(-lineNum*16);
+    float[] points = new float[lineNum*4];
     
-    lineChunks[id] = lineChunk;
-    
-    //byte[] lineChunk = 
-    
-    Float[] pointsArray = new Float[4];
-    
-    // Setting up the tile image. -AL
-    BufferedImage image = new BufferedImage(
-        TileDrawer.TILE_SIZE,
-        TileDrawer.TILE_SIZE,
-        BufferedImage.TYPE_INT_RGB );
-    
-    // Makes the background of each tile image white. -AL
-    Graphics2D g2d = image.createGraphics();
-    g2d.setBackground(Color.WHITE);
-    g2d.fillRect(0, 0, TileDrawer.TILE_SIZE, TileDrawer.TILE_SIZE);
-    
-    float temp;
-    
-    // Reads in the information for drawing the lines, and draws them. -AL
-    for(int lines = 0; lines < lineNum; lines++)
-    {
-      for(int point = 0; point < 4; point++)
-      {
-        temp = readFloat();
-        pointsArray[point] = temp;
-      }
-      g2d.setColor(Color.BLACK);
-      g2d.drawLine(pointsArray[0].intValue(), pointsArray[1].intValue(),
-          pointsArray[2].intValue(), pointsArray[3].intValue());
+    for (int i=0;i<points.length;i++) {
+      points[i] = readFloat();
     }
     
-    return image;
+    return points;
   }
 }

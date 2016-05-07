@@ -256,7 +256,7 @@ public class GameWindow extends JFrame
           JOptionPane.showMessageDialog(
               this,
               "Failed to save the file \"" + saveFile + "\". \n"+
-              e.getMessage(),
+              e,
               "Error",
               JOptionPane.ERROR_MESSAGE);
           // I wasn't sure if we should retry the save here, but I figured

@@ -6,8 +6,11 @@
  */
 
 import java.awt.Image;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -28,33 +31,54 @@ public class GameBoard {
   
   public void saveMaze(File file) throws Exception 
   {
-    FileOutputStream out = new FileOutputStream(file);
-    int played = 0Xcafedeed;
+    // Calculate the byte length of the save file. -AC
+    // Header(4), tile count(4)
+    int fileSize = 8;
     
-    out.write(ConvertData.convertToByteArray(played));
-    out.write(ConvertData.convertToByteArray(filereader.getTotalTileNum()));
-    
-    // Save sides. -AC
-    for (int i=0;i<16;i++) {
-      GameTile tile = sideArray[i];
-      if (tile != null) {
-        out.write(ConvertData.convertToByteArray(i));
-        out.write(ConvertData.convertToByteArray(tile.getRotation()));
-        out.write(filereader.getLineChunk(tile.getId()));
-      }
+    for (int i = 0; i < filereader.getTotalTileNum(); i++) {
+      // Position(4), rotation(4), line count(4), lines.
+      fileSize += 12 + filereader.getTile(i).getPoints().length*4;
     }
     
-    // Save grid. -AC
-    for (int i=0;i<16;i++) {
-      GameTile tile = gridArray[i];
-      if (tile != null) {
-        out.write(ConvertData.convertToByteArray(i+16));
-        out.write(ConvertData.convertToByteArray(tile.getRotation()));
-        out.write(filereader.getLineChunk(tile.getId()));
-      }
+    // Make a bytebuffer, backed by an array we know about. -AC
+    byte[] saveArray = new byte[fileSize];
+    
+    ByteBuffer saveWriter = ByteBuffer.wrap(saveArray);
+    
+    // Write data. -AC
+    saveWriter.putInt(0Xcafedeed);
+    saveWriter.putInt(filereader.getTotalTileNum());
+    
+    for (int i=0;i<filereader.getTotalTileNum();i++) {
+      GameTile tile = filereader.getTile(i);
+      float[] points = tile.getPoints();
+      
+      saveWriter.putInt(findCurrentTilePosition(tile));
+      saveWriter.putInt(tile.getRotation());
+      saveWriter.putInt(points.length/4);
+      for (int j=0;j< points.length; j++)
+        saveWriter.putFloat(points[j]);
     }
     
-    out.close();
+    // Actually save our data. -AC
+    FileOutputStream saveStream = new FileOutputStream(file);
+    saveStream.write(saveArray);
+    saveStream.close();
+  }
+  
+  /**
+   * Givem a tile, return the current position of the tile.
+   * Really only used for saving. Given a chance to use it you should
+   * probably not, as it has to check all the tiles. -AC
+   */
+  private int findCurrentTilePosition(GameTile tile) {
+    for (int i = 0; i<16; i++) {
+      if (sideArray[i] == tile)
+        return i;
+      else if (gridArray[i] == tile)
+        return i + 16;
+    }
+    return -1;
   }
   
   //Loads the maze specified in the file. -AG
@@ -236,19 +260,24 @@ public class GameBoard {
    */
   private void setTilesFromReader()
   {
-    for (int i = 0; i<32; i++)
+    // Clear the board. -AC
+    for (int i = 0; i<16; i++) {
+      gridArray[i] = null;
+      sideArray[i] = null;
+    }
+    
+    // Fill from the reader. -AC
+    for (int i = 0; i<16; i++)
     {
-      Image tileImg = filereader.getImageAtIndex(i);
+      GameTile tile = filereader.getTile(i);
+      tile.resetRotation();
       
-      GameTile tile = null;
-      if (tileImg != null) {
-        tile = new GameTile(i,filereader.getRotation(i),tileImg);
-      }
+      int tileStartPos = tile.getStartPosition();
       
-      if (i<16)
-        sideArray[i] = tile;
+      if (tileStartPos<16)
+        sideArray[tileStartPos] = tile;
       else
-        gridArray[i-16] = tile;
+        gridArray[tileStartPos-16] = tile;
     }
   }
 }
