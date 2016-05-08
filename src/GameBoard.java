@@ -297,7 +297,6 @@ public class GameBoard {
       gridArray[i] = null;
       sideArray[i] = null;
     }
-    
     // Fill from the reader. -AC
     for (int i = 0; i<16; i++)
     {
@@ -329,22 +328,4 @@ private int findCurrentTilePosition(GameTile tile) {
   }
   return -1;
 }
-
-//Checks if each tile is in the correct position, returns true only if all
-//tiles are in the correct position. -AG
-//May be needed in future. -AL
-/*
-private boolean checkHasWon()
-{
-  boolean victory = true;
-  for (int i = 0; i<16; i++)
-  {
-    if (tiles[i].correctPosition() == false)
-    {
-      victory = false;
-    }
-  }
-  return victory;
-}
-*/
 }
