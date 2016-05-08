@@ -424,6 +424,11 @@ public class GameWindow extends JFrame
           holder.rotateTileFromClick(e);
         }
         this.repaint();
+        boolean victory = messenger.determineIfWon();
+        if(victory)
+        {
+          //DO SOMETHING IF THEY WIN -AG
+        }
       }
     }
     /** 
@@ -473,6 +478,11 @@ public class GameWindow extends JFrame
         }
         messenger.clearDragInfo();
         this.repaint();
+        boolean victory = messenger.determineIfWon();
+        if (victory)
+        {
+          //DO SOMETHING IF THEY WIN -AG
+        }
       }
     }
     /** 

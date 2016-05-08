@@ -7,12 +7,9 @@
  */
 
 import java.awt.Image;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 
 /**
  * This is the main component of the back-end
@@ -29,6 +26,10 @@ public class GameBoard {
   private GameTile[] gridArray = new GameTile[16];
   
   private MazeReader filereader;
+  
+  //Maybe use these for timing, the timing only starts when the user first moves or rotates a tile. -AG
+  //private boolean started = false;
+  //private long time = 0;
   
   /**
    * Takes current maze orientation and writes it to file. Tiles are saved
@@ -84,6 +85,30 @@ public class GameBoard {
     setTilesFromReader();
   }
   
+  
+  /**
+   * Checks if the game has been won. -AG
+   * @return victory condition
+   */
+  public boolean determineIfWon()
+  {
+    boolean victory = true;
+    for (int i = 0; i < 16; i++)
+    {
+      if(gridArray[i] == null)
+      {
+        return false;
+      }
+      if (!(gridArray[i] == filereader.getTile(i)) && !(gridArray[i].getRotation() == 0))
+      {
+        return false;
+      }
+    }
+
+    return victory;
+  }
+  
+  
   /**
    * Returns GameTile's rotation in clockwise 90 degree rotations -MG
    * @param side Enum for which holder GameTile is contained in
@@ -119,7 +144,9 @@ public class GameBoard {
     switch (side) {
     case CENTER:
       if (gridArray[y*4+x] != null)
+      {
         gridArray[y*4+x].rotateTile();
+      }
       break;
     case LEFT:
       if (sideArray[y] != null)
@@ -215,6 +242,8 @@ public class GameBoard {
       }
     }
   }
+  
+
   
   /**
    * Resets the game by moving every tile to their
