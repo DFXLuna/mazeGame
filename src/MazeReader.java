@@ -38,8 +38,11 @@ public class MazeReader extends FileInputStream
   private GameTile[] tiles;
 
   private byte[] byteArray = new byte[4];
+  private byte[] longByteArray = new byte[8];
   
   private boolean beenPlayed = false;
+  
+  private long gameTime = 0;
   
   /**
    * MazeReader constructor. Reads a maze file, storing all the relevant
@@ -55,6 +58,20 @@ public class MazeReader extends FileInputStream
   public int getTotalTileNum()
   {
     return totalTileNum;
+  }
+  
+  public long getGameTime()
+  {
+    return gameTime;
+  }
+  
+  /**
+   * Returns true if maze has been played, false if not. -AL
+   * @return boolean
+   */
+  public boolean beenPlayed()
+  {
+    return beenPlayed;
   }
   
   /**
@@ -81,7 +98,7 @@ public class MazeReader extends FileInputStream
        throw new Exception("Not a valid maze file.");
     }
     totalTileNum = readInt();
-    
+    gameTime = readLong();
     tilePositions = new int[totalTileNum];
     tileRotations = new int[totalTileNum];
     tilePoints = new float[totalTileNum][];
@@ -152,6 +169,19 @@ public class MazeReader extends FileInputStream
     read(byteArray);
     Float = ConvertData.convertToFloat(byteArray);
     return Float;
+  }
+  
+  /**
+   * Reads in 8 bytes from file and converts to long. -AL
+   * @return float
+   * @throws IOException
+   */
+  private long readLong() throws IOException
+  {
+    long Long;
+    read(longByteArray);
+    Long = ConvertData.convertToLong(longByteArray);
+    return Long;
   }
   
   /**
