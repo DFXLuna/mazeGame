@@ -427,7 +427,11 @@ public class GameWindow extends JFrame
         boolean victory = messenger.determineIfWon();
         if(victory)
         {
-          //DO SOMETHING IF THEY WIN -AG
+        	JOptionPane.showMessageDialog(
+                    this,
+                    "You Have Won The Game!",
+                    "Congratulations",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
       }
     }
@@ -481,7 +485,11 @@ public class GameWindow extends JFrame
         boolean victory = messenger.determineIfWon();
         if (victory)
         {
-          //DO SOMETHING IF THEY WIN -AG
+        	JOptionPane.showMessageDialog(
+                    this,
+                    "You Have Won The Game!",
+                    "Congratulations",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
       }
     }
