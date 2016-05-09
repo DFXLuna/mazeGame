@@ -46,6 +46,15 @@ public class Messenger
   }
   
   /**
+   * Checks if the game has been won. -AG
+   * @return victory condition
+   */
+  public boolean determineIfWon()
+  {
+    return board.determineIfWon();
+  }
+  
+  /**
    * Attempt to open a maze. Throw exception on failure. -AC, MG 
    * @param file Input File to read maze from
    * @throws Exception

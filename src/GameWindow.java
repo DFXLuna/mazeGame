@@ -424,6 +424,15 @@ public class GameWindow extends JFrame
           holder.rotateTileFromClick(e);
         }
         this.repaint();
+        boolean victory = messenger.determineIfWon();
+        if(victory)
+        {
+        	JOptionPane.showMessageDialog(
+                    this,
+                    "You Have Won The Game!",
+                    "Congratulations",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
       }
     }
     /** 
@@ -473,6 +482,15 @@ public class GameWindow extends JFrame
         }
         messenger.clearDragInfo();
         this.repaint();
+        boolean victory = messenger.determineIfWon();
+        if (victory)
+        {
+        	JOptionPane.showMessageDialog(
+                    this,
+                    "You Have Won The Game!",
+                    "Congratulations",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
       }
     }
     /** 
