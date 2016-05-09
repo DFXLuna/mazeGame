@@ -387,4 +387,9 @@ public long getTime()
   return totalTimeSec;
 }
 
+public void resetTimer()
+{
+  totalTimeSec = filereader.getGameTime();
+}
+
 }
