@@ -74,4 +74,33 @@ Meeting 5:
     -Loading and saving was briefly discussed, the menu was to be handled by
     the front end team and the actual saving and loading was to be handled by the
     back end team. The specifics were left to the teams.
+
+Meeting 6:
+    -The specification of the mze filetype was changed again, now including a
+    time played. The File reader had to be changed to accomodate this change.
+    -GameBoard was modified to keep track of the time played.
+    -Messenger and GameBoard both gained a method to determine if the player
+    has won the game.
+    -Major refactoring took place as follows: 
+    
+    Tuesday:
+    Moved loading logic out of messenger and back into gameboard.
+    Removed specialized left/right/grid versions of most methods. Now using an enum.
+    Deleted specialized versions of visual tile holders.
+    Deleted offensive functions from converter class.
+    Removed unused imports.
+    
+    Wednesday:
+    Renamed FileReader -> MazeReader
+    Reworked tile class. It is now mostly immutable, apart from rotation, and no longer has the goofy magic number.
+    Reworked board/reader. The reader now stores the initial state of the game.
+    Method decriptions written as JavaDoc
+    JavaDocs generated
+    
+    Friday:
+    Make the reader generate tile objects rather than really haphazard arrays. Didn't get this quite right, but is way better than it was.
+    Only allow acces to tiles from MazeReader
+    Moved MakeImage to GameTile
+    Save order should be good. Fixed rotation issue.
+    Made save use a bytebuffer. In retrospect not sure if this was so smart.
     
