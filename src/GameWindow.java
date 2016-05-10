@@ -429,7 +429,8 @@ public class GameWindow extends JFrame
         {
         	JOptionPane.showMessageDialog(
                     this,
-                    "You Have Won The Game!",
+                    "You Have Won The Game! Your Time Was "
+                    + messenger.getWinTime() + " Seconds",
                     "Congratulations",
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -487,7 +488,8 @@ public class GameWindow extends JFrame
         {
         	JOptionPane.showMessageDialog(
                     this,
-                    "You Have Won The Game!",
+                    "You Have Won The Game! Your Time Was "
+                    + messenger.getWinTime() + " Seconds",
                     "Congratulations",
                     JOptionPane.INFORMATION_MESSAGE);
         }

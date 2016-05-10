@@ -55,6 +55,10 @@ public class Messenger
     return board.determineIfWon();
   }
   
+  public long getWinTime()
+  {
+	  return board.getTime();
+  }
   /**
    * Attempt to open a maze. Throw exception on failure. -AC, MG 
    * @param file Input File to read maze from
