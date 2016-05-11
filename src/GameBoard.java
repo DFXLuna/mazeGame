@@ -28,8 +28,6 @@ public class GameBoard {
   private MazeReader filereader;
   
   private long startTimeMili = 0;
-  private long stopTimeMili = 0;
-  private long totalTimeSec = 0;
   
   private boolean timerStarted = false;
   
@@ -42,8 +40,8 @@ public class GameBoard {
   public void saveMaze(File file) throws Exception 
   {
     // Stop timer and add elapsed time to total time -AL
-    stopTimer();
-    addTimeElapsed();
+    //stopTimer();
+    //addTimeElapsed();
     
     // Calculate the byte length of the save file. -AC
     // Header(4), tile count(4), time (8)
@@ -62,7 +60,7 @@ public class GameBoard {
     // Write data. -AC
     saveWriter.putInt(0Xcafedeed);
     saveWriter.putInt(filereader.getTotalTileNum());
-    saveWriter.putLong(totalTimeSec);
+    saveWriter.putLong(getTime());
     
     for (int i=0;i<filereader.getTotalTileNum();i++) {
       GameTile tile = filereader.getTile(i);
@@ -89,9 +87,7 @@ public class GameBoard {
   public void loadMaze(File file) throws Exception
   {
     filereader = new MazeReader(file);
-    totalTimeSec = filereader.getGameTime();
     setTilesFromReader();
-    totalTimeSec = filereader.getGameTime();
   }
   
   
@@ -108,7 +104,7 @@ public class GameBoard {
       {
         return false;
       }
-      if (!(gridArray[i] == filereader.getTile(i)) && !(gridArray[i].getRotation() == 0))
+      if (gridArray[i] != filereader.getTile(i) || gridArray[i].getRotation() != 0)
       {
         return false;
       }
@@ -155,15 +151,20 @@ public class GameBoard {
       if (gridArray[y*4+x] != null)
       {
         gridArray[y*4+x].rotateTile();
+        startTimer();
       }
       break;
     case LEFT:
-      if (sideArray[y] != null)
+      if (sideArray[y] != null) {
         sideArray[y].rotateTile();
+        startTimer();
+    }
       break;
     case RIGHT:
-      if (sideArray[y+8] != null)
+      if (sideArray[y+8] != null) {
         sideArray[y+8].rotateTile();
+        startTimer();
+    }
       break;
     }
     return -1;
@@ -178,12 +179,6 @@ public class GameBoard {
    */
   public boolean moveTile(int from, int to)
   {
-    // The first move starts the timer.
-    if(!timerStarted)
-    {
-      startTimer();
-      timerStarted = true;
-    }
     
     //If "to" is in the gridArray. -AG
     if (to > 15)
@@ -196,6 +191,7 @@ public class GameBoard {
         {
           gridArray[to-16]=gridArray[from-16];
           gridArray[from-16] = null;
+          startTimer();
           return true;
         }
         //Return false if the space is occupied. -AC
@@ -212,6 +208,7 @@ public class GameBoard {
           {
             gridArray[to-16] = sideArray[from];
             sideArray[from] = null;
+            startTimer();
             return true;
           }
           //Return false if the space is occupied. -AC
@@ -232,6 +229,7 @@ public class GameBoard {
         {
           sideArray[to]=gridArray[from-16];
           gridArray[from-16] = null;
+          startTimer();
           return true;
         }
         //Return false if the space is occupied. -AC
@@ -248,6 +246,7 @@ public class GameBoard {
           {
             sideArray[to] = sideArray[from];
             sideArray[from] = null;
+            startTimer();
             return true;
           }
           //Return false if the space is occupied. -AC
@@ -329,6 +328,8 @@ public class GameBoard {
       else
         gridArray[tileStartPos-16] = tile;
     }
+  
+    resetTimer();
   }
 
   /**
@@ -348,37 +349,24 @@ public class GameBoard {
     return -1;
   }
   
+  
   /**
    * Start the timer -AL
    */
-  public void startTimer()
+  private void startTimer()
   {
-    startTimeMili = System.currentTimeMillis();
+    if (!timerStarted) {
+      startTimeMili = System.currentTimeMillis() - filereader.getGameTime()*1000;
+      timerStarted = true;
+    }
   }
   
   /**
-   * Stop the timer -AL
+   * Allows the timer to be started again. -AC
    */
-  public void stopTimer()
+  private void resetTimer()
   {
-    stopTimeMili = System.currentTimeMillis();
-  }
-  
-  /**
-   * Add the the time between startTimer and stopTimer to the total -AL
-   */
-  public void addTimeElapsed()
-  {
-    totalTimeSec += (stopTimeMili - startTimeMili)/1000;
-  }
-  
-  /**
-   * Sets time spent on game -AL
-   * @param timeInSeconds
-   */
-  public void setTime(long timeInSeconds)
-  {
-    totalTimeSec = timeInSeconds;
+    timerStarted = false;
   }
   
   /**
@@ -387,15 +375,9 @@ public class GameBoard {
    */
   public long getTime()
   {
-    return totalTimeSec;
-  }
-  
-  public void resetTimer()
-  {
-    if (filereader != null)
-      totalTimeSec = filereader.getGameTime();
-    else
-      totalTimeSec = 0;
+    if (!timerStarted)
+      return filereader.getGameTime();
+    return (System.currentTimeMillis() - startTimeMili)/1000;
   }
   
   public void clear() {
@@ -404,6 +386,5 @@ public class GameBoard {
       sideArray[i] = null;
       gridArray[i] = null;
     }
-    resetTimer();
   }
 }

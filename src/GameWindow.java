@@ -364,11 +364,16 @@ public class GameWindow extends JFrame
       boolean victory = messenger.determineIfWon();
       if(victory)
       {
-        String fmtTime = new SimpleDateFormat("").format("hh:mm:ss");
+        long time = messenger.getWinTime();
+        
+        String time_s = String.format("%02d",time%60);
+        String time_m = String.format("%02d",(time/60)%60);
+        String time_h = String.format("%02d",time/3600);
+    
         JOptionPane.showMessageDialog(
                   this,
                   "You have won the game! Your time was "
-                  + fmtTime,
+                  + time_h + ":" + time_m + ":" + time_s,
                   "Congratulations",
                   JOptionPane.INFORMATION_MESSAGE);
       }

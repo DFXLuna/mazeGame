@@ -43,7 +43,6 @@ public class Messenger
   {
     board.resetGame();
     this.changed = false;
-    board.resetTimer();
   }
   
   /**
