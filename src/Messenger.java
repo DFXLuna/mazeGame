@@ -43,7 +43,6 @@ public class Messenger
   {
     board.resetGame();
     this.changed = false;
-    board.resetTimer();
   }
   
   /**
@@ -55,6 +54,10 @@ public class Messenger
     return board.determineIfWon();
   }
   
+  public long getWinTime()
+  {
+	  return board.getTime();
+  }
   /**
    * Attempt to open a maze. Throw exception on failure. -AC, MG 
    * @param file Input File to read maze from
@@ -139,6 +142,13 @@ public class Messenger
   public int getTileRotation(BoardSide side, int x, int y) 
   {
     return board.getTileRotation(side, x, y);
+  }
+  
+  /**
+   * Clears the board of tiles. -AC
+   */
+  public void clearBoard() {
+    board.clear();
   }
   
   /**

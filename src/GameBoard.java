@@ -28,8 +28,6 @@ public class GameBoard {
   private MazeReader filereader;
   
   private long startTimeMili = 0;
-  private long stopTimeMili = 0;
-  private long totalTimeSec = 0;
   
   private boolean timerStarted = false;
   
@@ -42,8 +40,8 @@ public class GameBoard {
   public void saveMaze(File file) throws Exception 
   {
     // Stop timer and add elapsed time to total time -AL
-    stopTimer();
-    addTimeElapsed();
+    //stopTimer();
+    //addTimeElapsed();
     
     // Calculate the byte length of the save file. -AC
     // Header(4), tile count(4), time (8)
@@ -62,7 +60,7 @@ public class GameBoard {
     // Write data. -AC
     saveWriter.putInt(0Xcafedeed);
     saveWriter.putInt(filereader.getTotalTileNum());
-    saveWriter.putLong(totalTimeSec);
+    saveWriter.putLong(getTime());
     
     for (int i=0;i<filereader.getTotalTileNum();i++) {
       GameTile tile = filereader.getTile(i);
@@ -89,9 +87,7 @@ public class GameBoard {
   public void loadMaze(File file) throws Exception
   {
     filereader = new MazeReader(file);
-    totalTimeSec = filereader.getGameTime();
     setTilesFromReader();
-    totalTimeSec = filereader.getGameTime();
   }
   
   
@@ -108,7 +104,7 @@ public class GameBoard {
       {
         return false;
       }
-      if (!(gridArray[i] == filereader.getTile(i)) && !(gridArray[i].getRotation() == 0))
+      if (gridArray[i] != filereader.getTile(i) || gridArray[i].getRotation() != 0)
       {
         return false;
       }
@@ -155,15 +151,20 @@ public class GameBoard {
       if (gridArray[y*4+x] != null)
       {
         gridArray[y*4+x].rotateTile();
+        startTimer();
       }
       break;
     case LEFT:
-      if (sideArray[y] != null)
+      if (sideArray[y] != null) {
         sideArray[y].rotateTile();
+        startTimer();
+    }
       break;
     case RIGHT:
-      if (sideArray[y+8] != null)
+      if (sideArray[y+8] != null) {
         sideArray[y+8].rotateTile();
+        startTimer();
+    }
       break;
     }
     return -1;
@@ -178,12 +179,6 @@ public class GameBoard {
    */
   public boolean moveTile(int from, int to)
   {
-    // The first move starts the timer.
-    if(!timerStarted)
-    {
-      startTimer();
-      timerStarted = true;
-    }
     
     //If "to" is in the gridArray. -AG
     if (to > 15)
@@ -196,6 +191,7 @@ public class GameBoard {
         {
           gridArray[to-16]=gridArray[from-16];
           gridArray[from-16] = null;
+          startTimer();
           return true;
         }
         //Return false if the space is occupied. -AC
@@ -212,6 +208,7 @@ public class GameBoard {
           {
             gridArray[to-16] = sideArray[from];
             sideArray[from] = null;
+            startTimer();
             return true;
           }
           //Return false if the space is occupied. -AC
@@ -232,6 +229,7 @@ public class GameBoard {
         {
           sideArray[to]=gridArray[from-16];
           gridArray[from-16] = null;
+          startTimer();
           return true;
         }
         //Return false if the space is occupied. -AC
@@ -248,6 +246,7 @@ public class GameBoard {
           {
             sideArray[to] = sideArray[from];
             sideArray[from] = null;
+            startTimer();
             return true;
           }
           //Return false if the space is occupied. -AC
@@ -308,6 +307,9 @@ public class GameBoard {
    */
   private void setTilesFromReader()
   {
+    if (filereader == null)
+      return;
+    
     // Clear the board. -AC
     for (int i = 0; i<16; i++) {
       gridArray[i] = null;
@@ -326,70 +328,63 @@ public class GameBoard {
       else
         gridArray[tileStartPos-16] = tile;
     }
+  
+    resetTimer();
   }
 
-/**
- * Given a tile, return the current position of the tile.
- * Really only used for saving. Given a chance to use it you should
- * probably not, as it has to check all the tiles. -AC, MG
- * @param tile GameTile to find
- * @return Integer position of GameTile
- */
-private int findCurrentTilePosition(GameTile tile) {
-  for (int i = 0; i<16; i++) {
-    if (sideArray[i] == tile)
-      return i;
-    else if (gridArray[i] == tile)
-      return i + 16;
+  /**
+   * Given a tile, return the current position of the tile.
+   * Really only used for saving. Given a chance to use it you should
+   * probably not, as it has to check all the tiles. -AC, MG
+   * @param tile GameTile to find
+   * @return Integer position of GameTile
+   */
+  private int findCurrentTilePosition(GameTile tile) {
+    for (int i = 0; i<16; i++) {
+      if (sideArray[i] == tile)
+        return i;
+      else if (gridArray[i] == tile)
+        return i + 16;
+    }
+    return -1;
   }
-  return -1;
-}
-
-/**
- * Start the timer -AL
- */
-public void startTimer()
-{
-  startTimeMili = System.currentTimeMillis();
-}
-
-/**
- * Stop the timer -AL
- */
-public void stopTimer()
-{
-  stopTimeMili = System.currentTimeMillis();
-}
-
-/**
- * Add the the time between startTimer and stopTimer to the total -AL
- */
-public void addTimeElapsed()
-{
-  totalTimeSec += (stopTimeMili - startTimeMili)/1000;
-}
-
-/**
- * Sets time spent on game -AL
- * @param timeInSeconds
- */
-public void setTime(long timeInSeconds)
-{
-  totalTimeSec = timeInSeconds;
-}
-
-/**
- * Returns total time spent on maze in seconds. -AL
- * @return long
- */
-public long getTime()
-{
-  return totalTimeSec;
-}
-
-public void resetTimer()
-{
-  totalTimeSec = filereader.getGameTime();
-}
-
+  
+  
+  /**
+   * Start the timer -AL
+   */
+  private void startTimer()
+  {
+    if (!timerStarted) {
+      startTimeMili = System.currentTimeMillis() - filereader.getGameTime()*1000;
+      timerStarted = true;
+    }
+  }
+  
+  /**
+   * Allows the timer to be started again. -AC
+   */
+  private void resetTimer()
+  {
+    timerStarted = false;
+  }
+  
+  /**
+   * Returns total time spent on maze in seconds. -AL
+   * @return long
+   */
+  public long getTime()
+  {
+    if (!timerStarted)
+      return filereader.getGameTime();
+    return (System.currentTimeMillis() - startTimeMili)/1000;
+  }
+  
+  public void clear() {
+    filereader = null;
+    for (int i=0;i<16;i++) {
+      sideArray[i] = null;
+      gridArray[i] = null;
+    }
+  }
 }

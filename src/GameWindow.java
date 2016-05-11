@@ -35,6 +35,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.text.SimpleDateFormat;
 
 public class GameWindow extends JFrame
   implements MouseListener, MouseMotionListener
@@ -308,12 +309,13 @@ public class GameWindow extends JFrame
         messenger.loadMaze(file);
 
       } catch (Exception e) {
-        errorMsg = e.getMessage();
+          errorMsg = 
+            "There seems to be an issue with the formatting of the file.";
       }
       
-      if (errorMsg != null) //&& !errorMsg.equalsIgnoreCase("16")) makes the game load "played.mze" and not display the weird error
+      if (errorMsg != null)
       {
-        System.out.println(errorMsg);
+        //System.out.println(errorMsg);
         if (retry) {
           JOptionPane.showMessageDialog(
               this,
@@ -330,6 +332,7 @@ public class GameWindow extends JFrame
               errorMsg,
               "Error",
               JOptionPane.ERROR_MESSAGE);
+          messenger.clearBoard();
         }
       }
     }
@@ -355,6 +358,25 @@ public class GameWindow extends JFrame
         }
       }
       return true;
+    }
+    
+    private void showVictoryMessageIfWon() {
+      boolean victory = messenger.determineIfWon();
+      if(victory)
+      {
+        long time = messenger.getWinTime();
+        
+        String time_s = String.format("%02d",time%60);
+        String time_m = String.format("%02d",(time/60)%60);
+        String time_h = String.format("%02d",time/3600);
+    
+        JOptionPane.showMessageDialog(
+                  this,
+                  "You have won the game! Your time was "
+                  + time_h + ":" + time_m + ":" + time_s,
+                  "Congratulations",
+                  JOptionPane.INFORMATION_MESSAGE);
+      }
     }
     
     /**
@@ -424,15 +446,7 @@ public class GameWindow extends JFrame
           holder.rotateTileFromClick(e);
         }
         this.repaint();
-        boolean victory = messenger.determineIfWon();
-        if(victory)
-        {
-        	JOptionPane.showMessageDialog(
-                    this,
-                    "You Have Won The Game!",
-                    "Congratulations",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
+        showVictoryMessageIfWon();
       }
     }
     /** 
@@ -482,15 +496,7 @@ public class GameWindow extends JFrame
         }
         messenger.clearDragInfo();
         this.repaint();
-        boolean victory = messenger.determineIfWon();
-        if (victory)
-        {
-        	JOptionPane.showMessageDialog(
-                    this,
-                    "You Have Won The Game!",
-                    "Congratulations",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
+        showVictoryMessageIfWon();
       }
     }
     /** 

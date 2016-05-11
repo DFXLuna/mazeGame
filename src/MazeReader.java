@@ -99,20 +99,22 @@ public class MazeReader extends FileInputStream
     }
     totalTileNum = readInt();
     gameTime = readLong();
+
     tilePositions = new int[totalTileNum];
     tileRotations = new int[totalTileNum];
     tilePoints = new float[totalTileNum][];
     
     tiles = new GameTile[totalTileNum];
-    
+
     for(int i = 0; i < totalTileNum; i++)
     {
       tilePositions[i] = readInt();
       tileRotations[i] = readInt();
       tilePoints[i] = readPoints();
     }
-    
+
     if (!beenPlayed) {
+      gameTime = 0;
       randomize();
     }
     
