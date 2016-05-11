@@ -146,6 +146,13 @@ public class Messenger
   }
   
   /**
+   * Clears the board of tiles. -AC
+   */
+  public void clearBoard() {
+    board.clear();
+  }
+  
+  /**
    * Sets dragSourceSlot, DragTileImage and DragRotation from GameTile's fields -MG
    * @param sourceSlot GameTile's original position
    * @param tileImage GameTile's image

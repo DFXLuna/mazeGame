@@ -308,6 +308,9 @@ public class GameBoard {
    */
   private void setTilesFromReader()
   {
+    if (filereader == null)
+      return;
+    
     // Clear the board. -AC
     for (int i = 0; i<16; i++) {
       gridArray[i] = null;
@@ -328,68 +331,79 @@ public class GameBoard {
     }
   }
 
-/**
- * Given a tile, return the current position of the tile.
- * Really only used for saving. Given a chance to use it you should
- * probably not, as it has to check all the tiles. -AC, MG
- * @param tile GameTile to find
- * @return Integer position of GameTile
- */
-private int findCurrentTilePosition(GameTile tile) {
-  for (int i = 0; i<16; i++) {
-    if (sideArray[i] == tile)
-      return i;
-    else if (gridArray[i] == tile)
-      return i + 16;
+  /**
+   * Given a tile, return the current position of the tile.
+   * Really only used for saving. Given a chance to use it you should
+   * probably not, as it has to check all the tiles. -AC, MG
+   * @param tile GameTile to find
+   * @return Integer position of GameTile
+   */
+  private int findCurrentTilePosition(GameTile tile) {
+    for (int i = 0; i<16; i++) {
+      if (sideArray[i] == tile)
+        return i;
+      else if (gridArray[i] == tile)
+        return i + 16;
+    }
+    return -1;
   }
-  return -1;
-}
-
-/**
- * Start the timer -AL
- */
-public void startTimer()
-{
-  startTimeMili = System.currentTimeMillis();
-}
-
-/**
- * Stop the timer -AL
- */
-public void stopTimer()
-{
-  stopTimeMili = System.currentTimeMillis();
-}
-
-/**
- * Add the the time between startTimer and stopTimer to the total -AL
- */
-public void addTimeElapsed()
-{
-  totalTimeSec += (stopTimeMili - startTimeMili)/1000;
-}
-
-/**
- * Sets time spent on game -AL
- * @param timeInSeconds
- */
-public void setTime(long timeInSeconds)
-{
-  totalTimeSec = timeInSeconds;
-}
-
-/**
- * Returns total time spent on maze in seconds. -AL
- * @return long
- */
-public long getTime()
-{
-  return totalTimeSec;
-}
-
-public void resetTimer()
-{
-  totalTimeSec = filereader.getGameTime();
-}
-
+  
+  /**
+   * Start the timer -AL
+   */
+  public void startTimer()
+  {
+    startTimeMili = System.currentTimeMillis();
+  }
+  
+  /**
+   * Stop the timer -AL
+   */
+  public void stopTimer()
+  {
+    stopTimeMili = System.currentTimeMillis();
+  }
+  
+  /**
+   * Add the the time between startTimer and stopTimer to the total -AL
+   */
+  public void addTimeElapsed()
+  {
+    totalTimeSec += (stopTimeMili - startTimeMili)/1000;
+  }
+  
+  /**
+   * Sets time spent on game -AL
+   * @param timeInSeconds
+   */
+  public void setTime(long timeInSeconds)
+  {
+    totalTimeSec = timeInSeconds;
+  }
+  
+  /**
+   * Returns total time spent on maze in seconds. -AL
+   * @return long
+   */
+  public long getTime()
+  {
+    return totalTimeSec;
+  }
+  
+  public void resetTimer()
+  {
+    if (filereader != null)
+      totalTimeSec = filereader.getGameTime();
+    else
+      totalTimeSec = 0;
+  }
+  
+  public void clear() {
+    filereader = null;
+    for (int i=0;i<16;i++) {
+      sideArray[i] = null;
+      gridArray[i] = null;
+    }
+    resetTimer();
+  }
 }
